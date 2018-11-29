@@ -9,6 +9,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
+    <itemPath>www/index1.html</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
   </logicalFolder>
@@ -53,6 +54,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="www/index1.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/html/test_simpletable.html"
             ex="false"

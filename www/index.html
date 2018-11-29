@@ -30,34 +30,64 @@
 </head>
 <body>
 
-<h1 class="title" >Hello, world!</h1>
-
 <div class="container-fluid">
 
-<table class="table" id="workers">
-    <thead>
-        <th>Worker</th>
-        <th>Qserv</th>
-        <th>Replication</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>db01</td>
-            <td></td>
-            <td>10</td>
-        </tr>
-        <tr>
-            <td>db02</td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>db03</td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+  <h1>Qserv Replication System</h1>
+
+  <nav>
+    <div class="nav nav-tabs nav-pills" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-tab-one"   data-toggle="tab" href="#nav-one"   role="tab" aria-controls="nav-one"   aria-selected="true" >One</a>
+      <a class="nav-item nav-link"        id="nav-tab-two"   data-toggle="tab" href="#nav-two"   role="tab" aria-controls="nav-two"   aria-selected="false">Two</a>
+      <a class="nav-item nav-link"        id="nav-tab-three" data-toggle="tab" href="#nav-three" role="tab" aria-controls="nav-three" aria-selected="false">Three</a>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-one" role="tabpanel" aria-labelledby="nav-tab-one">
+      <div class="row">
+        <div class="col-1">
+          <div class="nav flex-column " id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-tab-one-1" data-toggle="pill" href="#v-one-1" role="tab" aria-controls="v-one-1" aria-selected="true" >One.1</a>
+            <a class="nav-link"        id="v-tab-one-2" data-toggle="pill" href="#v-one-2" role="tab" aria-controls="v-one-2" aria-selected="false">One.2</a>
+            <a class="nav-link"        id="v-tab-one-3" data-toggle="pill" href="#v-one-3" role="tab" aria-controls="v-one-3" aria-selected="false">One.3</a>
+            <a class="nav-link"        id="v-tab-one-4" data-toggle="pill" href="#v-one-4" role="tab" aria-controls="v-one-4" aria-selected="false">One.4</a>
+          </div>
+        </div>
+        <div class="col-11">
+          <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-one-1" role="tabpanel" aria-labelledby="v-one-1">
+              <h2>Workers</h2>
+              <table class="table table-sm table-hover" id="workers">
+                <thead class="thead-light">
+                  <th>Worker</th>
+                  <th>Qserv</th>
+                  <th>Replication</th>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="v-one-2" role="tabpanel" aria-labelledby="v-one-2">
+              One.2
+            </div>
+            <div class="tab-pane fade" id="v-one-3" role="tabpanel" aria-labelledby="v-one-3">
+               One.3
+            </div>
+            <div class="tab-pane fade" id="v-one-4" role="tabpanel" aria-labelledby="v-one-4">
+              One.4
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="tab-pane fade" id="nav-two"   role="tabpanel" aria-labelledby="nav-tab-two">
+      Two
+    </div>
+    <div class="tab-pane fade" id="nav-three" role="tabpanel" aria-labelledby="nav-tab-three">
+      Three
+    </div>
+  </div>
+
 </div>
 
 <!-- Optional JavaScript -->
@@ -71,17 +101,24 @@
 
 $(function() {
 
+$('#nav-tab a').on('click', function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+});
+
 function report_error(message) {
     alert(message);
 }
 
 function web_service_GET(url, params, on_success, on_failure) {
     var jqXHR = $.get(url, params, function(data) {
+        /*
         if (data.status != 'success') {
             if (on_failure) on_failure(data.message);
             else            report_error(data.message);
             return;
         }
+        */
         if (on_success) on_success(data);
     },
     'JSON').fail(function() {
@@ -92,11 +129,24 @@ function web_service_GET(url, params, on_success, on_failure) {
 }
 
 web_service_GET(
-    "/replication/v1/worker/",
+    "/replication/v1/worker",
     {},
     function(data) {
-        alert(data);
-    }
+        console.log(data);
+        var html = '';
+        for (var i in data) {
+            var info = data[i];
+            html +=
+'<tr>' +
+'  <td>' + info.worker + '</td>' +
+'  <td>' + info.qserv_probe_delay_s + '</td>' +
+'  <td>' + info.replica_probe_delay_s + '</td>' +
+'</tr>';
+        }
+        console.log(html);
+        $('#workers').children('tbody').html(html);
+    },
+    null
 );
 
 });
