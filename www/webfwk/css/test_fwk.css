@@ -1,0 +1,10 @@
+#status {
+    padding:    1em;
+}
+table#level pre, table#workers pre {
+    padding:    0;
+    margin:     0;
+}
+table#level td, table#workers td {
+    vertical-align: middle;
+}

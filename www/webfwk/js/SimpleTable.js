@@ -80,7 +80,7 @@
  *    custom objects and triggering table redisplay.
  *
  *      function MyCellType() { SimpleTable.CellType.call(this); }
- *      define_class( MyCellType, SimpleTable.CellType, {}, {
+ *      define_class(MyCellType, SimpleTable.CellType, {}, {
  *        to_string     : function(a)   { return '<button class="my_button" name="'+a+'">'+a+'</button>'; },
  *        compare_values: function(a,b) { return this.compare_strings(a,b); },
  *        after_sort    : function()    { $('.my_button').button(); }}
@@ -135,13 +135,16 @@
  * state of table configuration on teh server side.
  */
 
-define ([
-    'webfwk/CSSLoader', 'webfwk/Class', 'webfwk/Widget'] ,
+define([
+    'webfwk/CSSLoader',
+    'webfwk/Class',
+    'webfwk/Widget'],
 
-function (
-    cssloader, Class, Widget) {
+function(CSSLoader,
+         Class,
+         Widget) {
 
-    cssloader.load('../../webfwk/css/SimpleTable1.css') ;
+    CSSLoader.load('webfwk/css/SimpleTable.css');
 
     // Extended exception class for the table
 
@@ -153,40 +156,40 @@ function (
     // Cell types
 
     function CellType() {}
-    Class.define_class( CellType, null, {}, {
+    Class.define_class(CellType, null, {}, {
         to_string:       function(a)   { return ''+a; },
         compare_numbers: function(a,b) { return a - b; },
         compare_strings: function(a,b) {
             var a_ = ''+a;
             var b_ = ''+b;
-            return ( a_ < b_ ) ? -1 : (( b_ < a_ ) ? 1 : 0 ); },
+            return (a_ < b_) ? -1 : ((b_ < a_) ? 1 : 0); },
         compare_values: function(a,b) { return this.compare_strings(a,b); },
         after_sort    : function() {},
         select_action : function(a) {alert(a);}}
     );
 
     function CellType_Number() { CellType.call(this); }
-    Class.define_class( CellType_Number, CellType, {}, {
+    Class.define_class(CellType_Number, CellType, {}, {
         compare_values: function(a,b) { return this.compare_numbers(a,b); }}
     );
 
     function CellType_NumberURL() { CellType.call(this); }
-    Class.define_class( CellType_NumberURL, CellType, {}, {
+    Class.define_class(CellType_NumberURL, CellType, {}, {
         compare_values: function(a,b) { return this.compare_numbers(a.number,b.number); },
         to_string     : function(a)   { return '<a class="table_link" href="'+a.url+'"; target="_blank";>'+a.number+'</a>'; }}
     );
 
     function CellType_NumberHTML() { CellType.call(this); }
-    Class.define_class( CellType_NumberHTML, CellType, {}, {
+    Class.define_class(CellType_NumberHTML, CellType, {}, {
         compare_values: function(a,b) { return this.compare_numbers(a.number,b.number); },
         to_string     : function(a)   { return a.html; }}
     );
 
     function CellType_Text() { CellType.call(this); }
-    Class.define_class( CellType_Text, CellType, {}, {});
+    Class.define_class(CellType_Text, CellType, {}, {});
 
     function CellType_TextURL() { CellType.call(this); }
-    Class.define_class( CellType_TextURL, CellType, {}, {
+    Class.define_class(CellType_TextURL, CellType, {}, {
         to_string     : function(a)   { return '<a class="table_link" href="'+a.url+'"; target="_blank";>'+a.text+'</a>'; },
         compare_values: function(a,b) { return this.compare_strings(a.text,b.text); }}
     );
@@ -205,41 +208,42 @@ function (
 
     // Helper functions for HTML generation
 
-    function Attributes_HTML (attr) {
+    function Attributes_HTML(attr) {
         var html = '';
-        if(attr) {
-            if(attr.id)       html += ' id="'+attr.id+'"';
-            if(attr.classes)  html += ' class="'+attr.classes+'"';
-            if(attr.name)     html += ' name="'+attr.name+'"';
-            if(attr.value)    html += ' value="'+attr.value+'"';
-            if(attr['size'])  html += ' size="'+attr['size']+'"';
-            if(attr.disabled) html += ' disabled="disabled"';
-            if(attr.checked)  html += ' checked="checked"';
-            if(attr.onclick)  html += ' onclick="'+attr.onclick+'"';
-            if(attr.title)    html += ' title="'+attr.title+'"';
-            if(attr.extra)    html += ' '+attr.extra;
+        if (attr) {
+            if (attr.id)       html += ' id="'+attr.id+'"';
+            if (attr.classes)  html += ' class="'+attr.classes+'"';
+            if (attr.name)     html += ' name="'+attr.name+'"';
+            if (attr.value)    html += ' value="'+attr.value+'"';
+            if (attr['size'])  html += ' size="'+attr['size']+'"';
+            if (attr.disabled) html += ' disabled="disabled"';
+            if (attr.checked)  html += ' checked="checked"';
+            if (attr.onclick)  html += ' onclick="'+attr.onclick+'"';
+            if (attr.title)    html += ' title="'+attr.title+'"';
+            if (attr.extra)    html += ' '+attr.extra;
         }
         return html;
     }
-    function TextInput_HTML (attr) {
+    function TextInput_HTML(attr) {
         var html = '<input type="text"'+Attributes_HTML(attr)+'/>';
         return html;
     }
-    function TextArea_HTML (attr,rows,cols) {
+    function TextArea_HTML(attr,rows,cols) {
         var html = '<textarea rows="'+rows+'" cols="'+cols+'" '+Attributes_HTML(attr)+'/></textarea>';
         return html;
     }
-    function Checkbox_HTML (attr) {
+    function Checkbox_HTML(attr) {
         var html = '<input type="checkbox"'+Attributes_HTML(attr)+'/>';
         return html;
     }
-    function Button_HTML (name,attr) {
-        var html = '<button '+Attributes_HTML(attr)+'>'+name+'</button>';
+    function Button_HTML(name,attr) {
+        attr.classes = 'btn ' + (attr.classes === undefined ? '' : attr.classes);
+        var html = '<button type="button" '+Attributes_HTML(attr)+'>'+name+'</button>';
         return html;
     }
-    function Select_HTML (options, selected, attr) {
+    function Select_HTML(options, selected, attr) {
         var html = '<select '+Attributes_HTML(attr)+'>';
-        for( var i in options ) {
+        for (var i in options) {
             var opt = options[i];
             var selected_opt = opt == selected ? ' selected="selected" ' : '';
             html += '<option name="'+opt+'" '+selected_opt+'>'+opt+'</option>';
@@ -253,7 +257,7 @@ function (
         Checkbox:  Checkbox_HTML,
         Button:    Button_HTML,
         Select:    Select_HTML
-    } ;
+    };
 
     /**
      * Table constructor
@@ -265,7 +269,11 @@ function (
      * @param {function} config_handler
      * @returns {function}
      */
-    function consructor (container, coldef, rows, options, config_handler) {
+    function consructor(container,
+                        coldef,
+                        rows,
+                        options,
+                        config_handler) {
 
         var that = this;
 
@@ -278,7 +286,7 @@ function (
 
         function sort_func(type,column) {
             this.compare = function(a,b) {
-                return type.compare_values(a[column], b[column] );
+                return type.compare_values(a[column], b[column]);
             }
         }
         function sort_func4cells(type) {
@@ -304,9 +312,9 @@ function (
             return this.header.size.cols;
         };
         this.num_rows = function() {
-            if( this.rows ) {
+            if (this.rows) {
                 var num = 0;
-                for( var i in this.rows) num++;
+                for (var i in this.rows) num++;
                 return num;
             }
             return 0;
@@ -325,15 +333,15 @@ function (
         this.selected_object = function() {
             return this.selected_row ? this.selected_row[this.selected_col] : null;
         };
-        this._sort_enabled = true ;
-        this.enable_sort = function (yes_or_no) { this._sort_enabled = yes_or_no ? true : false ; } ;
+        this._sort_enabled = true;
+        this.enable_sort = function(yes_or_no) { this._sort_enabled = yes_or_no ? true : false; };
         this.sort_rows = function() {
-            if (!this._sort_enabled) return ;
+            if (!this._sort_enabled) return;
             var column = this.sorted.column;
-            if( !this.header.sorted[column] ) return;
+            if (!this.header.sorted[column]) return;
             var bound_sort_func = new sort_func(this.header.types[column], column);
-            this.rows.sort( bound_sort_func.compare );
-            if( !this.sorted.forward ) this.rows.reverse();
+            this.rows.sort(bound_sort_func.compare);
+            if (!this.sorted.forward) this.rows.reverse();
         };
         this.load = function(rows, keep_selection) {
 
@@ -351,15 +359,15 @@ function (
 
             // Try restoring the previous selection if possible
 
-            if( keep_selection && !prev_empty && (prev_selected_cell.obj !== null ))
+            if (keep_selection && !prev_empty && (prev_selected_cell.obj !== null))
                 this.select(prev_selected_cell.col, prev_selected_cell.obj);
         };
         this.select = function(col, obj) {
-            if(( col < 0 ) || ( col >= this.cols()) || ( col != this.selected_col )) return;
+            if ((col < 0) || (col >= this.cols()) || (col != this.selected_col)) return;
             var bound_sort_func4cells = new sort_func4cells(this.header.types[col]);
-            for( var i in this.rows ) {
+            for (var i in this.rows) {
                 var row = this.rows[i];
-                if( !bound_sort_func4cells.compare(row[col], obj)) {
+                if (!bound_sort_func4cells.compare(row[col], obj)) {
                     this.selected_row = row;
                     this.display();
                     return;
@@ -373,27 +381,27 @@ function (
              * the header:
              * 
              *   [ { number:   0,
-             *       name:     'First' ,
-             *       hideable: true ,
+             *       name:     'First',
+             *       hideable: true,
              *       hidden:   false
-             *     } ,
+             *     },
              *     ..
              *   ]
              */
-            var info = [] ;
+            var info = [];
             for (var i in this.coldef) {
-                var col = this.coldef[i] ;
+                var col = this.coldef[i];
                 if (col.number !== undefined) {
-                    var col_idx = col.number ;
+                    var col_idx = col.number;
                     info.push ({
-                        number:   col_idx ,
-                        name:     col.name ,
-                        hideable: this.header.hideable[col_idx] ,
+                        number:   col_idx,
+                        name:     col.name,
+                        hideable: this.header.hideable[col_idx],
                         hidden:   this.header.hidden  [col_idx]
-                    }) ;
+                    });
                 }
             }
-            return info ;
+            return info;
         };
 
         this.display = function(commands, arg1) {
@@ -408,35 +416,35 @@ function (
              * 'hide' <col_num>
              * 
              */
-            if( typeof(commands) === 'string') {
+            if (typeof(commands) === 'string') {
                 if (commands === 'show_all') {
                     for (var col_idx in this.header.hidden) {
                         if (this.header.hideable[col_idx]) {
-                            this.header.hidden[col_idx] = false ;
+                            this.header.hidden[col_idx] = false;
                         }
                     }
                 } else if (commands === 'hide_all') {
                     for (var col_idx in this.header.hidden) {
                         if (this.header.hideable[col_idx]) {
-                            this.header.hidden[col_idx] = true ;
+                            this.header.hidden[col_idx] = true;
                         }
                     }
                 } else if (commands === 'show') {
                     if (typeof(arg1) === 'number') {
-                        var col_idx = arg1 ;
+                        var col_idx = arg1;
                         if ((this.header.hideable[col_idx] !== undefined) && this.header.hideable[col_idx]) {
-                            this.header.hidden[col_idx] = false ;
+                            this.header.hidden[col_idx] = false;
                         }
                     }
                 } else if (commands === 'hide') {
                     if (typeof(arg1) === 'number') {
-                        var col_idx = arg1 ;
+                        var col_idx = arg1;
                         if ((this.header.hideable[col_idx] !== undefined) && this.header.hideable[col_idx]) {
-                            this.header.hidden[col_idx] = true ;
+                            this.header.hidden[col_idx] = true;
                         }
                     }
                 }
-                this.save_state() ;
+                this.save_state();
             }
 
             /**
@@ -450,54 +458,53 @@ function (
              * rows then we only drow header cells at the requested level.
              */
 
-            var html = '<table class="simple-table"><thead>';
+            var html = '<table class="simple-table table table-sm table-hover table-bordered"">' +
+                       '  <thead class="thead-light">';
 
             // Draw header
 
-            for( var level2drows=0; level2drows < this.header.size.rows; ++level2drows ) {
+            for (var level2drows=0; level2drows < this.header.size.rows; ++level2drows) {
                 html += '<tr>';
-                for( var i in this.coldef ) {
+                for (var i in this.coldef) {
                     var col = this.coldef[i];
                     html += this.display_header(0,level2drows,col);
                 }
                 html += '</tr>';
             }
-            html += '</thead><tbody>';
+            html += '  </thead>' +
+                    '<tbody>';
 
             // Draw rows (if available)
 
-            if( this.rows.length ) {
+            if (this.rows.length) {
                 this.sort_rows();
-                for( var i in this.rows ) {
+                for (var i in this.rows) {
                     html += '<tr '+(this.row_select_action ? 'class="table_row_selectable" id="'+i+'" ' : '')+'>';
                     var row = this.rows[i];
-                    for( var j=0; j < row.length; ++j ) {
-                        var classes = ' table_cell';
-                        if( i == this.rows.length - 1 ) classes += ' table_cell_bottom';
-                        if( j == 0 ) classes += ' table_cell_left';
-                        if( j == row.length - 1 ) classes += ' table_cell_right';
+                    for (var j=0; j < row.length; ++j) {
+                        var classes = '';
                         var selector = '';
-                        if( this.header.selectable[j] ) {
+                        if (this.header.selectable[j]) {
                             classes += ' table_cell_selectable';
-                            if( row == this.selected_row ) {
+                            if (row == this.selected_row) {
                                 classes += ' table_cell_selectable_selected';
                             }
                             selector = ' id="'+j+' '+i+'"';
                         }
-                        var styles = '' ;
-                        if( this.header.style[j] != '' ) styles='style="'+this.header.style[j]+'"';
+                        var styles = '';
+                        if (this.header.style[j] != '') styles='style="'+this.header.style[j]+'"';
                         html += '<td class="'+classes+'" '+selector+' align="'+this.header.align[j]+'" valign="top" '+styles+' >';
-                        if(this.header.hidden[j]) html += '&nbsp;';
+                        if (this.header.hidden[j]) html += '&nbsp;';
                         else                      html += this.header.types[j].to_string(row[j]);
                         html += '</td>';
                     }
                     html += '</tr>';
                 }
             } else {
-                if( this.text_when_empty )
+                if (this.text_when_empty)
                     html +=
                         '<tr>'+
-                        '<td class="table_cell" colspan='+this.cols()+' rowspan=1 valign="top" >'+this.text_when_empty+'</td>'+
+                        '<td colspan='+this.cols()+' rowspan=1 valign="top" >'+this.text_when_empty+'</td>'+
                         '</tr>';
             }
             html += '</tbody></table>';
@@ -511,7 +518,7 @@ function (
                 that.display();
                 that.save_state();
             });
-            for( var i in this.header.types ) {
+            for (var i in this.header.types) {
                 this.header.types[i].after_sort(); 
             }
             this.container.find('.table_cell_selectable').click(function() {
@@ -535,11 +542,11 @@ function (
                 that.row_select_action(row);
             });
 
-            if( this.common_after_sort ) this.common_after_sort() ;
+            if (this.common_after_sort) this.common_after_sort();
         };
 
         this.erase = function(text_when_empty) {
-            if( text_when_empty ) this.text_when_empty = text_when_empty;
+            if (text_when_empty) this.text_when_empty = text_when_empty;
             this.load([]);
         };
 
@@ -547,7 +554,7 @@ function (
             var html = '';
             var rowspan = this.header.size.rows - level;
             var colspan = 1;
-            if( col.coldef ) {
+            if (col.coldef) {
                 var child = this.header_size(col.coldef);
                 rowspan -= child.rows;  // minus rows for children
                 colspan = child.cols;   // columns for children
@@ -555,42 +562,47 @@ function (
 
             // Drawing is only done if we're at the right level
 
-            if( level == level2drows ) {
-                var align = colspan > 1 ? 'align="center"' : '';
-                var classes = ' table_hdr';
-                var sort_sign = '';
-                if( rowspan + level == this.header.size.rows ) {
-                    if( this.header.sorted[col.number] ) {
-                        classes += ' table_active_hdr table_row_sorter'+(this.sorted.column == col.number ? ' table_active_hdr_selected' : '');
-                        var sort_sign_classes = sort_sign_classes_if(this.sorted.column == col.number, this.sorted.forward);
-                        sort_sign = '<span class="table_sort_sign';
-                        for( var i in sort_sign_classes) sort_sign += ' '+sort_sign_classes[i];
-                        sort_sign += '" name="'+col.number+'">'+'</span>';
-                    }
-                    if( this.header.hideable[col.number] )
-                        classes += ' table_column_hider';
-                }
-                var col_html = '<div style="float:left;">'+col.name+'</div>&nbsp;<div style="float:left;">'+sort_sign+'</div><div style="clear:both;"></div>';
+            if (level == level2drows) {
 
-                html += '<td class="'+classes+'" rowspan='+rowspan+' colspan='+colspan+' '+align+' >';
-                if(( rowspan + level == this.header.size.rows ) && this.header.hideable[col.number] ) {
-                    if( this.header.hidden[col.number] ) {
-                        html += '<div style="float:left;"><input type="checkbox" name="'+col.number+'" title="check to expand the column: '+col.name+'"/></div>';
+                var align = this.header.align[col.number] ? 'style="text-align:' + this.header.align[col.number] + '"' : '';
+                var classes = '';
+                var sort_sign = '';
+                if (rowspan + level == this.header.size.rows) {
+                    
+                    // Bottomost header can be either hideable or sortable.
+
+                    if (this.header.hideable[col.number]) {
+                        classes += ' table_column_hider';
                     } else {
-                        html += '<div style="float:left;"><input type="checkbox" name="'+col.number+'" checked="checked" title="uncheck to hide the column"/></div>';
-                        html += col_html;
+                        if (this.header.sorted[col.number]) {
+                            classes += ' table_active_hdr table_row_sorter'+(this.sorted.column == col.number ? ' table_active_hdr_selected' : '');
+                            var sort_sign_classes = sort_sign_classes_if(this.sorted.column == col.number, this.sorted.forward);
+                            sort_sign = '<span class="table_sort_sign';
+                            for (var i in sort_sign_classes) sort_sign += ' '+sort_sign_classes[i];
+                            sort_sign += '" name="'+col.number+'">'+'</span>';
+                        }
+                    }
+                }
+
+                var col_html = col.name+'&nbsp;'+sort_sign;
+                html += '<th class="'+classes+'" rowspan='+rowspan+' colspan='+colspan+' '+align+' >';
+                if ((rowspan + level == this.header.size.rows) && this.header.hideable[col.number]) {
+                    if (this.header.hidden[col.number]) {
+                        html += '<input type="checkbox" name="'+col.number+'" title="check to expand the column: '+col.name+'"/>';
+                    } else {
+                        html += '<input type="checkbox" name="'+col.number+'" checked="checked" title="uncheck to hide the column"/>&nbsp;'+col_html;
                     }
                 } else {
                     html += col_html;
-                }
-                html += '</td>';
+                }                
+                html += '</th>';
             }
 
             // And to optimize things we stop walking the header when the level drops
             // below the level where we're supposed to drow things.
 
-            if(( level2drows > level ) && col.coldef ) {
-                for( var i in col.coldef ) {
+            if ((level2drows > level) && col.coldef) {
+                for (var i in col.coldef) {
                     var child_col = col.coldef[i];
                     html += this.display_header(level+1,level2drows,child_col);
                 }
@@ -610,31 +622,62 @@ function (
 
             var rows2return = 0;
             var cols2return = 0;
-            for( var i in coldef ) {
+            for (var i in coldef) {
                 var col  = coldef[i];
                 var rows = 1;
                 var cols = 1;
-                if( col.coldef ) {
+                if (col.coldef) {
                     var child = this.header_size(col.coldef);
                     rows += child.rows;
                     cols  = child.cols;
                 }
-                if( rows > rows2return ) rows2return = rows;
+                if (rows > rows2return) rows2return = rows;
                 cols2return += cols;
             }
             return {rows: rows2return, cols: cols2return};
         };
 
-        this.column_types = function(coldef, types, sorted, hideable, hidden, selectable, align, style, next_column_number) {
+        /**
+         * 
+         * @param {type} coldef
+         * @param {type} types
+         * @param {type} sorted
+         * @param {type} hideable
+         * @param {type} hidden
+         * @param {type} selectable
+         * @param {type} align
+         * @param {type} style
+         * @param {type} next_column_number
+         * @returns {SimpleTableL#143.consructor.column_types.SimpleTableAnonym$5}
+         */
+        this.column_types = function(
+                coldef,
+                types,
+                sorted,
+                hideable,
+                hidden,
+                selectable,
+                align,
+                style,
+                next_column_number) {
 
             /**
              * Traverse colum definition and return types for the bottom-most
              * header cells.
              */
-            for( var i in coldef ) {
+            for (var i in coldef) {
                 var col = coldef[i];
-                if( col.coldef ) {
-                    var child          = this.column_types(col.coldef, types, sorted, hideable, hidden, selectable, align, style, next_column_number);
+                if (col.coldef) {
+                    var child = this.column_types(col.coldef,
+                                                  types,
+                                                  sorted,
+                                                  hideable,
+                                                  hidden,
+                                                  selectable,
+                                                  align,
+                                                  style,
+                                                  next_column_number);
+
                     types              = child.types;
                     sorted             = child.sorted;
                     hideable           = child.hideable;
@@ -644,8 +687,8 @@ function (
                     style              = child.style;
                     next_column_number = child.next_column_number;
                 } else {
-                    if(col.type) {
-                        if($.isPlainObject(col.type)) {
+                    if (col.type) {
+                        if ($.isPlainObject(col.type)) {
                             var type = function() { CellType.call(this); };
                             Class.define_class(type, CellType, {}, col.type);
                             types.push(new type());
@@ -677,17 +720,17 @@ function (
         };
 
         this.load_state = function (persistent_state) {
-            this.header.hidden = persistent_state.hidden ;
-            this.sorted        = persistent_state.sorted ;
-            this.display() ;
+            this.header.hidden = persistent_state.hidden;
+            this.sorted        = persistent_state.sorted;
+            this.display();
         };
         this.save_state = function () {
             if (this.config_handler) {
                 var persistent_state = {
                     hidden: this.header.hidden,
                     sorted: this.sorted
-                } ;
-                this.config_handler.save(persistent_state) ;
+                };
+                this.config_handler.save(persistent_state);
             }
         };
 
@@ -700,10 +743,10 @@ function (
         // container address where to render the table
 
         switch (typeof container) { 
-            case 'string' : this.container = $('#'+container) ; break ;
-            case 'object' : this.container = $(container) ; break ;
+            case 'string' : this.container = $('#'+container); break;
+            case 'object' : this.container = $(container); break;
             default :
-                throw new TableError('SimpleTable: wrong type of the table container parameter') ;
+                throw new TableError('SimpleTable: wrong type of the table container parameter');
         }
         this.coldef = jQuery.extend(true,[],coldef);    // columns definition: make a deep local copy
 
@@ -757,8 +800,8 @@ function (
 
         if (this.options.row_select_action) {
             if (typeof this.options.row_select_action !== 'function')
-                throw new TableError("SimpleTable: wrong type of the 'row_select_action option', must be a function") ;
-            this.row_select_action = this.options.row_select_action ;
+                throw new TableError("SimpleTable: wrong type of the 'row_select_action option', must be a function");
+            this.row_select_action = this.options.row_select_action;
         }
 
         // Override table configuration parameters from the persistent store.
@@ -769,17 +812,17 @@ function (
         // push our current state to that store for future uses.
 
         if (this.config_handler) {
-            var persistent_state = this.config_handler.load (
-                function (persistent_state) { that.load_state(persistent_state) ; } ,
-                function ()                 { that.save_state() ; }
-            ) ;
+            var persistent_state = this.config_handler.load(
+                function(persistent_state) { that.load_state(persistent_state); },
+                function()                 { that.save_state(); }
+            );
             if (persistent_state) {
                 this.header.hidden = persistent_state.hidden;
                 this.sorted        = persistent_state.sorted;
             }
         }
     }
-    Class.define_class( consructor, null, {},{});
+    Class.define_class(consructor, null, {},{});
 
     return {
         constructor: consructor,

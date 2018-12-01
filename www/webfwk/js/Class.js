@@ -26,10 +26,10 @@
      *   var obj2 = new Derived(1);
      *   alert(Base.num_instances);
      */
-    function define_class (constructor, base, statics, methods ) {
+    function define_class(constructor, base, statics, methods ) {
 
-        if(base) {
-            if(Object.create)
+        if (base) {
+            if (Object.create)
                 constructor.prototype = Object.create(base.prototype);
             else { 
                 function f() {};
@@ -39,12 +39,12 @@
         }
         constructor.prototype.constructor = constructor;
 
-        if(statics)
-            for(var s in statics)
+        if (statics)
+            for (var s in statics)
                 constructor[s] = statics[s];
 
-        if(methods)
-            for(var m in methods)
+        if (methods)
+            for (var m in methods)
                 constructor.prototype[m] = methods[m];
 
         return constructor;
@@ -55,12 +55,12 @@
      */
     if (typeof define === "function" && define.amd)
         define (
-            [] ,
-            function () {
+            [],
+            function() {
                 return {
-                    define_class : define_class
+                    define_class: define_class
                 }
             }
-        ) ;
+        );
 
-}).call(this) ;
+}).call(this);

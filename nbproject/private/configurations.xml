@@ -3,18 +3,44 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="www">
+        <df name="js">
+        </df>
+        <df name="qserv">
+          <df name="css">
+          </df>
+          <df name="js">
+          </df>
+        </df>
         <df name="webfwk">
           <df name="css">
           </df>
+          <df name="js">
+          </df>
+          <df name="ws">
+          </df>
+        </df>
+        <df name="webfwk_old">
+          <df name="css">
+          </df>
           <df name="html">
+            <df name="css">
+            </df>
+            <df name="img">
+            </df>
+            <df name="js">
+            </df>
           </df>
           <df name="js">
           </df>
         </df>
       </df>
     </df>
+    <itemPath>www/fwk.html</itemPath>
+    <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
     <itemPath>www/main.js</itemPath>
+    <itemPath>www/webfwk/ws/table_data.json</itemPath>
+    <itemPath>www/webfwk/css/test_fwk.css</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
   </logicalFolder>
