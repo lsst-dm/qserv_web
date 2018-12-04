@@ -24,10 +24,10 @@ require.config({
 require([
     'webfwk/CSSLoader',
     'webfwk/Fwk',
-    'webfwk/SimpleTableTest',
-    'webfwk/StatusReplicationLevel',
-    'webfwk/StatusWorkers',
-    'webfwk/TestApp',
+    'webfwk/FwkTestApp',
+    'webfwk/SimpleTableTestApp',
+    'qserv/StatusReplicationLevel',
+    'qserv/StatusWorkers',
 
     // Make sure the core libraries are preloaded so that the applications
     // won't bother with loading them individually
@@ -37,13 +37,13 @@ require([
 
 function(CSSLoader,
          Fwk,
-         SimpleTableTest,
+         FwkTestApp,
+         SimpleTableTestApp,
          StatusReplicationLevel,
-         StatusWorkers,
-         TestApp) {
+         StatusWorkers) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
-    CSSLoader.load('webfwk/css/test_fwk.css');
+    CSSLoader.load('qserv/css/QservPDAC.css');
 
     $(function() {
 
@@ -52,18 +52,19 @@ function(CSSLoader,
                 apps: [
                     new StatusReplicationLevel('Replication Level'),
                     new StatusWorkers('Workers'),
-                    new TestApp('User Queries'),
-                    new TestApp('Heat Map')
+                    new FwkTestApp('User Queries'),
+                    new FwkTestApp('Heat Map')
                 ]
             },
 
-            new TestApp('Replication'),
-            new TestApp('Ingest'),
+            new FwkTestApp('Replication'),
+            new FwkTestApp('Ingest'),
 
             {   name: 'UI Tests',
                 apps: [
-                    new SimpleTableTest('SimpleTable'),
-                    new TestApp('SmartTabble')
+                    new SimpleTableTestApp('SimpleTable'),
+                    new FwkTestApp('SmartTabble'),
+                    new FwkTestApp('Application Control')
                 ]
             }
         ];

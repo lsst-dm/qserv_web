@@ -8,9 +8,9 @@ function(Class,
          CSSLoader,
          FwkApplication) {
 
-    CSSLoader.load('webfwk/css/TestApp.css');
+    CSSLoader.load('webfwk/css/FwkTestApp.css');
 
-    function TestApp(name) {
+    function FwkTestApp(name) {
 
         var _that = this;
 
@@ -60,8 +60,8 @@ function(Class,
             console.log('load: ' + this.name);
         };
     }
-    Class.define_class(TestApp, FwkApplication, {}, {});
+    Class.define_class(FwkTestApp, FwkApplication, {}, {});
 
-    return TestApp;
+    return FwkTestApp;
 });
 

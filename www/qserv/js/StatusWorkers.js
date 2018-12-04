@@ -8,7 +8,7 @@ function(Class,
          CSSLoader,
          FwkApplication) {
 
-    CSSLoader.load('webfwk/css/StatusWorkers.css');
+    CSSLoader.load('qserv/css/StatusWorkers.css');
 
     function StatusWorkers(name) {
 

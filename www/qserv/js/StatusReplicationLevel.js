@@ -8,7 +8,7 @@ function(Class,
          CSSLoader,
          FwkApplication) {
 
-    CSSLoader.load('webfwk/css/StatusReplicationLevel.css');
+    CSSLoader.load('qserv/css/StatusReplicationLevel.css');
 
     function StatusReplicationLevel(name) {
 

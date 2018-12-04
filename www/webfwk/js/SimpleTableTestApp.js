@@ -10,9 +10,9 @@ function(Class,
          FwkApplication,
          SimpleTable) {
 
-    CSSLoader.load('webfwk/css/SimpleTableTest.css');
+    CSSLoader.load('webfwk/css/SimpleTableTestApp.css');
 
-    function SimpleTableTest(name) {
+    function SimpleTableTestApp(name) {
 
         var _that = this;
 
@@ -245,8 +245,8 @@ function(Class,
             }
         };
     }
-    Class.define_class(SimpleTableTest, FwkApplication, {}, {});
+    Class.define_class(SimpleTableTestApp, FwkApplication, {}, {});
 
-    return SimpleTableTest;
+    return SimpleTableTestApp;
 });
 
