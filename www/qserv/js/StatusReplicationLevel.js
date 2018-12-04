@@ -20,15 +20,15 @@ function(Class,
         /**
          * Override event handler defined in the base class
          *
-         * @see FwkApplication.on_show
+         * @see FwkApplication.fwk_app_on_show
          */
-        this.on_show = function() {
-            console.log('show: ' + this.name);
-            this.on_update();
+        this.fwk_app_on_show = function() {
+            console.log('show: ' + this.fwk_app_name);
+            this.fwk_app_on_update();
         };
 
-        this.on_hide = function() {
-            console.log('hide: ' + this.name);
+        this.fwk_app_on_hide = function() {
+            console.log('hide: ' + this.fwk_app_name);
         };
 
         // Automatically refresh the page at specified interval only
@@ -36,8 +36,8 @@ function(Class,
         this._update_ival_sec = 10;
         this._prev_update_sec = 0;
 
-        this.on_update = function() {
-            if (this.visible) {
+        this.fwk_app_on_update = function() {
+            if (this.fwk_app_visible) {
                 var now_sec = Fwk.now().sec;
                 if (now_sec - this._prev_update_sec > this._update_ival_sec) {
                     this._prev_update_sec = now_sec;
@@ -118,13 +118,13 @@ function(Class,
 '    </table>' +
 '  </div>' +
 '</div>';
-            this.container.html(html);
+            this.fwk_app_container.html(html);
         };
         
         this._table_obj = null;
         this._table = function() {
             if (!this._table_obj) {
-                this._table_obj = this.container.find('table#fwk-status-level');
+                this._table_obj = this.fwk_app_container.find('table#fwk-status-level');
             }
             return this._table_obj;
         };

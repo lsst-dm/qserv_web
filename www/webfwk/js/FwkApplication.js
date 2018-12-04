@@ -9,31 +9,31 @@ function() {
      */
     function FwkApplication(name) {
 
-        this.name = name;
-        this.container = null;
-        this.visible = false;
+        this.fwk_app_name = name;
+        this.fwk_app_container = null;
+        this.fwk_app_visible = false;
 
         this.show = function() {
-            if (!this.visible){
-                this.visible = true;
-                this.on_show();
+            if (!this.fwk_app_visible){
+                this.fwk_app_visible = true;
+                this.fwk_app_on_show();
             }
         };
         this.hide = function() {
-            if (this.visible){
-                this.visible = false;
-                this.on_hide();
+            if (this.fwk_app_visible){
+                this.fwk_app_visible = false;
+                this.fwk_app_on_hide();
             }
         };
         this.update = function() {
-            this.on_update();
+            this.fwk_app_on_update();
         };
 
         // These methods are supposed to be implemented by derived classes
 
-        this.on_show   = function() { console.log('FwkApplication::on_show() NOT IMPLEMENTED'); };
-        this.on_hide   = function() { console.log('FwkApplication::on_hide() NOT IMPLEMENTED'); };
-        this.on_update = function() { console.log('FwkApplication::on_update() NOT IMPLEMENTED'); };
+        this.fwk_app_on_show   = function() { console.log('FwkApplication::fwk_app_on_show() NOT IMPLEMENTED'); };
+        this.fwk_app_on_hide   = function() { console.log('FwkApplication::fwk_app_on_hide() NOT IMPLEMENTED'); };
+        this.fwk_app_on_update = function() { console.log('FwkApplication::fwk_app_on_update() NOT IMPLEMENTED'); };
     }
     return FwkApplication;
 });

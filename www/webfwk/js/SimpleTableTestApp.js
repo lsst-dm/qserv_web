@@ -22,19 +22,19 @@ function(Class,
         /**
          * Override event handler defined in the base class
          *
-         * @see FwkApplication.on_show
+         * @see FwkApplication.fwk_app_on_show
          */
-        this.on_show = function() {
-            console.log('show: ' + this.name);
+        this.fwk_app_on_show = function() {
+            console.log('show: ' + this.fwk_app_name);
             this._init();
         };
 
-        this.on_hide = function() {
-            console.log('hide: ' + this.name);
+        this.fwk_app_on_hide = function() {
+            console.log('hide: ' + this.fwk_app_name);
         };
 
-        this.on_update = function() {
-            if (this.visible) {
+        this.fwk_app_on_update = function() {
+            if (this.fwk_app_visible) {
                 this._init();
             }
         };
@@ -57,7 +57,7 @@ function(Class,
 '<div id="table5">Loading...</div>' +
 '<div id="table6"></div>' +
 '<div id="table7"></div>';
-            this.container.html(html);
+            this.fwk_app_container.html(html);
 
             this._init_table1();
             this._init_table2();
@@ -72,7 +72,7 @@ function(Class,
         this._init_table1 = function() {
             if (!this._table1_obj) {
                 this._table1_obj = new SimpleTable.constructor(
-                    this.container.children('#table1'),
+                    this.fwk_app_container.children('#table1'),
 
                     [{name: '1'},
                      {name: '2'},
@@ -91,7 +91,7 @@ function(Class,
         this._init_table2 = function() {
             if (!this._table2_obj) {
                 this._table2_obj = new SimpleTable.constructor(
-                    this.container.children('#table2'),
+                    this.fwk_app_container.children('#table2'),
 
                     [{name: 'id'},
                      {name: '2', coldef: [
@@ -113,7 +113,7 @@ function(Class,
         this._init_table3 = function() {
             if (!this._table3_obj) {
                 this._table3_obj = new SimpleTable.constructor(
-                    this.container.children('#table3'),
+                    this.fwk_app_container.children('#table3'),
 
                     [{name: 'id'},
                      {name: '2', coldef: [
@@ -145,7 +145,7 @@ function(Class,
                    compare_values: function(a,b) { return this.compare_strings(a,b); }}
                 ) ;
                 this._table4_obj = new SimpleTable.constructor(
-                    this.container.children('#table4'),
+                    this.fwk_app_container.children('#table4'),
 
                     [{name: 'Text_URL',   type: SimpleTable.Types.Text_URL},
                      {name: 'Number_URL', type: SimpleTable.Types.Number_URL} ,
@@ -166,10 +166,10 @@ function(Class,
                     [{text: 'xYz',       url: 'https://www.slac.stanford.edu'}, {number:   3, url: 'https://www.slac.stanford.edu'}, '1(2)', {data: 12}],
                     [{text: 'let it be', url: 'https://www.slac.stanford.edu'}, {number:   0, url: 'https://www.slac.stanford.edu'}, '2(2)', {data:  1}]
                 ] ;
-                this.container.find('#table4-load').button().click(function() {
+                this.fwk_app_container.find('#table4-load').button().click(function() {
                     _that._table4_obj.load(data4);
                 });
-                this.container.find('#table4-erase').button().click(function() {
+                this.fwk_app_container.find('#table4-erase').button().click(function() {
                     _that._table4_obj.erase();
                 });
             }
@@ -179,14 +179,14 @@ function(Class,
         this._init_table5 = function() {
             if (!this._table5_obj) {
                 this._table5_obj = new SimpleTable.constructor(
-                    this.container.children('#table5'),
+                    this.fwk_app_container.children('#table5'),
 
                     [{name: 'Number', type: SimpleTable.Types.Number},
                      {name: 'Text'}]
                 );
                 this._table5_obj.display();
 
-                this.container.find('#table5-load').button().click(function() {
+                this.fwk_app_container.find('#table5-load').button().click(function() {
                     _that._table5_obj.erase(SimpleTable.Status.Loading);
                     $.ajax({
                         type: 'GET',
@@ -207,7 +207,7 @@ function(Class,
         this._init_table6 = function() {
             if (!this._table6_obj) {
                 this._table6_obj = new SimpleTable.constructor(
-                    this.container.children('#table6'),
+                    this.fwk_app_container.children('#table6'),
 
                     [{name: '1'} ,
                      {name: '2'} ,
@@ -229,7 +229,7 @@ function(Class,
         this._init_table7 = function() {
             if (!this._table7_obj) {
                 this._table7_obj = new SimpleTable.constructor(
-                    this.container.children('#table7'),
+                    this.fwk_app_container.children('#table7'),
 
                     [{name: '1'},
                      {name: 'custom style', style:   'color: red; font-size: 125%'},

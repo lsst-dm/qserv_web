@@ -64,7 +64,7 @@ function(Class,
          *  @code
          *  [
          *      {   name: 'Status',
-         *           apps: [
+         *          apps: [
          *              new TestApp('Replication Level'),
          *              new TestApp('Workers'),
          *              new TestApp('User Queries'),
@@ -127,6 +127,21 @@ function(Class,
 
             for (var idx1 in apps) {
                 var app1 = apps[idx1];
+                var name = '';
+                if (app1 instanceof FwkApplication) {
+                    name = app1.fwk_app_name;
+                    this._apps[idx1] = app1;
+                } else {
+                    name = app1.name;
+                    this._apps[idx1] = {
+                        name:    app1.name,
+                        current: 0
+                    };
+                    for (var idx2 in app1.apps) {
+                        var app2 = app1.apps[idx2];
+                        this._apps[idx1][idx2] = app2;
+                    }
+                }
                 html +=
 '      <li class="nav-item">' +
 '        <a class="fwk-nav-1 nav-link ' + (idx1 == 0 ? 'active' : '') + '"' +
@@ -137,20 +152,8 @@ function(Class,
 '           role="tab"' +
 '           aria-controls="fwk-' + idx1 + '"' +
 '           aria-selected="' + (idx1 == 0 ? 'true' : 'false') + '"' +
-'           >' + app1.name + '</a>' +
+'           >' + name + '</a>' +
 '      </li>';
-                if (app1 instanceof FwkApplication) {
-                    this._apps[idx1] = app1;
-                } else {
-                    this._apps[idx1] = {
-                        name:    app1.name,
-                        current: 0
-                    };
-                    for (var idx2 in app1.apps) {
-                        var app2 = app1.apps[idx2];
-                        this._apps[idx1][idx2] = app2;
-                    }
-                }
             }
             html +=
 '    </ul>' +
@@ -177,7 +180,7 @@ function(Class,
                     html +=
 '    <div class="container-fluid"' +
 '         id="fwk-' + idx1 + '-cont">' +
-'      Here be the content of: ' + app1.name +
+'      Here be the content of: ' + app1.fwk_app_name +
 '    </div>';
                 } else {
                     html +=
@@ -190,7 +193,7 @@ function(Class,
 '           name="' + idx2 + '"' +
 '           id="fwk-' + idx1 + '-' + idx2 + '-tab" data-toggle="pill"' +
 '           href="#fwk-' + idx1 + '-' + idx2 + '" role="tab"' +
-'           aria-controls="fwk-' + idx1 + '-' + idx2 + '" aria-selected="true">' + app2.name + '</a>' +
+'           aria-controls="fwk-' + idx1 + '-' + idx2 + '" aria-selected="true">' + app2.fwk_app_name + '</a>' +
 '      </li>';
                     }
                     html +=
@@ -202,7 +205,7 @@ function(Class,
 '      <div class="tab-pane fade ' + (idx2 == 0 ? 'show active' : '') + '" id="fwk-' + idx1 + '-' + idx2 + '"' +
 '           role="tabpanel" aria-labelledby="fwk-' + idx1 + '-' + idx2 + '-tab">' +
 '        <div class="container-fluid" style="padding-top:1em;" id="fwk-' + idx1 + '-' + idx2 + '-cont">' +
-'          Here be the content of: ' + app2.name +
+'          Here be the content of: ' + app2.fwk_app_name +
 '        </div>' +
 '      </div>';
                     }
@@ -222,14 +225,15 @@ function(Class,
             for (var idx1 in apps) {
                 var app1 = apps[idx1];
                 if (app1 instanceof FwkApplication) {
-                    app1.container =$('#fwk-' + idx1 + '-cont');
+                    app1.fwk_app_container =$('#fwk-' + idx1 + '-cont');
                 } else {
                     for (var idx2 in app1.apps) {
                         var app2 = app1.apps[idx2];
-                        app2.container = $('#fwk-' + idx1 + '-' + idx2 + '-cont');
+                        app2.fwk_app_container = $('#fwk-' + idx1 + '-' + idx2 + '-cont');
                     }
                 }
             }
+            console.log(apps);
 
             // Set up event handlers for menus
             $('a.fwk-nav-1').on('click', function (e) {
@@ -273,21 +277,23 @@ function(Class,
             for (var k1 in this._apps) {
                 var v1 = this._apps[k1];
                 if (v1 instanceof FwkApplication) {
-                    if (v1.name === cxt1) {
+                    if (v1.fwk_app_name === cxt1) {
                         // Activate Level-1 application
                         $('a#fwk-tab-'+k1).tab('show');
                         v1.show();
                         return;
                     }
                 } else if (_.isObject(v1)) {
-                    for (var k2 in v1) {
-                        var v2 = v1[k2];
-                        if (v2 instanceof FwkApplication) {
-                            if (v2.name === cxt2) {
-                                // Activate Level-2 application
-                                $('a#fwk-'+k1+'-'+k2+'-tab').tab('show');
-                                v2.show();
-                                return;
+                    if (v1.name === cxt1) {
+                        for (var k2 in v1) {
+                            var v2 = v1[k2];
+                            if (v2 instanceof FwkApplication) {
+                                if (v2.fwk_app_name === cxt2) {
+                                    // Activate Level-2 application
+                                    $('a#fwk-'+k1+'-'+k2+'-tab').tab('show');
+                                    v2.show();
+                                    return;
+                                }
                             }
                         }
                     }
