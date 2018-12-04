@@ -9,6 +9,16 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
+    <itemPath>www/webfwk/css/Fwk.css</itemPath>
+    <itemPath>www/webfwk/js/Fwk.js</itemPath>
+    <itemPath>www/webfwk/css/SimpleTableTest.css</itemPath>
+    <itemPath>www/webfwk/js/SimpleTableTest.js</itemPath>
+    <itemPath>www/webfwk/css/StatusReplicationLevel.css</itemPath>
+    <itemPath>www/webfwk/js/StatusReplicationLevel.js</itemPath>
+    <itemPath>www/webfwk/css/StatusWorkers.css</itemPath>
+    <itemPath>www/webfwk/js/StatusWorkers.js</itemPath>
+    <itemPath>www/webfwk/css/TestApp.css</itemPath>
+    <itemPath>www/webfwk/js/TestApp.js</itemPath>
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
@@ -68,12 +78,38 @@
       </item>
       <item path="www/main.js" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="www/webfwk/css/Fwk.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/css/SimpleTableTest.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/css/StatusReplicationLevel.css"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="www/webfwk/css/StatusWorkers.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/css/TestApp.css" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/webfwk/css/test_fwk.css" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/html/test_simpletable.html"
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="www/webfwk/js/Fwk.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/js/SimpleTableTest.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/js/StatusReplicationLevel.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="www/webfwk/js/StatusWorkers.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/webfwk/js/TestApp.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/ws/table_data.json" ex="false" tool="3" flavor2="0">
       </item>

@@ -1,0 +1,7 @@
+table#fwk-status-level pre {
+    padding:    0;
+    margin:     0;
+}
+table#fwk-status-level td {
+    vertical-align: middle;
+}
