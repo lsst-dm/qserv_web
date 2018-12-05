@@ -44,19 +44,19 @@ function(Class,
             if (this._initialized) return;
             this._initialized = true;
 
-            var html =
-'<div id="table1"></div>' +
-'<div id="table2"></div>' +
-'<div id="table3"></div>' +
-'<div>' +
-'  <button type="button" class="btn btn-success btn-sm" id="table4-load">Load</button>' +
-'  <button type="button" class="btn btn-danger  btn-sm" id="table4-erase">Erase</button>' +
-'</div>' +
-'<div id="table4"></div>' +
-'<button type="button" class="btn btn-success btn-sm" id="table5-load">Load</button>' +
-'<div id="table5">Loading...</div>' +
-'<div id="table6"></div>' +
-'<div id="table7"></div>';
+            var html = `
+<div id="table1"></div>
+<div id="table2"></div>
+<div id="table3"></div>
+<div>
+  <button type="button" class="btn btn-success btn-sm" id="table4-load">Load</button>
+  <button type="button" class="btn btn-danger  btn-sm" id="table4-erase">Erase</button>
+</div>
+<div id="table4"></div>
+<button type="button" class="btn btn-success btn-sm" id="table5-load">Load</button>
+<div id="table5">Loading...</div>
+<div id="table6"></div>
+<div id="table7"></div>`;
             this.fwk_app_container.html(html);
 
             this._init_table1();

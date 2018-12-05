@@ -25,10 +25,13 @@ function(Class,
             };
         }
         if (this.month2str == undefined) {
-            this.month2str = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+            this.month2str = ['Jan','Feb','Mar','Apr','May','Jun','JUul','Aug','Sep','Oct','Nov','Dec'];
         }
-        return '' + this.getFullYear() + '-' + this.month2str[this.getMonth()] + '-' + this.pad(this.getDate()) + '&nbsp;&nbsp;' +
-               this.pad(this.getHours()) + ':' + this.pad(this.getMinutes()) + ':' + this.pad(this.getSeconds());
+        if (this.week2str == undefined) {
+            this.week2str = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        }
+        return this.week2str[this.getDay()]+' '+this.month2str[this.getMonth()]+' '+this.pad(this.getDate())+' '+this.getFullYear()+
+               ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
     };
 
     
@@ -115,15 +118,15 @@ function(Class,
         // NOTE: assume the very first application is selected by default.
         // This may be replaced with an explicit initialization in the future.
 
-        var html =
-'<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">' +
-'  <a class="navbar-brand" href="#" >' + name + '</a>' +
-'  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#fwk-navbarSupportedContent"' +
-'          aria-controls="fwk-navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">' +
-'    <span class="navbar-toggler-icon"></span>' +
-'  </button>' +
-'  <div class="collapse navbar-collapse" id="fwk-navbarSupportedContent">' +
-'    <ul class="navbar-nav mr-auto nav" role="tablist">';
+        var html = `
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+  <a class="navbar-brand" href="#" >`+name+`</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#fwk-navbarSupportedContent"
+          aria-controls="fwk-navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="fwk-navbarSupportedContent">
+    <ul class="navbar-nav mr-auto nav" role="tablist">`;
 
             for (var idx1 in apps) {
                 var app1 = apps[idx1];
@@ -142,81 +145,81 @@ function(Class,
                         this._apps[idx1][idx2] = app2;
                     }
                 }
-                html +=
-'      <li class="nav-item">' +
-'        <a class="fwk-nav-1 nav-link ' + (idx1 == 0 ? 'active' : '') + '"' +
-'           name="' + idx1 + '"' +
-'           id="fwk-tab-' + idx1 + '"' +
-'           data-toggle="tab"' +
-'           href="#fwk-' + idx1 + '"' +
-'           role="tab"' +
-'           aria-controls="fwk-' + idx1 + '"' +
-'           aria-selected="' + (idx1 == 0 ? 'true' : 'false') + '"' +
-'           >' + name + '</a>' +
-'      </li>';
+                html += `
+      <li class="nav-item">
+        <a class="fwk-nav-1 nav-link `+(idx1==0?'active':'')+`"
+           name="`+idx1+`"
+           id="fwk-tab-`+idx1+`"
+           data-toggle="tab"
+           href="#fwk-`+idx1+`"
+           role="tab"
+           aria-controls="fwk-`+idx1+`"
+           aria-selected="`+(idx1==0?'true':'false')+`"
+           >`+name+`</a>
+      </li>`;
             }
-            html +=
-'    </ul>' +
-'    <form class="form-inline my-2 my-lg-0">' +
-'      <input class="form-control mr-sm-2 form-control-sm" type="search" placeholder="chunk" aria-label="Search"/>' +
-'      <button class="btn btn-outline-light my-2 my-sm-0 btn-sm" type="submit">Search</button>' +
-'    </form>' +
-'  </div>' +
-'</nav>';
+            html += `
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2 form-control-sm" type="search" placeholder="chunk" aria-label="Search"/>
+      <button class="btn btn-outline-light my-2 my-sm-0 btn-sm" type="submit">Search</button>
+    </form>
+  </div>
+</nav>`;
 
             // Generate the applicaton content areas and second-level menus (if any)
 
-            html +=
-'<div class="tab-content" id="fwk-nav-tabContent">';
+            html += `
+<div class="tab-content" id="fwk-nav-tabContent">`;
 
             for (var idx1 in apps) {
                 var app1 = apps[idx1];
-                html +=
-'  <div class="fwk-cont tab-pane fade ' + (idx1 == 0 ? 'show active' : '') + '"' +
-'       id="fwk-' + idx1 + '"' +
-'       role="tabpanel"' +
-'       aria-labelledby="fwk-tab-' + idx1 + '">';
+                html += `
+  <div class="fwk-cont tab-pane fade `+(idx1==0?'show active':'')+`"
+       id="fwk-`+idx1+`"
+       role="tabpanel"
+       aria-labelledby="fwk-tab-`+idx1+`">`;
                 if (app1 instanceof FwkApplication) {
-                    html +=
-'    <div class="container-fluid"' +
-'         id="fwk-' + idx1 + '-cont">' +
-'      Here be the content of: ' + app1.fwk_app_name +
-'    </div>';
+                    html += `
+    <div class="container-fluid"
+         id="fwk-`+idx1+`-cont">
+      Here be the content of: `+app1.fwk_app_name+`
+    </div>`;
                 } else {
-                    html +=
-'    <ul class="nav nav-pills mb-0" id="fwk-' + idx1 + '-tab" role="tablist">';
+                    html += `
+    <ul class="nav nav-pills mb-0" id="fwk-`+idx1+`-tab" role="tablist">`;
                     for (var idx2 in app1.apps) {
                         var app2 = app1.apps[idx2];
-                        html +=
-'      <li class="nav-item">' +
-'        <a class="fwk-nav-2 nav-link ' + (idx2 == 0 ? 'show active' : '') + '"' +
-'           name="' + idx2 + '"' +
-'           id="fwk-' + idx1 + '-' + idx2 + '-tab" data-toggle="pill"' +
-'           href="#fwk-' + idx1 + '-' + idx2 + '" role="tab"' +
-'           aria-controls="fwk-' + idx1 + '-' + idx2 + '" aria-selected="true">' + app2.fwk_app_name + '</a>' +
-'      </li>';
+                        html += `
+      <li class="nav-item">
+        <a class="fwk-nav-2 nav-link `+(idx2 ==0?'show active':'')+`"
+           name="`+idx2+`"
+           id="fwk-`+idx1+`-`+idx2+`-tab" data-toggle="pill"
+           href="#fwk-`+idx1+`-`+idx2+`" role="tab"
+           aria-controls="fwk-`+idx1+`-`+idx2+`" aria-selected="true">`+app2.fwk_app_name+`</a>
+      </li>`;
                     }
-                    html +=
-'    </ul>' +
-'    <div class="tab-content" id="fwk-' + idx1 + '-tabContent">';
+                    html += `
+    </ul>
+    <div class="tab-content" id="fwk-`+idx1+`-tabContent">`;
                     for (var idx2 in app1.apps) {
                         var app2 = app1.apps[idx2];
-                        html +=
-'      <div class="tab-pane fade ' + (idx2 == 0 ? 'show active' : '') + '" id="fwk-' + idx1 + '-' + idx2 + '"' +
-'           role="tabpanel" aria-labelledby="fwk-' + idx1 + '-' + idx2 + '-tab">' +
-'        <div class="container-fluid" style="padding-top:1em;" id="fwk-' + idx1 + '-' + idx2 + '-cont">' +
-'          Here be the content of: ' + app2.fwk_app_name +
-'        </div>' +
-'      </div>';
+                        html += `
+      <div class="tab-pane fade `+(idx2==0?'show active':'')+`" id="fwk-`+idx1+`-`+idx2+`"
+           role="tabpanel" aria-labelledby="fwk-`+idx1+`-`+idx2+`-tab">
+        <div class="container-fluid" style="padding-top:1em;" id="fwk-`+idx1+`-`+idx2+`-cont">
+          Here be the content of: `+app2.fwk_app_name+`
+        </div>
+      </div>`;
                     }
-                    html +=
-'    </div>';
+                    html += `
+    </div>`;
                 }
-                html +=
-'  </div>';
+                html += `
+  </div>`;
             }
-            html +=
-'</div>';
+            html += `
+</div>`;
             // Render this before finalizing the applications' setup
             $('body').html(html);
 
@@ -239,7 +242,7 @@ function(Class,
             $('a.fwk-nav-1').on('click', function (e) {
 
                 var from = _that._apps.current;
-                var to   = $(e.currentTarget).attr('name');
+                var to = $(e.currentTarget).attr('name');
 
                 if (_that._apps[from] instanceof FwkApplication)
                     _that._apps[from].hide();
@@ -249,26 +252,62 @@ function(Class,
                 if (_that._apps[to] instanceof FwkApplication)
                     _that._apps[to].show();
                 else
-                    _that._apps[to][_that._apps[to  ].current].show();
+                    _that._apps[to][_that._apps[to].current].show();
 
                 _that._apps.current = to;
             });
             $('a.fwk-nav-2').on('click', function (e) {
 
-                var from = _that._apps[_that._apps.current].current;
-                var to   = $(e.currentTarget).attr('name');
+                var current1 = _that._apps.current;
+                var current2 = _that._apps[current1].current;
 
-                if (to != from) {
-                    _that._apps[_that._apps.current][from].hide();
-                    _that._apps[_that._apps.current][to  ].show();
-                    _that._apps[_that._apps.current].current = to;
-                }
+                var current2new = $(e.currentTarget).attr('name');
+
+                _that._apps[current1][current2].hide();
+                _that._apps[current1][current2new].show();
+                _that._apps[current1].current = current2new;
             });
             on_init();
+            
+            // Finally, begin pinging update handlers of the application
+            this._update_timer_restart();
         };
-        
+
         /**
-         * Switch to the specified application
+         * Return an array of all known application pathes. Example:
+         *
+         *   [[           'SomeAppInItsOwnMenu'],
+         *    ['MenuOne', 'AnotherApp'],
+         *    ['MenuOne', 'YetAnotherApp'],
+         *    [           'OneMoreAppInItsOwnMenu'],
+         *    [           'AndThisAppInItsOwnMenu'],
+         *    ['MenuTwo', 'TheApp']]
+         *
+         * @returns {Array}
+         */
+        this.appPaths = function() {
+            var apps = [];
+            for (var k1 in this._apps) {
+                var v1 = this._apps[k1];
+                if (v1 instanceof FwkApplication) {
+                    apps.push([v1.fwk_app_name]);
+                } else if (_.isObject(v1)) {
+                    for (var k2 in v1) {
+                        var v2 = v1[k2];
+                        if (v2 instanceof FwkApplication) {
+                            apps.push([v1.name, v2.fwk_app_name]);
+                        }
+                    }
+                }
+            }
+            console.log(apps);
+            return apps;
+        };
+
+        /**
+         * Switch to the specified application by locating and hiding
+         * the currently active application and then showing the requested
+         * one.
          *
          * @param cxt1  level-1 menu context name
          * @param cxt2  (optional) level-2 menu context name
@@ -278,9 +317,10 @@ function(Class,
                 var v1 = this._apps[k1];
                 if (v1 instanceof FwkApplication) {
                     if (v1.fwk_app_name === cxt1) {
-                        // Activate Level-1 application
                         $('a#fwk-tab-'+k1).tab('show');
+                        this.current().hide();
                         v1.show();
+                        this._apps.current = k1;
                         return;
                     }
                 } else if (_.isObject(v1)) {
@@ -289,9 +329,12 @@ function(Class,
                             var v2 = v1[k2];
                             if (v2 instanceof FwkApplication) {
                                 if (v2.fwk_app_name === cxt2) {
-                                    // Activate Level-2 application
+                                    $('a#fwk-tab-'+k1).tab('show');
                                     $('a#fwk-'+k1+'-'+k2+'-tab').tab('show');
+                                    this.current().hide();
                                     v2.show();
+                                    this._apps.current = k1;
+                                    this._apps[k1].current = k2;
                                     return;
                                 }
                             }
@@ -299,6 +342,14 @@ function(Class,
                     }
                 }
             }
+        };
+        
+        /**
+         * @returns the current application
+         */
+        this.current = function() {
+            var app = this._apps[this._apps.current];
+            return app instanceof FwkApplication ? app : app[app.current];
         };
 
         /**
@@ -352,13 +403,11 @@ function(Class,
             for (var k1 in this._apps) {
                 var v1 = this._apps[k1];
                 if (v1 instanceof FwkApplication) {
-                    // Level 1 application
                     v1.update();
                 } else if (_.isObject(v1)) {
                     for (var k2 in v1) {
                         var v2 = v1[k2];
                         if (v2 instanceof FwkApplication) {
-                            // Level 2 application
                             v2.update();
                         }
                     }

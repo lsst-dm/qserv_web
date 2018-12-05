@@ -24,6 +24,7 @@ require.config({
 require([
     'webfwk/CSSLoader',
     'webfwk/Fwk',
+    'webfwk/FwkApplicationControlApp',
     'webfwk/FwkTestApp',
     'webfwk/SimpleTableTestApp',
     'qserv/StatusReplicationLevel',
@@ -37,6 +38,7 @@ require([
 
 function(CSSLoader,
          Fwk,
+         FwkApplicationControlApp,
          FwkTestApp,
          SimpleTableTestApp,
          StatusReplicationLevel,
@@ -64,7 +66,7 @@ function(CSSLoader,
                 apps: [
                     new SimpleTableTestApp('SimpleTable'),
                     new FwkTestApp('SmartTabble'),
-                    new FwkTestApp('Application Control')
+                    new FwkApplicationControlApp('Application Control')
                 ]
             }
         ];
@@ -73,7 +75,8 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                Fwk.show('Status', 'Replication Level');
+                //Fwk.show('Status', 'Replication Level');
+                Fwk.show('Status', 'Workers');
             }
         );
     });

@@ -51,51 +51,51 @@ function(Class,
         this._init = function() {
             if (this._initialized) return;
             this._initialized = true;
-            var html =
-'<div class="row">' +
-'  <div class="col-md-4">' +
-'    <p>This dynamically updated table shows the status of <span style="font-weight:bold;">Worker</span>' +
-'      services in each category. A <span style="font-weight:bold;">Qserv</span> worker' +
-'      is supposed to be <span style="font-weight:bold;">OFF-LINE</span> if no response is' +
-'      received from the worker during the most recent <span style="font-weight:bold;">Health Monitoring probe</span>.' +
-'      In that case a non-zero value (the number of seconds) would be show in column' +
-'      <span style="font-weight:bold;">Last Response</span>.' +
-'      The state of the <span style="font-weight:bold;">Replication System</span>\'s workers' +
-'      is a bit more complex. Workers in this category can be in one of the following' +
-'      states: <span style="font-weight:bold;">ENABLED</span>,' +
-'      <span style="font-weight:bold;">READ-ONLY</span>, or <span style="font-weight:bold;">DISABLED</span>.' +
-'      Note that the <span style="font-weight:bold;">Last Response</span> tracking for this type of' +
-'      workers is done in the first two categories only.' +
-'      Regardless of a status (or a response delay) of a worker, a number shown in the' +
-'      <span style="font-weight:bold;">#replicas</span> column will indicate either the actual number' +
-'      of replicas on the corresponding node, or the latest recorded number obtained from the last recorded scan' +
-'      of the worker node made by the <span style="font-weight:bold;">Replication System</span> before' +
-'      the worker service became non-responsive.' +
-'    </p>' +
-'  </div>' +
-'  <div class="col-md-8">' +
-'    <table class="table table-sm table-hover table-bordered" id="fwk-status-workers">' +
-'      <caption style="caption-side:top; text-align:right;">' +
-'        Loading...' +
-'      </caption>' +
-'      <thead class="thead-light">' +
-'        <tr>' +
-'          <th rowspan="2" style="vertical-align:middle;">Worker</th>' +
-'          <th rowspan="2" style="vertical-align:middle; text-align:right;">#replicas</th>' +
-'          <th colspan="2" style="text-align:right">Qserv</th>' +
-'          <th colspan="2" style="text-align:right">Replication Sys.</th>' +
-'        </tr>' +
-'        <tr>' +
-'          <th style="text-align:right">Status</th>' +
-'          <th style="text-align:right">Last Response [s]</th>' +
-'          <th style="text-align:right">Status</th>' +
-'          <th style="text-align:right">Last Response [s]</th>' +
-'        </tr>' +
-'      </thead>' +
-'      <tbody></tbody>' +
-'    </table>' +
-'  </div>' +
-'</div>';
+            var html = `
+<div class="row">
+  <div class="col-md-4">
+    <p>This dynamically updated table shows the status of <span style="font-weight:bold;">Worker</span>
+      services in each category. A <span style="font-weight:bold;">Qserv</span> worker
+      is supposed to be <span style="font-weight:bold;">OFF-LINE</span> if no response is
+      received from the worker during the most recent <span style="font-weight:bold;">Health Monitoring probe</span>.
+      In that case a non-zero value (the number of seconds) would be show in column
+      <span style="font-weight:bold;">Last Response</span>.
+      The state of the <span style="font-weight:bold;">Replication System</span>\s workers
+      is a bit more complex. Workers in this category can be in one of the following
+      states: <span style="font-weight:bold;">ENABLED</span>,
+      <span style="font-weight:bold;">READ-ONLY</span>, or <span style="font-weight:bold;">DISABLED</span>.
+      Note that the <span style="font-weight:bold;">Last Response</span> tracking for this type of
+      workers is done in the first two categories only.
+      Regardless of a status (or a response delay) of a worker, a number shown in the
+      <span style="font-weight:bold;">#replicas</span> column will indicate either the actual number
+      of replicas on the corresponding node, or the latest recorded number obtained from the last recorded scan
+      of the worker node made by the <span style="font-weight:bold;">Replication System</span> before
+      the worker service became non-responsive.
+    </p>
+  </div>
+  <div class="col-md-8">
+    <table class="table table-sm table-hover table-bordered" id="fwk-status-workers">
+      <caption class="updating">
+        Loading...
+      </caption>
+      <thead class="thead-light">
+        <tr>
+          <th rowspan="2" style="vertical-align:middle;">Worker</th>
+          <th rowspan="2" style="vertical-align:middle; text-align:right;">#replicas</th>
+          <th colspan="2" style="text-align:right">Qserv</th>
+          <th colspan="2" style="text-align:right">Replication Sys.</th>
+        </tr>
+        <tr>
+          <th style="text-align:right">Status</th>
+          <th style="text-align:right">Last Response [s]</th>
+          <th style="text-align:right">Status</th>
+          <th style="text-align:right">Last Response [s]</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>`;
             this.fwk_app_container.html(html);
         };
         
@@ -113,7 +113,7 @@ function(Class,
             if (this._loading) return;
             this._loading = true;
 
-            this._table().children('caption').html('Updating...');
+            this._table().children('caption').addClass('updating');
             Fwk.web_service_GET(
                 "/replication/v1/worker",
                 {},
@@ -145,22 +145,24 @@ function(Class,
                         } else {
                             replicationStatus = 'DISABLED';
                         }
-                        html +=
-'<tr>' +
-'  <td>'                                                           + workerInfo.worker                    + '</td>' +
-'  <td style="text-align:right"><pre>'                             + workerInfo.replication.num_replicas  + '</pre></td>' +
-'  <td style="text-align:right" ' + qservCssClass       + '>'      + qservStatus                          + '</td>' +
-'  <td style="text-align:right" ' + qservCssClass       + '><pre>' + workerInfo.qserv.probe_delay_s       + '</pre></td>' +
-'  <td style="text-align:right" ' + replicationCssClass + '>'      + replicationStatus                    + '</td>' +
-'  <td style="text-align:right" ' + replicationCssClass + '><pre>' + workerInfo.replication.probe_delay_s + '</pre></td>' +
-'</tr>';
+                        html += `
+<tr>
+  <td>`                                                           + workerInfo.worker                    + `</td>
+  <td style="text-align:right"><pre>`                             + workerInfo.replication.num_replicas  + `</pre></td>
+  <td style="text-align:right" ` + qservCssClass       + `>`      + qservStatus                          + `</td>
+  <td style="text-align:right" ` + qservCssClass       + `><pre>` + workerInfo.qserv.probe_delay_s       + `</pre></td>
+  <td style="text-align:right" ` + replicationCssClass + `>`      + replicationStatus                    + `</td>
+  <td style="text-align:right" ` + replicationCssClass + `><pre>` + workerInfo.replication.probe_delay_s + `</pre></td>
+</tr>`;
                     }
                     _that._table().children('tbody').html(html);
                     Fwk.setLastUpdate(_that._table().children('caption'));
+                    _that._table().children('caption').removeClass('updating');
                     _that._loading = false;
                 },
                 function(msg) {
                     Fwk.report_error(msg);
+                    _that._table().children('caption').removeClass('updating');
                     _that._loading = false;
                 }
             );

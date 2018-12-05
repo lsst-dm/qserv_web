@@ -39,10 +39,10 @@
         </df>
       </df>
       <df name="www">
-        <df name="js">
-        </df>
         <df name="qserv">
           <df name="css">
+          </df>
+          <df name="html">
           </df>
           <df name="js">
           </df>
@@ -59,20 +59,22 @@
     </df>
     <itemPath>www/webfwk/css/Fwk.css</itemPath>
     <itemPath>www/webfwk/js/Fwk.js</itemPath>
-    <itemPath>www/webfwk/css/SimpleTableTest.css</itemPath>
-    <itemPath>www/webfwk/js/SimpleTableTest.js</itemPath>
-    <itemPath>www/webfwk/css/StatusReplicationLevel.css</itemPath>
-    <itemPath>www/webfwk/js/StatusReplicationLevel.js</itemPath>
-    <itemPath>www/webfwk/css/StatusWorkers.css</itemPath>
-    <itemPath>www/webfwk/js/StatusWorkers.js</itemPath>
-    <itemPath>www/webfwk/css/TestApp.css</itemPath>
-    <itemPath>www/webfwk/js/TestApp.js</itemPath>
+    <itemPath>www/webfwk/css/FwkApplicationControlApp.css</itemPath>
+    <itemPath>www/webfwk/css/FwkTestApp.css</itemPath>
+    <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
+    <itemPath>www/qserv/css/QservPDAC.css</itemPath>
+    <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
+    <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
+    <itemPath>www/qserv/css/StatusReplicationLevel.css</itemPath>
+    <itemPath>www/qserv/html/StatusReplicationLevel.html</itemPath>
+    <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
+    <itemPath>www/qserv/css/StatusWorkers.css</itemPath>
+    <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
     <itemPath>www/main.js</itemPath>
     <itemPath>www/webfwk/ws/table_data.json</itemPath>
-    <itemPath>www/webfwk/css/test_fwk.css</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
   </logicalFolder>

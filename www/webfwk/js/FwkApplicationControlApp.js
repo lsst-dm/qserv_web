@@ -11,9 +11,9 @@ function(Class,
     // This is a typical patern - complement each application with
     // the application-speciic CSS. The CSS is supposed to cover artifacts
     // within the application's container.
-    CSSLoader.load('webfwk/css/FwkTestApp.css');
+    CSSLoader.load('webfwk/css/FwkApplicationControlApp.css');
 
-    function FwkTestApp(name) {
+    function FwkApplicationControlApp(name) {
 
         // This is defined to allow accessing the object's context
         // from the lambda functions.
@@ -61,13 +61,13 @@ function(Class,
                 if (now_sec - this._prev_update_sec > this._update_ival_sec) {
                     this._prev_update_sec = now_sec;
                     this._init();
-                    this._load();
                 }
             }
         };
 
         // Page initialization happesn only once
 
+        this._appPaths = null;
         this._initialized = false;
         this._init = function() {
             if (this._initialized) return;
@@ -76,23 +76,31 @@ function(Class,
             // Note that the application's container (this.fwk_app_container) object (JQuery) comes
             // from the base class
             var html = `
-<p>This is a placeholder for application <span class="fwk-test-app-name">`+this.fwk_app_name+`</span></p>`;
+<p>Buttons shown on this page demonstrate the Framework's capability of
+  switching between applications.
+<p>`;
+            this._appPaths = Fwk.appPaths();
+            for (var i in this._appPaths) {
+                var path = this._appPaths[i];
+                var label = path[0] + (_.isUndefined(path[1]) ? '' : '&nbsp;/&nbsp;' + path[1]);
+                html += `
+<div class="fwk-uitests-appcontrol">
+  <button type="button" class="btn btn-secondary btn-sm" id="`+i+`">`+label+`</button>
+</div>`;
+            }
             this.fwk_app_container.html(html);
-        };
-
-        /**
-         * Nothing really gets loaded here. The method demoes an option for periodic
-         * updates of the application's area.
-         */
-        this._load = function() {
-            console.log('load: ' + this.fwk_app_name);
+            this.fwk_app_container.find('button').on('click', function(e) {
+                var i = $(this).attr('id');
+                var path = _that._appPaths[i];
+                Fwk.show(path[0], path[1]);
+            });
         };
     }
     
     // Finally, make this class a subclass of FwkApplication
-    Class.define_class(FwkTestApp, FwkApplication, {}, {});
+    Class.define_class(FwkApplicationControlApp, FwkApplication, {}, {});
 
     // Export the new class to clients via RequireJS
-    return FwkTestApp;
+    return FwkApplicationControlApp;
 });
 

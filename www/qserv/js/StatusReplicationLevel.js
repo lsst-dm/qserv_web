@@ -51,74 +51,91 @@ function(Class,
         this._init = function() {
             if (this._initialized) return;
             this._initialized = true;
-            var html =
-'<div class="row">' +
-'  <div class="col-md-4">' +
-'    <p>This dynamically updated table shows the <span style="font-weight:bold;">Act</span>ual replication' +
-'      levels for chunks across all known <span style="font-weight:bold;">Database</span>s.' +
-'      These levels may also be below or above the <span style="font-weight:bold;">Req</span>uired' +
-'      level which is set for each database <span style="font-weight:bold;">Family</span> in' +
-'      a configuration of the system. The levels may change for some chunks depending on' +
-'      a number of worker nodes which are <span style="font-weight:bold;">On-line</span> or' +
-'      <span style="font-weight:bold;">Inactive</span> (not responding) at a time when this' +
-'      table gets updated.' +
-'    </p>' +
-'    <p>Numbers under the' +
-'      <span style="font-weight:bold;">&plus;&nbsp;Inactive</span> columns' +
-'      represent a speculative scenario of <span style="font-style:italic;">what the' +
-'      replication level would be if</span> those nodes would also be' +
-'      <span style="font-weight:bold;">On-line</span> based on the last successful' +
-'      replica disposition scan of those nodes.' +
-'    </p>' +
-'    <p><span style="font-weight:bold;">HINT:</span> there seems to be a significant' +
-'      redundancy in the <span style="font-weight:bold;">Act</span>ual number of' +
-'      replicas well above the minimally <span style="font-weight:bold;">Req</span>uired' +
-'      level. Consider running the replica <span style="font-weight:bold;">Purge</span>' +
-'      tool.' +
-'    </p>' +
-'    <p><span style="font-weight:bold;">TODO:</span></p>' +
-'    <ul>' +
-'      <li>add a hyperlink to the Configuration section within this application</li>' +
-'      <li>add a hyperlink to the Workers tab to show a status of he workers</li>' +
-'      <li>add a hyperlink the replica <span style="font-weight:bold;">Purge</span> tool</li>' +
-'    </ul>' +
-'  </div>' +
-'  <div class="col-md-8">' +
-'    <table class="table table-sm table-hover table-bordered" id="fwk-status-level">' +
-'      <caption style="caption-side:top; text-align:right; padding-top:0;">' +
-'        Loading...' +
-'      </caption>' +
-'      <thead class="thead-light">' +
-'        <tr>' +
-'          <th rowspan="3" style="vertical-align:middle">Family</th>' +
-'          <th rowspan="3" style="vertical-align:middle">Req.</th>' +
-'          <th rowspan="3" style="vertical-align:middle">Database</th>' +
-'          <th rowspan="3" style="vertical-align:middle; text-align:right; border-right-color:#A9A9A9">Act.</th>' +
-'          <th colspan="4" style="text-align:right; border-right-color:#A9A9A9">Qserv</th>' +
-'          <th colspan="4" style="text-align:right">Replication Sys.</th>' +
-'        </tr>' +
-'          <th colspan="2" style="text-align:right">On-line</th>' +
-'          <th colspan="2" style="text-align:right; border-right-color:#A9A9A9">&plus;&nbsp;Inactive</th>' +
-'          <th colspan="2" style="text-align:right">On-line</th>' +
-'          <th colspan="2" style="text-align:right">&plus;&nbsp;Inactive</th>' +
-'        </tr>' +
-'        <tr>' +
-'          <th style="text-align:right">#chunks</th>' +
-'          <th style="text-align:right">%</th>' +
-'          <th style="text-align:right">#chunks</th>' +
-'          <th style="text-align:right; border-right-color:#A9A9A9">%</th>' +
-'          <th style="text-align:right">#chunks</th>' +
-'          <th style="text-align:right">%</th>' +
-'          <th style="text-align:right">#chunks</th>' +
-'          <th style="text-align:right">%</th>' +
-'        </tr>' +
-'      </thead>' +
-'      <tbody>' +
-'      </tbody>' +
-'    </table>' +
-'  </div>' +
-'</div>';
-            this.fwk_app_container.html(html);
+            var html = `
+<div class="row">
+  <div class="col-md-4">
+    <p>This dynamically updated table shows the <span style="font-weight:bold;">Act</span>ual replication
+      levels for chunks across all known <span style="font-weight:bold;">Database</span>s.
+      These levels may also be below or above the <span style="font-weight:bold;">Req</span>uired
+      level which is set for each database <span style="font-weight:bold;">Family</span> in
+      a configuration of the system. The levels may change for some chunks depending on
+      a number of worker nodes which are <span style="font-weight:bold;">On-line</span> or
+      <span style="font-weight:bold;">Inactive</span> (not responding) at a time when this
+      table gets updated.
+    </p>
+    <p>Numbers under the
+      <span style="font-weight:bold;">&plus;&nbsp;Inactive</span> columns
+      represent a speculative scenario of <span style="font-style:italic;">what the
+      replication level would be if</span> those nodes would also be
+      <span style="font-weight:bold;">On-line</span> based on the last successful
+      replica disposition scan of those nodes.
+    </p>
+    <p><span style="font-weight:bold;">HINT:</span> there seems to be a significant
+      redundancy in the <span style="font-weight:bold;">Act</span>ual number of
+      replicas well above the minimally <span style="font-weight:bold;">Req</span>uired
+      level. Consider running the replica <span style="font-weight:bold;">Purge</span>
+      tool.
+    </p>
+    <p><span style="font-weight:bold;">TODO:</span></p>
+    <ul>
+      <li>add a hyperlink to the Configuration section within this application</li>
+      <li>add a hyperlink to the Workers tab to show a status of he workers</li>
+      <li>add a hyperlink the replica <span style="font-weight:bold;">Purge</span> tool</li>
+    </ul>
+  </div>
+  <div class="col-md-8">
+    <table class="table table-sm table-hover table-bordered" id="fwk-status-level">
+      <caption class="updating">
+        Loading...
+      </caption>
+      <thead class="thead-light">
+        <tr>
+          <th rowspan="3" style="vertical-align:middle">Family</th>
+          <th rowspan="3" style="vertical-align:middle">Req.</th>
+          <th rowspan="3" style="vertical-align:middle">Database</th>
+          <th rowspan="3" style="vertical-align:middle; text-align:right; border-right-color:#A9A9A9">Act.</th>
+          <th colspan="4" style="text-align:right; border-right-color:#A9A9A9">Qserv</th>
+          <th colspan="4" style="text-align:right">Replication Sys.</th>
+        </tr>
+          <th colspan="2" style="text-align:right">On-line</th>
+          <th colspan="2" style="text-align:right; border-right-color:#A9A9A9">&plus;&nbsp;Inactive</th>
+          <th colspan="2" style="text-align:right">On-line</th>
+          <th colspan="2" style="text-align:right">&plus;&nbsp;Inactive</th>
+        </tr>
+        <tr>
+          <th style="text-align:right">#chunks</th>
+          <th style="text-align:right">%</th>
+          <th style="text-align:right">#chunks</th>
+          <th style="text-align:right; border-right-color:#A9A9A9">%</th>
+          <th style="text-align:right">#chunks</th>
+          <th style="text-align:right">%</th>
+          <th style="text-align:right">#chunks</th>
+          <th style="text-align:right">%</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</div>`;
+             this.fwk_app_container.html(html);
+            // Apparently this metghod is not recommened by Google Chrome's developers.
+            // Here is the message reported to the browser's console:
+            // 
+            // '[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated
+            //  because of its detrimental effects to the end user's experience.'
+            //
+            // Consider an option of the deffered initialization of the Fwk application
+            // modules.
+            /*
+            $.ajax({
+                url: 'qserv/html/StatusReplicationLevel.html',
+                success: function(html) {
+                    _that.fwk_app_container.html(html);
+                },
+                async: false
+            });
+            */
         };
         
         this._table_obj = null;
@@ -142,7 +159,7 @@ function(Class,
             if (this._loading) return;
             this._loading = true;
 
-            this._table().children('caption').html('Updating...');
+            this._table().children('caption').addClass('updating');
 
             Fwk.web_service_GET(
                 "/replication/v1/level",
@@ -187,37 +204,39 @@ function(Class,
                                 else if (level == familyInfo.level) cssClass = 'class="table-success"';
                                 else if (level <  familyInfo.level) cssClass = 'class="table-warning"';
 
-                                databaseHtml =
-'<tr ' + cssClass + '> ' +
-'  <th style="text-align:center; border-right-color:#A9A9A9" scope="row"><pre>' + level + '</pre></th>' +
-'  <td style="text-align:right"><pre>'                             + chunkNum2str(levelInfo.qserv.online.num_chunks)       + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + percent2str( levelInfo.qserv.online.percent)          + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + chunkNum2str(levelInfo.qserv.all.num_chunks)          + '</pre></td>' +
-'  <td style="text-align:right; border-right-color:#A9A9A9"><pre>' + percent2str( levelInfo.qserv.all.percent)             + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + chunkNum2str(levelInfo.replication.online.num_chunks) + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + percent2str( levelInfo.replication.online.percent)    + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + chunkNum2str(levelInfo.replication.all.num_chunks)    + '</pre></td>' +
-'  <td style="text-align:right"><pre>'                             + percent2str( levelInfo.replication.all.percent)       + '</pre></td>' +
-'</tr>' + databaseHtml;
+                                databaseHtml = `
+<tr `+cssClass+`>
+  <th style="text-align:center; border-right-color:#A9A9A9" scope="row"><pre>`+level+`</pre></th>
+  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.qserv.online.num_chunks)       + `</pre></td>
+  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.qserv.online.percent)          + `</pre></td>
+  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.qserv.all.num_chunks)          + `</pre></td>
+  <td style="text-align:right; border-right-color:#A9A9A9"><pre>` + percent2str( levelInfo.qserv.all.percent)             + `</pre></td>
+  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.replication.online.num_chunks) + `</pre></td>
+  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.replication.online.percent)    + `</pre></td>
+  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.replication.all.num_chunks)    + `</pre></td>
+  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.replication.all.percent)       + `</pre></td>
+</tr>`+databaseHtml;
                             }
-                            familyHtml +=
-'<tr>' +
-'  <td rowspan="' + databaseRowSpan + '" style="vertical-align:middle">' + database + '</td>' +
-'</tr>' + databaseHtml;
+                            familyHtml += `
+<tr>
+  <td rowspan="`+databaseRowSpan+`" style="vertical-align:middle">`+database+`</td>
+</tr>`+databaseHtml;
                         }
-                        html +=
-'<tr>' +
-'  <td rowspan="' + familyRowSpan + '" style="vertical-align:middle">' + family + '</td>' +
-'  <th rowspan="' + familyRowSpan + '" style="vertical-align:middle; text-align:center;" scope="row"><pre>' + familyInfo.level + '</pre></th>' +
-'</tr>';
+                        html += `
+<tr>
+  <td rowspan="`+familyRowSpan+`" style="vertical-align:middle">`+family+`</td>
+  <th rowspan="`+familyRowSpan+`" style="vertical-align:middle; text-align:center;" scope="row"><pre>`+familyInfo.level+`</pre></th>
+</tr>`;
                         html += familyHtml;
                     }
                     _that._table().children('tbody').html(html);
                     Fwk.setLastUpdate(_that._table().children('caption'));
+                    _that._table().children('caption').removeClass('updating');
                     _that._loading = false;
                 },
                 function(msg) {
                     Fwk.report_error(msg);
+                    _that._table().children('caption').removeClass('updating');
                     _that._loading = false;
                 }
             );
