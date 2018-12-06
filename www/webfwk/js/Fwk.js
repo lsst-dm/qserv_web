@@ -367,7 +367,7 @@ function(Class,
          *
          * @param message  a message to be reported
          */
-        function report_error(message) {
+        this.report_error = function(message) {
             console.log(message);
             alert(message);
         }
@@ -387,7 +387,7 @@ function(Class,
             'JSON').fail(function() {
                 var message = 'Web service request to '+url+' failed because of:' + jqXHR.statusText;
                 if (on_failure) on_failure(message);
-                else            report_error(message);
+                else            this.report_error(message);
             });
         };
 
