@@ -14,9 +14,11 @@
     <itemPath>www/webfwk/css/FwkApplicationControlApp.css</itemPath>
     <itemPath>www/webfwk/css/FwkTestApp.css</itemPath>
     <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
+    <itemPath>www/qserv/css/HeatMap.css</itemPath>
     <itemPath>www/qserv/css/QservPDAC.css</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
     <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
+    <itemPath>www/qserv/js/StatusHeatMap.js</itemPath>
     <itemPath>www/qserv/css/StatusReplicationLevel.css</itemPath>
     <itemPath>www/qserv/html/StatusReplicationLevel.html</itemPath>
     <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
@@ -80,6 +82,8 @@
       </item>
       <item path="www/main.js" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="www/qserv/css/HeatMap.css" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/qserv/css/QservPDAC.css" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/css/StatusReplicationLevel.css"
@@ -93,6 +97,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="www/qserv/js/StatusHeatMap.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/js/StatusReplicationLevel.js"
             ex="false"

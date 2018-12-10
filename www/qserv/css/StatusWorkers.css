@@ -10,7 +10,6 @@ table#fwk-status-workers caption {
     text-align:     right;
     padding-top:    0;
 }
-
 table#fwk-status-workers caption.updating {
     background-color: #ffeeba;
 }
