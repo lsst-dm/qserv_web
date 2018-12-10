@@ -27,6 +27,7 @@ require([
     'webfwk/FwkApplicationControlApp',
     'webfwk/FwkTestApp',
     'webfwk/SimpleTableTestApp',
+    `qserv/StatusHeatMap`,
     'qserv/StatusReplicationLevel',
     'qserv/StatusWorkers',
 
@@ -41,6 +42,7 @@ function(CSSLoader,
          FwkApplicationControlApp,
          FwkTestApp,
          SimpleTableTestApp,
+         StatusHeatMap,
          StatusReplicationLevel,
          StatusWorkers) {
 
@@ -55,7 +57,7 @@ function(CSSLoader,
                     new StatusReplicationLevel('Replication Level'),
                     new StatusWorkers('Workers'),
                     new FwkTestApp('User Queries'),
-                    new FwkTestApp('Heat Map')
+                    new StatusHeatMap('Heat Map')
                 ]
             },
 
@@ -76,7 +78,7 @@ function(CSSLoader,
             function() {
                 console.log('Fwk.on_init');
                 //Fwk.show('Status', 'Replication Level');
-                Fwk.show('Status', 'Workers');
+                Fwk.show('Status', 'Heat Map');
             }
         );
     });
