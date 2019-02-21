@@ -1,11 +1,13 @@
 define([
     'webfwk/Class',
     'webfwk/CSSLoader',
+    'webfwk/Fwk',
     'webfwk/FwkApplication',
     'underscore'],
 
 function(Class,
          CSSLoader,
+         Fwk,
          FwkApplication) {
 
     // This is a typical patern - complement each application with
@@ -13,84 +15,83 @@ function(Class,
     // within the application's container.
     CSSLoader.load('webfwk/css/FwkTestApp.css');
 
-    function FwkTestApp(name) {
+    class FwkTestApp extends FwkApplication {
 
-        // This is defined to allow accessing the object's context
-        // from the lambda functions.
-        var _that = this;
+        /**
+         * @returns the default update interval for the page
+         */ 
+        static update_ival_sec() { return 1; }
 
-        // Allways call the base class's constructor
-        FwkApplication.call(this, name);
+        constructor(name) {
+            super(name);
+        }
 
         /**
          * Override event handler defined in the base class
          *
          * @see FwkApplication.fwk_app_on_show
          */
-        this.fwk_app_on_show = function() {
+        fwk_app_on_show() {
 
             // Note that the application name (this.fwk_app_name) comes from the base class
             console.log('show: ' + this.fwk_app_name);
 
             this.fwk_app_on_update();
-        };
+        }
 
         /**
          * Override event handler defined in the base class
          *
          * @see FwkApplication.fwk_app_on_hide
          */
-        this.fwk_app_on_hide = function() {
+        fwk_app_on_hide() {
             console.log('hide: ' + this.fwk_app_name);
-        };
-
-        // Automatically refresh the page at specified interval only
-        this._update_ival_sec = 10;
-        this._prev_update_sec = 0;
+        }
 
         /**
          * Override event handler defined in the base class
          *
          * @see FwkApplication.fwk_app_on_update
          */
-        this.fwk_app_on_update = function() {
-
-            // Note that the application's state (this.fwk_app_visible) comes from the base class
+        fwk_app_on_update() {
             if (this.fwk_app_visible) {
-                var now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > this._update_ival_sec) {
+                if (this._prev_update_sec === undefined) {
+                    this._prev_update_sec = 0;
+                }
+                let now_sec = Fwk.now().sec;
+                if (now_sec - this._prev_update_sec > FwkTestApp.update_ival_sec()) {
                     this._prev_update_sec = now_sec;
                     this._init();
                     this._load();
                 }
             }
-        };
+        }
 
-        // Page initialization happesn only once
-
-        this._initialized = false;
-        this._init = function() {
+        /**
+         * The first time initialization of the page's layout
+         */
+        _init() {
+            if (this._initialized === undefined) {
+                this._initialized = false;
+            }
             if (this._initialized) return;
             this._initialized = true;
 
             // Note that the application's container (this.fwk_app_container) object (JQuery) comes
             // from the base class
-            var html = `
+            let html = `
 <p>This is a placeholder for application <span class="fwk-test-app-name">`+this.fwk_app_name+`</span></p>`;
             this.fwk_app_container.html(html);
-        };
+        }
 
         /**
          * Nothing really gets loaded here. The method demoes an option for periodic
          * updates of the application's area.
          */
-        this._load = function() {
+        _load() {
             console.log('load: ' + this.fwk_app_name);
-        };
+        }
     }
-    
-    // Finally, make this class a subclass of FwkApplication
-    Class.define_class(FwkTestApp, FwkApplication, {}, {});
 
     // Export the new class to clients via RequireJS
     return FwkTestApp;

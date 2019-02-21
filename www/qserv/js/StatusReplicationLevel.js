@@ -1,57 +1,77 @@
 define([
     'webfwk/Class',
     'webfwk/CSSLoader',
+    'webfwk/Fwk',
     'webfwk/FwkApplication',
     'underscore'],
 
 function(Class,
          CSSLoader,
+         Fwk,
          FwkApplication) {
 
     CSSLoader.load('qserv/css/StatusReplicationLevel.css');
 
-    function StatusReplicationLevel(name) {
+    class StatusReplicationLevel extends FwkApplication {
+        
+        /**
+         * @returns the default update interval for the page
+         */ 
+        static update_ival_sec() { return 10; }
 
-        var _that = this;
-
-        // Allways call the base class's constructor
-        FwkApplication.call(this, name);
+        constructor(name) {
+            super(name);
+        }
 
         /**
          * Override event handler defined in the base class
          *
          * @see FwkApplication.fwk_app_on_show
          */
-        this.fwk_app_on_show = function() {
+        fwk_app_on_show() {
             console.log('show: ' + this.fwk_app_name);
             this.fwk_app_on_update();
-        };
+        }
 
-        this.fwk_app_on_hide = function() {
+        /**
+         * Override event handler defined in the base class
+         *
+         * @see FwkApplication.fwk_app_on_hide
+         */
+        fwk_app_on_hide() {
             console.log('hide: ' + this.fwk_app_name);
-        };
+        }
 
-        // Automatically refresh the page at specified interval only
-
-        this._update_ival_sec = 10;
-        this._prev_update_sec = 0;
-
-        this.fwk_app_on_update = function() {
+        /**
+         * Override event handler defined in the base class
+         *
+         * @see FwkApplication.fwk_app_on_update
+         */
+        fwk_app_on_update() {
             if (this.fwk_app_visible) {
-                var now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > this._update_ival_sec) {
+                if (this._prev_update_sec === undefined) {
+                    this._prev_update_sec = 0;
+                }
+                let now_sec = Fwk.now().sec;
+                if (now_sec - this._prev_update_sec > StatusReplicationLevel.update_ival_sec()) {
                     this._prev_update_sec = now_sec;
                     this._init();
                     this._load();
                 }
             }
-        };
+        }
 
-        this._initialized = false;
-        this._init = function() {
+        /**
+         * The first time initialization of the page's layout
+         */
+        _init() {
+            if (this._initialized === undefined) {
+                this._initialized = false;
+            }
             if (this._initialized) return;
             this._initialized = true;
-            var html = `
+
+            let html = `
 <div class="row">
   <div class="col-md-4">
     <p>This dynamically updated table shows the <span style="font-weight:bold;">Act</span>ual replication
@@ -119,43 +139,33 @@ function(Class,
   </div>
 </div>`;
              this.fwk_app_container.html(html);
-            // Apparently this metghod is not recommened by Google Chrome's developers.
-            // Here is the message reported to the browser's console:
-            // 
-            // '[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated
-            //  because of its detrimental effects to the end user's experience.'
-            //
-            // Consider an option of the deffered initialization of the Fwk application
-            // modules.
-            /*
-            $.ajax({
-                url: 'qserv/html/StatusReplicationLevel.html',
-                success: function(html) {
-                    _that.fwk_app_container.html(html);
-                },
-                async: false
-            });
-            */
-        };
-        
-        this._table_obj = null;
-        this._table = function() {
-            if (!this._table_obj) {
+        }
+
+        /**
+         * 
+         * @returns JQuery table object
+         */
+        _table() {
+            if (this._table_obj === undefined) {
                 this._table_obj = this.fwk_app_container.find('table#fwk-status-level');
             }
             return this._table_obj;
-        };
+        }
 
-        function chunkNum2str(num) {
+        static chunkNum2str(num) {
             return 0 == num ? '&nbsp;' : '' + num;
         }
-        function percent2str(percent) {
+        static percent2str(percent) {
             return 0 == percent ? '&nbsp;' : '' + percent.toFixed(2);
         }
 
-        this._loading = false;
-        this._load = function() {
+        /**
+         * Load data from a web servie then render it to the application's
+         * page.
+         */
+        _load() {
 
+            if (this._loading === undefined) this._loading = false;
             if (this._loading) return;
             this._loading = true;
 
@@ -164,28 +174,27 @@ function(Class,
             Fwk.web_service_GET(
                 "/replication/v1/level",
                 {},
-                function(data) {
-                    var html = "";
-                    for (var family in data.families) {
-                        var familyInfo = data.families[family];
-                        var familyRowSpan = 1;
-                        var familyHtml = '';
-                        for (var database in familyInfo.databases) {
-                            var databaseInfo = familyInfo.databases[database];
-                            var databaseRowSpan = 1;
+                (data) => {
+                    let html = "";
+                    for (let family in data.families) {
+                        let familyInfo = data.families[family];
+                        let familyRowSpan = 1;
+                        let familyHtml = '';
+                        for (let database in familyInfo.databases) {
+                            let databaseInfo = familyInfo.databases[database];
+                            let databaseRowSpan = 1;
                             familyRowSpan += databaseRowSpan;
 
                             // Rows for levels are going to be prepended to show then in the
                             // reverse (descending) order.
-                            var databaseHtml = '';
+                            let databaseHtml = '';
 
-                            for (var level in databaseInfo.levels) {
-
-                                var levelInfo = databaseInfo.levels[level];
+                            for (let level in databaseInfo.levels) {
+                                let levelInfo = databaseInfo.levels[level];
 
                                 // Skip empty and insignificant levels
                                 if (level < familyInfo.level) {
-                                    var totalChunks =
+                                    let totalChunks =
                                         levelInfo.qserv.online.num_chunks +
                                         levelInfo.qserv.all.num_chunks +
                                         levelInfo.replication.online.num_chunks +
@@ -199,27 +208,27 @@ function(Class,
 
                                 // Apply optional color schemes to rows depending on a value
                                 // of the replication level relative to the required one.
-                                var cssClass = '';
+                                let cssClass = '';
                                 if      (level == 0)                cssClass = 'class="table-danger"';
                                 else if (level == familyInfo.level) cssClass = 'class="table-success"';
                                 else if (level <  familyInfo.level) cssClass = 'class="table-warning"';
 
                                 databaseHtml = `
-<tr `+cssClass+`>
-  <th style="text-align:center; border-right-color:#A9A9A9" scope="row"><pre>`+level+`</pre></th>
-  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.qserv.online.num_chunks)       + `</pre></td>
-  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.qserv.online.percent)          + `</pre></td>
-  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.qserv.all.num_chunks)          + `</pre></td>
-  <td style="text-align:right; border-right-color:#A9A9A9"><pre>` + percent2str( levelInfo.qserv.all.percent)             + `</pre></td>
-  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.replication.online.num_chunks) + `</pre></td>
-  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.replication.online.percent)    + `</pre></td>
-  <td style="text-align:right"><pre>`                             + chunkNum2str(levelInfo.replication.all.num_chunks)    + `</pre></td>
-  <td style="text-align:right"><pre>`                             + percent2str( levelInfo.replication.all.percent)       + `</pre></td>
+<tr ${cssClass}>
+  <th style="text-align:center; border-right-color:#A9A9A9" scope="row"><pre>${level}</pre></th>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.chunkNum2str(levelInfo.qserv.online.num_chunks)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.percent2str( levelInfo.qserv.online.percent)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.chunkNum2str(levelInfo.qserv.all.num_chunks)}</pre></td>
+  <td style="text-align:right; border-right-color:#A9A9A9"><pre>${StatusReplicationLevel.percent2str( levelInfo.qserv.all.percent)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.chunkNum2str(levelInfo.replication.online.num_chunks)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.percent2str( levelInfo.replication.online.percent)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.chunkNum2str(levelInfo.replication.all.num_chunks)}</pre></td>
+  <td style="text-align:right"><pre>${StatusReplicationLevel.percent2str( levelInfo.replication.all.percent)}</pre></td>
 </tr>`+databaseHtml;
                             }
                             familyHtml += `
 <tr>
-  <td rowspan="`+databaseRowSpan+`" style="vertical-align:middle">`+database+`</td>
+  <td rowspan="${databaseRowSpan}" style="vertical-align:middle">${database}</td>
 </tr>`+databaseHtml;
                         }
                         html += `
@@ -229,20 +238,18 @@ function(Class,
 </tr>`;
                         html += familyHtml;
                     }
-                    _that._table().children('tbody').html(html);
-                    Fwk.setLastUpdate(_that._table().children('caption'));
-                    _that._table().children('caption').removeClass('updating');
-                    _that._loading = false;
+                    this._table().children('tbody').html(html);
+                    Fwk.setLastUpdate(this._table().children('caption'));
+                    this._table().children('caption').removeClass('updating');
+                    this._loading = false;
                 },
-                function(msg) {
+                (msg) => {
                     Fwk.report_error(msg);
-                    _that._table().children('caption').removeClass('updating');
-                    _that._loading = false;
+                    this._table().children('caption').removeClass('updating');
+                    this._loading = false;
                 }
             );
-        };
+        }
     }
-    Class.define_class(StatusReplicationLevel, FwkApplication, {}, {});
-
     return StatusReplicationLevel;
 });

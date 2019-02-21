@@ -42,8 +42,6 @@
         <df name="qserv">
           <df name="css">
           </df>
-          <df name="html">
-          </df>
           <df name="js">
           </df>
         </df>
