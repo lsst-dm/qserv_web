@@ -1,12 +1,10 @@
 define([
-    'webfwk/Class',
     'webfwk/CSSLoader',
     'webfwk/Fwk',
     'webfwk/FwkApplication',
     'underscore'],
 
-function(Class,
-         CSSLoader,
+function(CSSLoader,
          Fwk,
          FwkApplication) {
 

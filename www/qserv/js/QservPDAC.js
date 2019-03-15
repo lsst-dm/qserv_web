@@ -30,6 +30,9 @@ require([
     `qserv/StatusHeatMap`,
     'qserv/StatusReplicationLevel',
     'qserv/StatusWorkers',
+    'qserv/ReplicationController',
+    'qserv/ReplicationTools',
+    'qserv/ReplicationConfig',
 
     // Make sure the core libraries are preloaded so that the applications
     // won't bother with loading them individually
@@ -44,7 +47,10 @@ function(CSSLoader,
          SimpleTableTestApp,
          StatusHeatMap,
          StatusReplicationLevel,
-         StatusWorkers) {
+         StatusWorkers,
+         ReplicationController,
+         ReplicationTools,
+         ReplicationConfig) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
     CSSLoader.load('qserv/css/QservPDAC.css');
@@ -60,8 +66,13 @@ function(CSSLoader,
                     new StatusHeatMap('Heat Map')
                 ]
             },
-
-            new FwkTestApp('Replication'),
+            {   name: 'Replication',
+                apps: [
+                    new ReplicationController('Controller'),
+                    new ReplicationTools('Tools'),
+                    new ReplicationConfig('Configuration')
+                ]
+            },
             new FwkTestApp('Ingest'),
 
             {   name: 'UI Tests',
@@ -77,8 +88,7 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                //Fwk.show('Status', 'Replication Level');
-                Fwk.show('Status', 'Heat Map');
+                Fwk.show('Replication', 'Controller');
             }
         );
     });

@@ -9,6 +9,10 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
+    <itemPath>www/qserv/css/ControllerOperations.css</itemPath>
+    <itemPath>www/qserv/js/ControllerOperations.js</itemPath>
+    <itemPath>www/qserv/css/ControllerStatus.css</itemPath>
+    <itemPath>www/qserv/js/ControllerStatus.js</itemPath>
     <itemPath>www/webfwk/css/Fwk.css</itemPath>
     <itemPath>www/webfwk/js/Fwk.js</itemPath>
     <itemPath>www/webfwk/css/FwkApplicationControlApp.css</itemPath>
@@ -16,6 +20,8 @@
     <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
     <itemPath>www/qserv/css/HeatMap.css</itemPath>
     <itemPath>www/qserv/css/QservPDAC.css</itemPath>
+    <itemPath>www/qserv/css/ReplicationConfig.css</itemPath>
+    <itemPath>www/qserv/js/ReplicationConfig.js</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
     <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
     <itemPath>www/qserv/js/StatusHeatMap.js</itemPath>
@@ -82,9 +88,21 @@
       </item>
       <item path="www/main.js" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="www/qserv/css/ControllerOperations.css"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="www/qserv/css/ControllerStatus.css" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/qserv/css/HeatMap.css" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/css/QservPDAC.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/qserv/css/ReplicationConfig.css"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="www/qserv/css/StatusReplicationLevel.css"
             ex="false"
@@ -97,6 +115,15 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="www/qserv/js/ControllerOperations.js"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="www/qserv/js/ControllerStatus.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/qserv/js/ReplicationConfig.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/js/StatusHeatMap.js" ex="false" tool="3" flavor2="0">
       </item>

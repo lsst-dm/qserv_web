@@ -55,6 +55,10 @@
         </df>
       </df>
     </df>
+    <itemPath>www/qserv/css/ControllerOperations.css</itemPath>
+    <itemPath>www/qserv/js/ControllerOperations.js</itemPath>
+    <itemPath>www/qserv/css/ControllerStatus.css</itemPath>
+    <itemPath>www/qserv/js/ControllerStatus.js</itemPath>
     <itemPath>www/webfwk/css/Fwk.css</itemPath>
     <itemPath>www/webfwk/js/Fwk.js</itemPath>
     <itemPath>www/webfwk/css/FwkApplicationControlApp.css</itemPath>
@@ -62,6 +66,8 @@
     <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
     <itemPath>www/qserv/css/HeatMap.css</itemPath>
     <itemPath>www/qserv/css/QservPDAC.css</itemPath>
+    <itemPath>www/qserv/css/ReplicationConfig.css</itemPath>
+    <itemPath>www/qserv/js/ReplicationConfig.js</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
     <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
     <itemPath>www/qserv/js/StatusHeatMap.js</itemPath>
