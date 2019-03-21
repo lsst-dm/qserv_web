@@ -69,6 +69,8 @@ function(CSSLoader,
             if (this._initialized) return;
             this._initialized = true;
 
+            this._prevTimestamp = 0;
+
             let html = `
 <div class="row">
   <div class="col">
@@ -85,8 +87,8 @@ function(CSSLoader,
   <div class="col">
     <h3>Event Log</h3>
     <div>
-      <button type="button" class="btn btn-primary btn-sm" id="fwk-controller-log-important"
-              data-toggle="button" aria-pressed="false" autocomplete="off">
+      <button type="button" class="btn btn-outline-primary btn-sm" id="fwk-controller-log-important"
+              data-toggle="button"  aria-pressed="false" autocomplete="off">
         Important Events Only
       </button>
       <button type="button" class="btn btn-primary btn-sm" id="fwk-controller-log-details"
@@ -115,12 +117,7 @@ function(CSSLoader,
             this.fwk_app_container.html(html);
 
             this._buttonImportant().click(() => {
-                if (this._importantEventsOnly()) {
-                    this._buttonImportant().html('Important Events Only');
-                } else {
-                    this._buttonImportant().html('Show All Events');
-                }
-                this._load();
+                this._displayLog();
             });
         }
         
@@ -198,6 +195,8 @@ function(CSSLoader,
             this._loading = true;
 
             this._tableStatus().children('caption').addClass('updating');
+
+            // Get info on the Master Repliction Controller
             Fwk.web_service_GET(
                 "/replication/v1/controller",
                 {},
@@ -205,67 +204,21 @@ function(CSSLoader,
                     for (let i in data.controllers) {
                         let info = data.controllers[i];
                         if (info.current) {
-                            let started = new Date(info.start_time);
-                            let html = `
-<tr>
-  <th style="text-align:left" scope="row">Status</th>
-  <td style="text-align:left">RUNNING</pre></td>
-</tr>
-<tr>
-  <th style="text-align:left" scope="row">id</th>
-  <td style="text-align:left"><pre>` + info.id + `</pre></td>
-</tr>
-<tr>
-  <th style="text-align:left" scope="row">Started</th>
-  <td style="text-align:left"><pre>` + started.toLocalTimeString() + `</pre></td>
-</tr>
-<tr>
-  <th style="text-align:left" scope="row">Host</th>
-  <td style="text-align:left"><pre>` + info.hostname + `</pre></td>
-</tr>
-<tr>
-  <th style="text-align:left" scope="row">PID</th>
-  <td style="text-align:left"><pre>` + info.pid + `</pre></td>
-</tr>`;
-                            this._tableStatus().children('tbody').html(html);
+                            this._displayStatus(info);
                             Fwk.setLastUpdate(this._tableStatus().children('caption'));
                             this._tableStatus().children('caption').removeClass('updating');
-                            
-                            // Laad the Controler log as well
 
+                            // Laad the Controler's log as well
                             Fwk.web_service_GET(
                                 "/replication/v1/controller/" + info.id,
-                                {"log": 1},
+                                {   "log": 1,
+                                    "log_from": this._prevTimestamp + 1     // 1ms later
+                                },
                                 (data) => {
-                                    let html = '';
-                                    for (let i in data.log) {
-                                        let event = data.log[i];
-                                        if (this._importantEventsOnly() && !this._isImportant(event)) continue;
-                                        let warningCssClass = this._isImportant(event) ? 'class="table-warning"' : '' ;
-                                        let timestamp = new Date(event.timestamp);
-                                        let rowspanAttr = event.kv_info.length === 0
-                                            ? '' : 'rowspan="' + (event.kv_info.length + 1) + '"';
-                                        html += `
-<tr>
-  <td ` + rowspanAttr + `><pre>` + timestamp.toLocalTimeString() + `</pre></td>
-  <td ` + rowspanAttr + `><pre>` + event.task      + `</pre></td>
-  <td ` + rowspanAttr + `><pre>` + event.operation + `</pre></td>
-  <td ` + rowspanAttr + `><pre>` + event.status    + `</pre></td>
-</tr>`;
-                                        if (event.kv_info.length !== 0) {
-                                            for (let j in event.kv_info) {
-                                                let kv = event.kv_info[j];
-                                                for (let k in kv) {
-                                                    html += `
-<tr ` + warningCssClass + `>
-  <th scope=row"><pre>` + k + `</pre></th>
-  <td>` + kv[k] + `</td>
-</tr>`;
-                                                }
-                                            }
-                                        }
+                                    if (data.log.length > 0) {
+                                        this._prevTimestamp = data.log[0].timestamp;
                                     }
-                                    this._tableLog().children('tbody').html(html);
+                                    this._displayLog(data.log);
                                 },
                                 (msg) => {
                                     Fwk.report_error(msg);
@@ -282,6 +235,72 @@ function(CSSLoader,
                     this._loading = false;
                 }
             );
+        }
+        
+        _displayStatus(info) {
+
+            if (info !== undefined) this._controllerInfo = info;
+            if (this._controllerInfo === undefined) return;
+
+            let started = new Date(this._controllerInfo.start_time);
+            let html = `
+<tr>
+  <th style="text-align:left" scope="row">Status</th>
+  <td style="text-align:left"><pre>RUNNING</pre></td>
+</tr>
+<tr>
+  <th style="text-align:left" scope="row">id</th>
+  <td style="text-align:left"><pre>` + this._controllerInfo.id + `</pre></td>
+</tr>
+<tr>
+  <th style="text-align:left" scope="row">Started</th>
+  <td style="text-align:left"><pre>` + started.toLocalTimeString() + `</pre></td>
+</tr>
+<tr>
+  <th style="text-align:left" scope="row">Host</th>
+  <td style="text-align:left"><pre>` + this._controllerInfo.hostname + `</pre></td>
+</tr>
+<tr>
+  <th style="text-align:left" scope="row">PID</th>
+  <td style="text-align:left"><pre>` + this._controllerInfo.pid + `</pre></td>
+</tr>`;
+            this._tableStatus().children('tbody').html(html);
+        }
+
+        _displayLog(log) {
+
+            if (log !== undefined) this._controllerLog = log;
+            if (this._controllerLog === undefined) return;
+
+            let html = '';
+            for (let i in this._controllerLog) {
+                let event = this._controllerLog[i];
+                if (this._importantEventsOnly() && !this._isImportant(event)) continue;
+                let warningCssClass = this._isImportant(event) ? 'class="table-warning"' : '' ;
+                let timestamp = new Date(event.timestamp);
+                let rowspanAttr = event.kv_info.length === 0
+                    ? '' : 'rowspan="' + (event.kv_info.length + 1) + '"';
+                html += `
+<tr>
+  <th ` + rowspanAttr + ` scope="row"><pre>` + timestamp.toLocalTimeString() + `</pre></th>
+  <td ` + rowspanAttr + `><pre>` + event.task      + `</pre></td>
+  <td ` + rowspanAttr + `><pre>` + event.operation + `</pre></td>
+  <td ` + rowspanAttr + `><pre>` + event.status    + `</pre></td>
+</tr>`;
+                if (event.kv_info.length !== 0) {
+                    for (let j in event.kv_info) {
+                        let kv = event.kv_info[j];
+                        for (let k in kv) {
+                            html += `
+<tr ` + warningCssClass + `>
+  <th scope=row"><pre>` + k + `</pre></th>
+  <td>` + kv[k] + `</td>
+</tr>`;
+                        }
+                    }
+                }
+            }
+            this._tableLog().children('tbody').html(html + this._tableLog().children('tbody').html());
         }
     }
     return ReplicationController;

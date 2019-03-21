@@ -170,6 +170,9 @@ function(CSSLoader,
                             if (workerInfo.replication.isReadOnly) replicationStatus += 'READ-ONLY';
                         } else {
                             replicationStatus = 'DISABLED';
+                            if (replicationCssClass === '') {
+                                replicationCssClass = 'class="table-secondary"';
+                            }
                         }
                         html += `
 <tr>

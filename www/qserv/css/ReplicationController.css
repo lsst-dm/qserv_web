@@ -18,9 +18,13 @@ table#fwk-controller-log pre {
     padding:    0;
     margin:     0;
 }
-table#fwk-controller-log th {
+table#fwk-controller-log thead th {
     vertical-align: middle;    
 }
-table#fwk-controller-log td {
+table#fwk-controller-log tbody th,
+table#fwk-controller-log tbody td {
     vertical-align: top;    
+}
+table#fwk-controller-log tbody th pre {
+    color: maroon;
 }

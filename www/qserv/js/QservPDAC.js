@@ -62,7 +62,7 @@ function(CSSLoader,
                 apps: [
                     new StatusReplicationLevel('Replication Level'),
                     new StatusWorkers('Workers'),
-                    new FwkTestApp('User Queries'),
+                    new FwkTestApp('User Queries Monitor'),
                     new StatusHeatMap('Heat Map')
                 ]
             },
@@ -74,7 +74,12 @@ function(CSSLoader,
                 ]
             },
             new FwkTestApp('Ingest'),
-
+            {   name: 'Tools',
+                apps: [
+                    new FwkTestApp('Query Qserv'),
+                    new FwkTestApp('Query Qserv Workers')
+                ]
+            },
             {   name: 'UI Tests',
                 apps: [
                     new SimpleTableTestApp('SimpleTable'),
@@ -88,7 +93,7 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                Fwk.show('Replication', 'Controller');
+                Fwk.show('Replication', 'Configuration');
             }
         );
     });
