@@ -1,26 +1,21 @@
 define([
-    'webfwk/Class',
     'webfwk/CSSLoader',
     'webfwk/Fwk',
     'webfwk/FwkApplication',
     'underscore'],
 
-function(Class,
-         CSSLoader,
+function(CSSLoader,
          Fwk,
          FwkApplication) {
 
-    // This is a typical patern - complement each application with
-    // the application-speciic CSS. The CSS is supposed to cover artifacts
-    // within the application's container.
-    CSSLoader.load('webfwk/css/FwkTestApp.css');
+    CSSLoader.load('qserv/css/ReplicationTools.css');
 
-    class FwkTestApp extends FwkApplication {
+    class ReplicationTools extends FwkApplication {
 
         /**
          * @returns the default update interval for the page
          */ 
-        static update_ival_sec() { return 1; }
+        static update_ival_sec() { return 10; }
 
         constructor(name) {
             super(name);
@@ -32,10 +27,7 @@ function(Class,
          * @see FwkApplication.fwk_app_on_show
          */
         fwk_app_on_show() {
-
-            // Note that the application name (this.fwk_app_name) comes from the base class
             console.log('show: ' + this.fwk_app_name);
-
             this.fwk_app_on_update();
         }
 
@@ -59,7 +51,7 @@ function(Class,
                     this._prev_update_sec = 0;
                 }
                 let now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > FwkTestApp.update_ival_sec()) {
+                if (now_sec - this._prev_update_sec > ReplicationTools.update_ival_sec()) {
                     this._prev_update_sec = now_sec;
                     this._init();
                     this._load();
@@ -77,23 +69,26 @@ function(Class,
             if (this._initialized) return;
             this._initialized = true;
 
-            // Note that the application's container (this.fwk_app_container) object (JQuery) comes
-            // from the base class
             let html = `
-<p>This is a placeholder for application <span class="fwk-test-app-name">`+this.fwk_app_name+`</span></p>`;
+<div class="row">
+  <b>NOT IMPLEMENTED</b>
+</div>`;
             this.fwk_app_container.html(html);
         }
+        
 
         /**
-         * Nothing really gets loaded here. The method demoes an option for periodic
-         * updates of the application's area.
+         * Load data from a web servie then render it to the application's
+         * page.
          */
         _load() {
-            console.log('load: ' + this.fwk_app_name);
+            if (this._loading === undefined) {
+                this._loading = false;
+            }
+            if (this._loading) return;
+            this._loading = true;
+            this._loading = false;
         }
     }
-
-    // Export the new class to clients via RequireJS
-    return FwkTestApp;
+    return ReplicationTools;
 });
-

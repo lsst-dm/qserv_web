@@ -1,57 +1,75 @@
 define([
-    'webfwk/Class',
     'webfwk/CSSLoader',
+    'webfwk/Fwk',
     'webfwk/FwkApplication',
     'underscore'],
 
-function(Class,
-         CSSLoader,
+function(CSSLoader,
+         Fwk,
          FwkApplication) {
 
     CSSLoader.load('qserv/css/StatusWorkers.css');
 
-    function StatusWorkers(name) {
+    class StatusWorkers extends FwkApplication {
 
-        var _that = this;
+        /**
+         * @returns the default update interval for the page
+         */ 
+        static update_ival_sec() { return 10; }
 
-        // Allways call the base class's constructor
-        FwkApplication.call(this, name);
+        constructor(name) {
+            super(name);
+        }
 
         /**
          * Override event handler defined in the base class
          *
          * @see FwkApplication.fwk_app_on_show
          */
-        this.fwk_app_on_show = function() {
+        fwk_app_on_show() {
             console.log('show: ' + this.fwk_app_name);
             this.fwk_app_on_update();
-        };
+        }
 
-        this.fwk_app_on_hide = function() {
+        /**
+         * Override event handler defined in the base class
+         *
+         * @see FwkApplication.fwk_app_on_hide
+         */
+        fwk_app_on_hide() {
             console.log('hide: ' + this.fwk_app_name);
-        };
+        }
 
-        // Automatically refresh the page at specified interval only
-
-        this._update_ival_sec = 10;
-        this._prev_update_sec = 0;
-
-        this.fwk_app_on_update = function() {
+        /**
+         * Override event handler defined in the base class
+         *
+         * @see FwkApplication.fwk_app_on_update
+         */
+        fwk_app_on_update() {
             if (this.fwk_app_visible) {
-                var now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > this._update_ival_sec) {
+                if (this._prev_update_sec === undefined) {
+                    this._prev_update_sec = 0;
+                }
+                let now_sec = Fwk.now().sec;
+                if (now_sec - this._prev_update_sec > StatusWorkers.update_ival_sec()) {
                     this._prev_update_sec = now_sec;
                     this._init();
                     this._load();
                 }
             }
-        };
+        }
 
-        this._initialized = false;
-        this._init = function() {
+        /**
+         * The first time initialization of the page's layout
+         */
+        _init() {
+            if (this._initialized === undefined) {
+                this._initialized = false;
+            }
             if (this._initialized) return;
             this._initialized = true;
-            var html = `
+
+            let html = `
 <div class="row">
   <div class="col-md-4">
     <p>This dynamically updated table shows the status of <span style="font-weight:bold;">Worker</span>
@@ -97,19 +115,27 @@ function(Class,
   </div>
 </div>`;
             this.fwk_app_container.html(html);
-        };
+        }
         
-        this._table_obj = null;
-        this._table = function() {
-            if (!this._table_obj) {
+        /**
+         * 
+         * @returns JQuery table object
+         */
+        _table() {
+            if (this._table_obj === undefined) {
                 this._table_obj = this.fwk_app_container.find('table#fwk-status-workers');
             }
             return this._table_obj;
-        };
+        }
 
-        this._loading = false;
-        this._load = function() {
-
+        /**
+         * Load data from a web servie then render it to the application's
+         * page.
+         */
+        _load() {
+            if (this._loading === undefined) {
+                this._loading = false;
+            }
             if (this._loading) return;
             this._loading = true;
 
@@ -117,13 +143,13 @@ function(Class,
             Fwk.web_service_GET(
                 "/replication/v1/worker",
                 {},
-                function(data) {
-                    var html = '';
-                    for (var i in data) {
-                        var workerInfo = data[i];
+                (data) => {
+                    let html = '';
+                    for (let i in data) {
+                        let workerInfo = data[i];
 
-                        var qservCssClass       = '';
-                        var replicationCssClass = '';
+                        let qservCssClass       = '';
+                        let replicationCssClass = '';
 
                         if (workerInfo.qserv.probe_delay_s != 0) {
                             qservCssClass       = 'class="table-warning"';
@@ -135,15 +161,18 @@ function(Class,
                             qservCssClass       = 'class="table-danger"';
                             replicationCssClass = 'class="table-danger"';
                         }
-                        var qservStatus = 'ON-LINE';
+                        let qservStatus = 'ON-LINE';
                         if (workerInfo.qserv.probe_delay_s != 0) {
                             qservStatus = 'OFF-LINE';
                         }
-                        var replicationStatus = 'ENABLED';
+                        let replicationStatus = 'ENABLED';
                         if (workerInfo.replication.isEnabled) {
                             if (workerInfo.replication.isReadOnly) replicationStatus += 'READ-ONLY';
                         } else {
                             replicationStatus = 'DISABLED';
+                            if (replicationCssClass === '') {
+                                replicationCssClass = 'class="table-secondary"';
+                            }
                         }
                         html += `
 <tr>
@@ -155,20 +184,18 @@ function(Class,
   <td style="text-align:right" ` + replicationCssClass + `><pre>` + workerInfo.replication.probe_delay_s + `</pre></td>
 </tr>`;
                     }
-                    _that._table().children('tbody').html(html);
-                    Fwk.setLastUpdate(_that._table().children('caption'));
-                    _that._table().children('caption').removeClass('updating');
-                    _that._loading = false;
+                    this._table().children('tbody').html(html);
+                    Fwk.setLastUpdate(this._table().children('caption'));
+                    this._table().children('caption').removeClass('updating');
+                    this._loading = false;
                 },
-                function(msg) {
+                (msg) => {
                     Fwk.report_error(msg);
-                    _that._table().children('caption').removeClass('updating');
-                    _that._loading = false;
+                    this._table().children('caption').removeClass('updating');
+                    this._loading = false;
                 }
             );
-        };
+        }
     }
-    Class.define_class(StatusWorkers, FwkApplication, {}, {});
-
     return StatusWorkers;
 });

@@ -459,6 +459,7 @@ function(CSSLoader,
              */
 
             var html = '<table class="simple-table table table-sm table-hover table-bordered"">' +
+                       (this.options.caption !== undefined ? '<caption>' + this.options.caption + '</caption>' : '') +
                        '  <thead class="thead-light">';
 
             // Draw header

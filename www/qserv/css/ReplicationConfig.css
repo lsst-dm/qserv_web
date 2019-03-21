@@ -1,0 +1,23 @@
+table#fwk-controller-config-general  pre,
+table#fwk-controller-config-workers  pre,
+table#fwk-controller-config-catalogs pre {
+    padding:    0;
+    margin:     0;
+}
+table#fwk-controller-config-general  th,
+table#fwk-controller-config-general  td,
+table#fwk-controller-config-workers  th,
+table#fwk-controller-config-workers  td,
+table#fwk-controller-config-catalogs th,
+table#fwk-controller-config-catalogs td {
+    vertical-align: middle;
+}
+table#fwk-controller-config-general caption {
+    caption-side:   top;
+    text-align:     right;
+    padding-top:    0;
+}
+table#fwk-controller-config-general caption.updating {
+    background-color: #ffeeba;
+}
+
