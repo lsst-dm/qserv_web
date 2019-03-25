@@ -79,7 +79,7 @@ function(CSSLoader,
             {   name: 'Tools',
                 apps: [
                     new FwkTestApp('Query Qserv'),
-                    new ToolsSql('Query Qserv Workers')
+                    new ToolsSql('Query Worker Databases')
                 ]
             },
             {   name: 'UI Tests',
@@ -95,7 +95,7 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                Fwk.show('Tools', 'Query Qserv Workers');
+                Fwk.show('Tools', 'Query Worker Databases');
             }
         );
     });

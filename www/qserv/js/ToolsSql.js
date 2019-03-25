@@ -70,23 +70,23 @@ function(CSSLoader,
     </div>
   </div>
   <div class="row">
-    <div class="col-4">
+    <div class="col-3">
       <input type="text" class="form-control" placeholder="Worker" id="worker">
     </div>
-    <div class="col-4">
+    <div class="col-3">
       <input type="text" class="form-control" placeholder="User" id="user">
     </div>
-    <div class="col-4">
+    <div class="col-3">
       <input type="password" class="form-control" placeholder="Password" id="password">
+    </div>
+    <div class="col-3">
+      <button class="btn btn-primary   btn-sm" id="execute">Execute</button>
+      <button class="btn btn-secondary btn-sm" id="reset"  >Reset form</button>
     </div>
   </div>
   <div class="row">
-    <div class="col-10">
-      <textarea class="form-control" placeholder="Query" id="query"></textarea>
-    </div>
-    <div class="col-2">
-      <button class="btn btn-primary   btn-sm" id="execute">Execute</button>
-      <button class="btn btn-secondary btn-sm" id="reset"  >Reset form</button>
+    <div class="col">
+      <textarea rows="3" class="form-control" placeholder="Query" id="query"></textarea>
     </div>
   </div>
   <div class="row">
@@ -102,7 +102,6 @@ function(CSSLoader,
 </div>`;
             this.fwk_app_container.html(html);
             this.fwk_app_container.find('button#execute').click(() => {
-                // TODO: validate inputs
                 this._load();
             });
             this.fwk_app_container.find('button#reset').click(() => {
@@ -177,9 +176,8 @@ function(CSSLoader,
                     this._loading = false;
                 },
                 (msg) => {
-                    Fwk.report_error(msg);
-                    Fwk.setLastUpdate(this._table().children('caption'));
                     this._table().children('caption').removeClass('updating');
+                    this._table().children('caption').addClass('error').text(msg);
                     this._loading = false;
                 }
             );
