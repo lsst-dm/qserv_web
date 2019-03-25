@@ -30,6 +30,8 @@
     <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
     <itemPath>www/qserv/css/StatusWorkers.css</itemPath>
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
+    <itemPath>www/qserv/css/ToolsSql.css</itemPath>
+    <itemPath>www/qserv/js/ToolsSql.js</itemPath>
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
@@ -111,6 +113,8 @@
       </item>
       <item path="www/qserv/css/StatusWorkers.css" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="www/qserv/css/ToolsSql.css" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/qserv/html/StatusReplicationLevel.html"
             ex="false"
             tool="3"
@@ -133,6 +137,8 @@
             flavor2="0">
       </item>
       <item path="www/qserv/js/StatusWorkers.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/qserv/js/ToolsSql.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/css/Fwk.css" ex="false" tool="3" flavor2="0">
       </item>

@@ -375,22 +375,45 @@ function(Class,
         /**
          * Initiate an asynchronous GET request
          *
-         * @param url         the GET request
+         * @param url         the request URL
          * @param params      (optinal) dictionary of parameters to be sent to a server
          * @param on_success  (opional) callback function to be called on success
          * @param on_failure  (opional) callback function to be called on errors
          */
-        this.web_service_GET = function (url, params, on_success, on_failure) {
-            var jqXHR = $.get(url, params, function(data) {
+        this.web_service_GET = function(url, params, on_success, on_failure) {
+            let jqXHR = $.get(url, params, function(data) {
                 if (on_success) on_success(data);
             },
             'JSON').fail(function() {
-                var message = 'Web service request to '+url+' failed because of:' + jqXHR.statusText;
+                let message = 'Web service request to '+url+' failed because of:' + jqXHR.statusText;
                 if (on_failure) on_failure(message);
                 else            this.report_error(message);
             });
         };
 
+        /**
+         * Initiate an asynchronous POST request
+         *
+         * @param url         the request URL
+         * @param params      (optinal) dictionary of parameters to be sent to a server
+         * @param on_success  (opional) callback function to be called on success
+         * @param on_failure  (opional) callback function to be called on errors
+         */
+        this.web_service_POST = function(url, params, on_success, on_failure) {
+            let jqXHR = $.ajax({
+                'type': 'POST',
+                'url': url,
+                'contentType': 'application/json',
+                'data': JSON.stringify(params),
+                'dataType': 'json',
+            }).done(function(data) {
+                if (on_success) on_success(data);
+            }).fail(function() {
+                let message = 'Web service request to '+url+' failed because of:' + jqXHR.statusText;
+                if (on_failure) on_failure(message);
+                else            this.report_error(message);
+            })
+        };
 
         /* -----------------------------
          *   APPLICATIONS UPDATE TIMER

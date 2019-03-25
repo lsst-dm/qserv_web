@@ -33,6 +33,7 @@ require([
     'qserv/ReplicationController',
     'qserv/ReplicationTools',
     'qserv/ReplicationConfig',
+    'qserv/ToolsSql',
 
     // Make sure the core libraries are preloaded so that the applications
     // won't bother with loading them individually
@@ -50,7 +51,8 @@ function(CSSLoader,
          StatusWorkers,
          ReplicationController,
          ReplicationTools,
-         ReplicationConfig) {
+         ReplicationConfig,
+         ToolsSql) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
     CSSLoader.load('qserv/css/QservPDAC.css');
@@ -77,7 +79,7 @@ function(CSSLoader,
             {   name: 'Tools',
                 apps: [
                     new FwkTestApp('Query Qserv'),
-                    new FwkTestApp('Query Qserv Workers')
+                    new ToolsSql('Query Qserv Workers')
                 ]
             },
             {   name: 'UI Tests',
@@ -93,7 +95,7 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                Fwk.show('Replication', 'Configuration');
+                Fwk.show('Tools', 'Query Qserv Workers');
             }
         );
     });
