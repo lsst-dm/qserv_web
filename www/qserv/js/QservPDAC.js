@@ -59,6 +59,27 @@ function(CSSLoader,
 
     $(function() {
 
+        function parseURLParameters() {
+
+            let queryString = window.location.search;
+            if (typeof queryString !== 'undefined' && queryString && queryString.length > 2) {
+                let queries = queryString.substring(1).split("&");
+                for (let i=0; i < queries.length; i++) {
+                    let keyVal = queries[i].split('=');
+                    if (keyVal.length === 2) {
+                        let key = keyVal[0];
+                        let val = decodeURIComponent(keyVal[1]);
+                        if (key === 'page' && val.length > 2) {
+                            let menus = val.split(':');
+                            if (menus.length === 2) {
+                                console.log("menus: ", menus);
+                                return menus;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         var apps = [
             {   name: 'Status',
                 apps: [
@@ -95,7 +116,10 @@ function(CSSLoader,
             apps,
             function() {
                 console.log('Fwk.on_init');
-                Fwk.show('Tools', 'Query Worker Databases');
+                let menus = parseURLParameters();
+                if (typeof menus !== 'undefined') {
+                    Fwk.show(menus[0], menus[1]);
+                }
             }
         );
     });
