@@ -64,8 +64,8 @@ function(CSSLoader,
         service of a <span style="font-weight:bold;">Qserv</span> worker. For queries which produce a result set
         the result will be displayed as a table below the form. Errors will be also reported.
         Please, <span style="font-weight:bold;">DO NOT</span> launch queries which may produce millions of rows.
-        An attept to do so will make thsi applicatio unresponsive.
-        Use <span style="font-style:italic;">SELECT COUNT(*)</span> first.
+        An attept to do so will make this applicatio unresponsive.
+        Use <span class="code">SELECT COUNT(*)</span> first.
       </p>
     </div>
   </div>
@@ -112,43 +112,27 @@ function(CSSLoader,
             });
         }
 
-        // Inputs
-
-        _worker() {
-            if (this._worker_obj === undefined) {
-                this._worker_obj = this.fwk_app_container.find('input#worker');
-            }
-            return this._worker_obj;
-        }
-        _user() {
-            if (this._user_obj === undefined) {
-                this._user_obj = this.fwk_app_container.find('input#user');
-            }
-            return this._user_obj;
-        }
-        _password() {
-            if (this._password_obj === undefined) {
-                this._password_obj = this.fwk_app_container.find('input#password');
-            }
-            return this._password_obj;
-        }
-        _query() {
-            if (this._query_obj === undefined) {
-                this._query_obj = this.fwk_app_container.find('textarea#query');
-            }
-            return this._query_obj;
-        }
-
         /**
-         * The table for displaying result sets of queries
-         * @returns JQuery table object
+         * Find an object in a collection by its name if it's already known. Otherwise
+         * find it on the page, register in the collection and return it to a caller.
+         *
+         * @returns the object in question
          */
-        _table() {
-            if (this._table_obj === undefined) {
-                this._table_obj = this.fwk_app_container.find('table#fwk-tools-sql-resultset');
-            }
-            return this._table_obj;
+        _findObject(selector, name) {
+            if (_.isUndefined(this._objects)) this._objects = {};
+            if (_.has(this._objects, name)) return this._objects[name];
+            let obj = this.fwk_app_container.find(selector);
+            this._objects[name] = obj;
+            return obj
         }
+
+        // Page elements
+
+        _worker()   { return this._findObject('input#worker', 'worker'); }
+        _user()     { return this._findObject('input#user', 'user'); }
+        _password() { return this._findObject('input#password', 'password'); }
+        _query()    { return this._findObject('textarea#query', 'query'); }
+        _table()    { return this._findObject('table#fwk-tools-sql-resultset', 'resultset'); }
 
         /**
          * Load data from a web servie then render it to the application's page.
@@ -188,7 +172,7 @@ function(CSSLoader,
          */
         _display(data) {
             console.log(data);
-            if (data.status !== 'FINISHED::SUCCESS::EXT_STATUS_NONE') {
+            if (!data.success) {
                 this._table().children('thead').html('');
                 this._table().children('tbody').html('');
                 this._table().children('caption').addClass('error').text(data.result_set.error);
