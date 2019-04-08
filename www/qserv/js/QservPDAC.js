@@ -115,10 +115,11 @@ function(CSSLoader,
             'Qserv [PDAC]',
             apps,
             function() {
-                console.log('Fwk.on_init');
                 let menus = parseURLParameters();
                 if (typeof menus !== 'undefined') {
                     Fwk.show(menus[0], menus[1]);
+                } else {
+                    Fwk.show('Replication', 'Controller');
                 }
             }
         );
