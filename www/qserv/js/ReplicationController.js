@@ -221,7 +221,8 @@ function(CSSLoader,
                                     this._displayLog(data.log);
                                 },
                                 (msg) => {
-                                    Fwk.report_error(msg);
+                                    console.log('request failed', this.fwk_app_name, msg);
+                                    this._tableStatus().children('caption').html('<span style="color:maroon">No Response</span>');
                                 }
                             );
                             break;
@@ -230,7 +231,8 @@ function(CSSLoader,
                     this._loading = false;
                 },
                 (msg) => {
-                    Fwk.report_error(msg);
+                    console.log('request failed', this.fwk_app_name, msg);
+                    this._tableStatus().children('caption').html('<span style="color:maroon">No Response</span>');
                     this._tableStatus().children('caption').removeClass('updating');
                     this._loading = false;
                 }

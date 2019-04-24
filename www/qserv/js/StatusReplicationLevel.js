@@ -242,7 +242,8 @@ function(CSSLoader,
                     this._loading = false;
                 },
                 (msg) => {
-                    Fwk.report_error(msg);
+                    console.log('request failed', this.fwk_app_name, msg);
+                    this._table().children('caption').html('<span style="color:maroon">No Response</span>');
                     this._table().children('caption').removeClass('updating');
                     this._loading = false;
                 }

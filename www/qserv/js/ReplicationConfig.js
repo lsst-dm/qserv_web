@@ -191,7 +191,8 @@ function(CSSLoader,
                     this._loading = false;
                 },
                 (msg) => {
-                    Fwk.report_error(msg);
+                    this._tableGeneral().children('caption').html('<span style="color:maroon">No Response</span>');
+                    this._tableGeneral().children('caption').removeClass('updating');
                     this._tableGeneral().children('caption').removeClass('updating');
                     this._loading = false;
                 }
