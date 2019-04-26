@@ -63,8 +63,8 @@ function(CSSLoader,
         <tr>
           <th>worker</th>
           <th>scheduler</th>
-          <th>id</th>
           <th>#tasks</th>
+          <th>qid</th>
           <th>query</th>
         </tr>
       </thead>
@@ -118,7 +118,6 @@ function(CSSLoader,
         }
 
         _display(data) {
-            console.log(data);
             let html = '';
             for (let worker in data) {
                 if (!data[worker].success) {
@@ -131,28 +130,38 @@ function(CSSLoader,
   <th class="table-secondary">&nbsp;</th>
 </tr>`;
                 } else {
-                    let queries     = data[worker].queries;
-                    let schedulers  = data[worker].info.processor.queries.blend_scheduler.schedulers;
-                    let numQueries  = 0;
-                    let htmlQueries = '';
+                    let queries = data[worker].queries;
+                    let schedulers = data[worker].info.processor.queries.blend_scheduler.schedulers;
+                    let numQueries = 0;
+                    let numSchedulers = 0;
+                    let htmlQueries   = '';
                     for (let i in schedulers) {
                         let scheduler = schedulers[i];
+                        let numSchedulerQueries = 0;
+                        let htmlSchedulerQueries = '';
                         for (let j in scheduler.query_id_to_count) {
                             numQueries++;
+                            numSchedulerQueries++;
                             let queryId  = scheduler.query_id_to_count[j][0];
                             let numTasks = scheduler.query_id_to_count[j][1];
-                            htmlQueries += `
+                            htmlSchedulerQueries += `
 <tr>
-  <td><pre>${scheduler.name.substring("Sched".length)}</pre></td>
-  <td><pre>${queryId}</pre></td>
   <td><pre>${numTasks}</pre></td>
+  <td><pre>${queryId}</pre></td>
   <td><pre>${queries[queryId].query}<pre></td>
 </tr>`;
+                        }
+                        if (numSchedulerQueries > 0) {
+                            numSchedulers++;
+                            htmlQueries += `
+<tr>
+  <td rowspan="${numSchedulerQueries+1}"><pre>${scheduler.name.substring("Sched".length)}</pre></td>
+</tr>` + htmlSchedulerQueries;
                         }
                     }
                     html += `
 <tr>
-  <th rowspan="${numQueries+1}">${worker}</th>
+  <th rowspan="${numSchedulers+numQueries+1}">${worker}</th>
 </tr>` + htmlQueries;
                 }
             }

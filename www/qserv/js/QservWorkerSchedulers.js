@@ -120,7 +120,6 @@ function(CSSLoader,
         }
 
         _display(data) {
-            console.log(data);
             let html = '';
             for (let worker in data) {
                 if (!data[worker].success) {
