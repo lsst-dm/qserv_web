@@ -66,6 +66,8 @@
     <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
     <itemPath>www/qserv/css/HeatMap.css</itemPath>
     <itemPath>www/qserv/css/QservPDAC.css</itemPath>
+    <itemPath>www/qserv/css/QservWorkerResources.css</itemPath>
+    <itemPath>www/qserv/js/QservWorkerResources.js</itemPath>
     <itemPath>www/qserv/css/ReplicationConfig.css</itemPath>
     <itemPath>www/qserv/js/ReplicationConfig.js</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
@@ -74,6 +76,8 @@
     <itemPath>www/qserv/css/StatusReplicationLevel.css</itemPath>
     <itemPath>www/qserv/html/StatusReplicationLevel.html</itemPath>
     <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
+    <itemPath>www/qserv/css/StatusScheduers.css</itemPath>
+    <itemPath>www/qserv/js/StatusScheduers.js</itemPath>
     <itemPath>www/qserv/css/StatusWorkers.css</itemPath>
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/qserv/css/ToolsSql.css</itemPath>

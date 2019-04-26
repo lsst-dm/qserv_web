@@ -30,6 +30,8 @@ require([
     `qserv/StatusHeatMap`,
     'qserv/StatusReplicationLevel',
     'qserv/StatusWorkers',
+    'qserv/QservWorkerSchedulers',
+    'qserv/QservWorkerQueries',
     'qserv/ReplicationController',
     'qserv/ReplicationTools',
     'qserv/ReplicationConfig',
@@ -49,6 +51,8 @@ function(CSSLoader,
          StatusHeatMap,
          StatusReplicationLevel,
          StatusWorkers,
+         QservWorkerSchedulers,
+         QservWorkerQueries,
          ReplicationController,
          ReplicationTools,
          ReplicationConfig,
@@ -101,6 +105,12 @@ function(CSSLoader,
                 apps: [
                     new FwkTestApp('Query Qserv'),
                     new ToolsSql('Query Worker Databases')
+                ]
+            },
+            {   name: 'Qserv Monitor',
+                apps: [
+                    new QservWorkerSchedulers('Schedulers'),
+                    new QservWorkerQueries('Queries in Worker Queues')
                 ]
             },
             {   name: 'UI Tests',
