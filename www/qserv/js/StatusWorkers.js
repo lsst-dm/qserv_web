@@ -145,8 +145,8 @@ function(CSSLoader,
                 {},
                 (data) => {
                     let html = '';
-                    for (let i in data) {
-                        let workerInfo = data[i];
+                    for (let i in data.workers) {
+                        let workerInfo = data.workers[i];
 
                         let qservCssClass       = '';
                         let replicationCssClass = '';

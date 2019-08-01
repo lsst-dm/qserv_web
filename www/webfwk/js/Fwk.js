@@ -25,7 +25,7 @@ function(Class,
             };
         }
         if (this.month2str == undefined) {
-            this.month2str = ['Jan','Feb','Mar','Apr','May','Jun','JUul','Aug','Sep','Oct','Nov','Dec'];
+            this.month2str = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         }
         if (this.week2str == undefined) {
             this.week2str = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];

@@ -97,14 +97,15 @@ function(CSSLoader,
           <th>name</th>
           <th>enabled</th>
           <th>read-only</th>
+          <th>Data directory</th>
           <th>Replication server</th>
           <th>port</th>
           <th>File server</th>
           <th>port</th>
           <th>Database server</th>
           <th>port</th>
-          <th>user</th>
-          <th>Data directory</th>
+          <th>Ingest server</th>
+          <th>port</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -122,6 +123,7 @@ function(CSSLoader,
           <th>sub-stripes</th>
           <th>repl level</th>
           <th>Database</th>
+          <th>published</th>
           <th>Table</th>
           <th>partitioned</th>
         </tr>
@@ -226,14 +228,15 @@ function(CSSLoader,
   <th style="text-align:left" scope="row"><pre>` + worker.name + `</pre></th>
   <td ` + workerEnabledCssClass  + `><pre>` + (worker.is_enabled ? 'yes' : 'no') + `</pre></td>
   <td ` + workerReadOnlyCssClass + `><pre>` + (worker.is_read_only ? 'yes' : 'no') + `</pre></td>
+  <td><pre>` + worker.data_dir + `</pre></td>
   <td><pre>` + worker.svc_host + `</pre></td>
   <td><pre>` + worker.svc_port + `</pre></td>
   <td><pre>` + worker.fs_host + `</pre></td>
   <td><pre>` + worker.fs_port + `</pre></td>
   <td><pre>` + worker.db_host + `</pre></td>
   <td><pre>` + worker.db_port + `</pre></td>
-  <td><pre>` + worker.db_user + `</pre></td>
-  <td><pre>` + worker.data_dir + `</pre></td>
+  <td><pre>` + worker.loader_host + `</pre></td>
+  <td><pre>` + worker.loader_port + `</pre></td>
 </tr>`;
             }
             this._tableWorkers().children('tbody').html(html);
@@ -255,22 +258,23 @@ function(CSSLoader,
                         databaseRowSpan++;
                         familyRowSpan++;
                         databaseHtml += `
-<tr ` + (k == database.tables.length - 1 ? ' style="border-bottom: solid 1px #A9A9A9"' : '') + `>
+<tr ` + (k == database.tables.length - 1 ? ' style="border-bottom: solid 1px #dee2e6"' : '') + `>
   <th scope="row"><pre>${table.name}</pre></th>
   <td><pre>` + (table.is_partitioned ? 'yes' : 'no') + `</pre></td>
 </tr>`;
                     }
                     familyHtml += `
-<tr style="border-bottom: solid 1px #A9A9A9">
-  <td rowspan="${databaseRowSpan}" style="vertical-align:middle; border-right: solid 1px #A9A9A9">${database.name}</td>
+<tr style="border-bottom: solid 1px #dee2e6">
+  <td rowspan="${databaseRowSpan}" style="vertical-align:middle;">${database.name}</td>
+  <td rowspan="${databaseRowSpan}" style="vertical-align:middle; border-right: solid 1px #dee2e6">${database.is_published ? 'yes' : 'no'}</td>
 </tr>` + databaseHtml;
                 }
                 html += `
-<tr style="border-bottom: solid 1px #A9A9A9">
+<tr style="border-bottom: solid 1px #dee2e6">
   <th rowspan="${familyRowSpan}" style="vertical-align:middle" scope="row">${family.name}</th>
   <td rowspan="${familyRowSpan}" style="vertical-align:middle"><pre>${family.num_stripes}</pre></td>
   <td rowspan="${familyRowSpan}" style="vertical-align:middle"><pre>${family.num_sub_stripes}</pre></td>
-  <th rowspan="${familyRowSpan}" style="vertical-align:middle; border-right: solid 1px #A9A9A9" scope="row"><pre>${family.min_replication_level}</pre></th>
+  <th rowspan="${familyRowSpan}" style="vertical-align:middle; border-right: solid 1px #dee2e6" scope="row"><pre>${family.min_replication_level}</pre></th>
 </tr>` + familyHtml;
             }
             this._tableCatalogs().children('tbody').html(html);
