@@ -122,7 +122,7 @@ function(CSSLoader,
             }
         ];
         Fwk.build(
-            'Qserv [PDAC]',
+            'Qserv [NCSA dev]',
             apps,
             function() {
                 let menus = parseURLParameters();
