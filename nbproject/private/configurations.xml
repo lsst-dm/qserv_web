@@ -78,6 +78,8 @@
     <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
     <itemPath>www/qserv/css/StatusScheduers.css</itemPath>
     <itemPath>www/qserv/js/StatusScheduers.js</itemPath>
+    <itemPath>www/qserv/css/StatusUserQueries.css</itemPath>
+    <itemPath>www/qserv/js/StatusUserQueries.js</itemPath>
     <itemPath>www/qserv/css/StatusWorkers.css</itemPath>
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/qserv/css/ToolsSql.css</itemPath>

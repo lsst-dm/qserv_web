@@ -1,0 +1,25 @@
+table#fwk-status-queries pre {
+    padding:    0;
+    margin:     0;
+}
+table#fwk-status-queries th,
+table#fwk-status-queries td {
+    vertical-align: top;
+}
+table#fwk-status-queries caption {
+    caption-side:   top;
+    text-align:     right;
+    padding-top:    0;
+}
+table#fwk-status-queries caption.updating {
+    background-color: #ffeeba;
+}
+
+table#fwk-status-queries td pre.wrapped {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+ }

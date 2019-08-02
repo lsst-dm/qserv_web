@@ -32,6 +32,8 @@
     <itemPath>www/qserv/js/StatusReplicationLevel.js</itemPath>
     <itemPath>www/qserv/css/StatusScheduers.css</itemPath>
     <itemPath>www/qserv/js/StatusScheduers.js</itemPath>
+    <itemPath>www/qserv/css/StatusUserQueries.css</itemPath>
+    <itemPath>www/qserv/js/StatusUserQueries.js</itemPath>
     <itemPath>www/qserv/css/StatusWorkers.css</itemPath>
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/qserv/css/ToolsSql.css</itemPath>
@@ -122,6 +124,11 @@
       </item>
       <item path="www/qserv/css/StatusScheduers.css" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="www/qserv/css/StatusUserQueries.css"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="www/qserv/css/StatusWorkers.css" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/css/ToolsSql.css" ex="false" tool="3" flavor2="0">
@@ -153,6 +160,8 @@
             flavor2="0">
       </item>
       <item path="www/qserv/js/StatusScheduers.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/qserv/js/StatusUserQueries.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/js/StatusWorkers.js" ex="false" tool="3" flavor2="0">
       </item>
