@@ -72,6 +72,8 @@
     <itemPath>www/qserv/js/ReplicationConfig.js</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
     <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
+    <itemPath>www/qserv/css/StatusDatasets.css</itemPath>
+    <itemPath>www/qserv/js/StatusDatasets.js</itemPath>
     <itemPath>www/qserv/js/StatusHeatMap.js</itemPath>
     <itemPath>www/qserv/css/StatusReplicationLevel.css</itemPath>
     <itemPath>www/qserv/html/StatusReplicationLevel.html</itemPath>

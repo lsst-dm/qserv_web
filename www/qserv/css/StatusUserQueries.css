@@ -1,9 +1,12 @@
-table#fwk-status-queries pre {
+table#fwk-status-queries      pre,
+table#fwk-status-queries-past pre {
     padding:    0;
     margin:     0;
 }
-table#fwk-status-queries th,
-table#fwk-status-queries td {
+table#fwk-status-queries      th,
+table#fwk-status-queries      td,
+table#fwk-status-queries-past th,
+table#fwk-status-queries-past td {
     vertical-align: top;
 }
 table#fwk-status-queries caption {
@@ -15,11 +18,34 @@ table#fwk-status-queries caption.updating {
     background-color: #ffeeba;
 }
 
-table#fwk-status-queries td pre.wrapped {
-    overflow-x: auto;
+table#fwk-status-queries      td pre.wrapped,
+table#fwk-status-queries-past td pre.wrapped {
+    overflow-x:  auto;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
-    word-wrap: break-word;
- }
+    word-wrap:   break-word;
+}
+table#fwk-status-queries      td span,
+table#fwk-status-queries-past td span {
+    font-family: monospace;
+    white-space: pre;
+    font-size:   16px;
+    color:       #fff;
+    margin:      0;
+    padding:     0;
+}
+table#fwk-status-queries      td span.significant,
+table#fwk-status-queries-past td span.significant {
+    color:       #000;
+    font-weight: bold;
+}
+table#fwk-status-queries      td span.trend_down,
+table#fwk-status-queries-past td span.trend_down {
+    color:       green;
+}
+table#fwk-status-queries      td span.trend_up,
+table#fwk-status-queries-past td span.trend_up {
+    color:       red;
+}

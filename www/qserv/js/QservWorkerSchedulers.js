@@ -153,7 +153,6 @@ function(CSSLoader,
             }
             this._table().children('tbody').html(html);
         }
-
     }
     return QservWorkerSchedulers;
 });

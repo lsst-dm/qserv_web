@@ -17,6 +17,11 @@ function(CSSLoader,
          */ 
         static update_ival_sec() { return 5; }
 
+        /**
+         * @returns the maximum number of past queries to be returned
+         */ 
+        static limit4past() { return 200; }
+
         constructor(name) {
             super(name);
         }
@@ -78,11 +83,31 @@ function(CSSLoader,
       </caption>
       <thead class="thead-light">
         <tr>
+          <th>started</th>
           <th>progress</th>
-          <th style="text-align:right;">chunks</th>
-          <th style="text-align:right;">started</th>
           <th style="text-align:right;">elapsed</th>
-          <th style="text-align:right;">chunks/min</th>
+          <th style="text-align:right;">left (est.)</th>
+          <th style="text-align:right;">ch[unks]</th>
+          <th style="text-align:right;">ch/min</th>
+          <th style="text-align:right;">qid</th>
+          <th>query</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <h3>Past queries (last ${StatusUserQueries.limit4past()} entries)</h3>
+    <table class="table table-sm table-hover" id="fwk-status-queries-past">
+      <thead class="thead-light">
+        <tr>
+          <th>submitted</th>
+          <th>status</th>
+          <th style="text-align:right;">elapsed</th>
+          <th>type</th>
+          <th style="text-align:right;">qid</th>
           <th>query</th>
         </tr>
       </thead>
@@ -106,6 +131,18 @@ function(CSSLoader,
         }
 
         /**
+         * Table for displaying the completed, failed, etc. user queries
+         * 
+         * @returns JQuery table object
+         */
+        _tablePastQueries() {
+            if (this._tablePastQueries_obj === undefined) {
+                this._tablePastQueries_obj = this.fwk_app_container.find('table#fwk-status-queries-past');
+            }
+            return this._tablePastQueries_obj;
+        }
+
+        /**
          * Load data from a web servie then render it to the application's
          * page.
          */
@@ -119,9 +156,9 @@ function(CSSLoader,
             this._tableQueries().children('caption').addClass('updating');
             Fwk.web_service_GET(
                 "/replication/v1/qserv/master/query",
-                {},
+                {"limit4past": StatusUserQueries.limit4past()},
                 (data) => {
-                    this._display(data.queries);
+                    this._display(data);
                     Fwk.setLastUpdate(this._tableQueries().children('caption'));
                     this._tableQueries().children('caption').removeClass('updating');
                     this._loading = false;
@@ -138,16 +175,26 @@ function(CSSLoader,
         /**
          * Display the queries
          */
-        _display(queries) {
+        _display(data) {
 
             let html = '';
-            for (let i in queries) {
-                let query = queries[i];
+            for (let i in data.queries) {
+                let query = data.queries[i];
                 let progress = Math.floor(100. * query.completedChunks  / query.totalChunks);
-                let elapsed = this._elapsed(query.lastUpdate_sec - query.queryBegin_sec);
-                let performance = this._performance(query.completedChunks, query.lastUpdate_sec - query.queryBegin_sec);
+                let elapsed = this._elapsed(query.samplingTime_sec - query.queryBegin_sec);
+                let leftSeconds = 8 * 3600;
+                if (query.completedChunks > 0 && query.samplingTime_sec - query.queryBegin_sec > 0) {
+                    leftSeconds = Math.floor(
+                            (query.totalChunks - query.completedChunks) /
+                            (query.completedChunks / (query.samplingTime_sec - query.queryBegin_sec))
+                    );
+                }
+                let left = this._elapsed(leftSeconds);
+                let trend = this._trend(query.queryId, leftSeconds);
+                let performance = this._performance(query.completedChunks, query.samplingTime_sec - query.queryBegin_sec);
                 html += `
 <tr>
+  <td><pre>` + query.queryBegin + `</pre></td>
   <th scope="row">
     <div class="progress" style="height: 22px;">
       <div class="progress-bar" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
@@ -155,27 +202,72 @@ function(CSSLoader,
       </div>
     </div>
   </th>
-  <th scope="row" style="text-align:right; "><pre>${query.completedChunks} / ${query.totalChunks}</pre></th>
-  <td style="text-align:right;"><pre>` + query.queryBegin + `</pre></td>
-  <th scope="row" style="text-align:right;" ><pre>${elapsed}</pre></th>
-  <th scope="row" style="text-align:right;" ><pre>${performance}</pre></th>
+  <td style="text-align:right; padding-top:0;">${elapsed}</td>
+  <td style="text-align:right; padding-top:0;">${left}${trend}</td>
+  <th scope="row" style="text-align:right; "><pre>${query.completedChunks}/${query.totalChunks}</pre></th>
+  <td style="text-align:right;" ><pre>${performance}</pre></td>
+  <th scope="row" style="text-align:right;"><pre>${query.queryId}</pre></th>
   <td><pre class="wrapped" style="color:#aaa">` + query.query + `</pre></td>
 </tr>`;
             }
             this._tableQueries().children('tbody').html(html);
+
+            html = '';
+            for (let i in data.queries_past) {
+                let query = data.queries_past[i];
+                let elapsed = this._elapsed(query.completed_sec - query.submitted_sec);
+                let failedQueryCss = query.status !== "COMPLETED" ? 'class="table-danger"' : "";
+                html += `
+<tr ${failedQueryCss}>
+  <td style="padding-right:10px;"><pre>` + query.submitted + `</pre></td>
+  <td style="padding-right:10px;"><pre>${query.status}</pre></td>
+  <td style="text-align:right; padding-top:0;">${elapsed}</td>
+  <td><pre>` + query.qType + `</pre></td>
+  <th scope="row" style="text-align:right;"><pre>${query.queryId}</pre></th>
+  <td><pre class="wrapped" style="color:#aaa">` + query.query + `</pre></td>
+</tr>`;
+            }
+            this._tablePastQueries().children('tbody').html(html);
         }
         
         /**
-         * @param {integer} seconds
-         * @returns {string} the query elapsed time as string formatted: 'hh:mm:ss'
+         * @param {Number} seconds
+         * @returns {String} the amount of time elapsed by a query, formatted as: 'hh:mm:ss'
          */
         _elapsed(totalSeconds) {
             let hours   = Math.floor(totalSeconds / 3600);
             let minutes = Math.floor((totalSeconds - 3600 * hours) / 60);
             let seconds = (totalSeconds - 3600 * hours - 60 * minutes) % 60;
-            return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            let hoursCssClass   = hours === 0 ?                 '' : 'class="significant"';
+            let minutesCssClass = hours === 0 && minutes == 0 ? '' : 'class="significant"';
+            let secondCssClass  =                                    'class="significant"';
+            return `<span ${hoursCssClass}  >` + (hours   < 10 ? '0' : '') + hours   + 'h&nbsp;</span>' +
+                   `<span ${minutesCssClass}>` + (minutes < 10 ? '0' : '') + minutes + 'm&nbsp;</span>' +
+                   `<span ${secondCssClass} >` + (seconds < 10 ? '0' : '') + seconds + 's</span>';
         }
         
+        /**
+         * 
+         * @param {Number} qid  a unique identifier of a qiery. It's used to pull a record
+         * for the previously (of any) recorded number of second estimated before the query
+         * would expected to finish.
+         * @param {Number} totalSeconds
+         * @returns {String} an arrow indicating the trend to slow down or accelerate
+         */
+        _trend(qid, nextTotalSeconds) {
+            if (this._prevTotalSeconds === undefined) {
+                this._prevTotalSeconds = {};
+            }
+            let prevTotalSeconds = _.has(this._prevTotalSeconds, qid) ? this._prevTotalSeconds[qid] : nextTotalSeconds;
+            this._prevTotalSeconds[qid] = nextTotalSeconds;
+            if (prevTotalSeconds < nextTotalSeconds) {
+                return '<span class="trend_up">&uarr;</span>';
+            } else if (prevTotalSeconds > nextTotalSeconds) {
+                return '<span class="trend_down">&darr;</span>';
+            }
+            return '&nbsp;';
+        }
+
         /**
          * @param {integer} chunks
          * @param {integer} totalSeconds

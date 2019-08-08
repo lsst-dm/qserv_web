@@ -26,6 +26,8 @@
     <itemPath>www/qserv/js/ReplicationConfig.js</itemPath>
     <itemPath>www/webfwk/css/SimpleTableTestApp.css</itemPath>
     <itemPath>www/webfwk/js/SimpleTableTestApp.js</itemPath>
+    <itemPath>www/qserv/css/StatusDatasets.css</itemPath>
+    <itemPath>www/qserv/js/StatusDatasets.js</itemPath>
     <itemPath>www/qserv/js/StatusHeatMap.js</itemPath>
     <itemPath>www/qserv/css/StatusReplicationLevel.css</itemPath>
     <itemPath>www/qserv/html/StatusReplicationLevel.html</itemPath>
@@ -117,6 +119,8 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="www/qserv/css/StatusDatasets.css" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/qserv/css/StatusReplicationLevel.css"
             ex="false"
             tool="3"
@@ -151,6 +155,8 @@
             flavor2="0">
       </item>
       <item path="www/qserv/js/ReplicationConfig.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/qserv/js/StatusDatasets.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/js/StatusHeatMap.js" ex="false" tool="3" flavor2="0">
       </item>
