@@ -74,6 +74,15 @@ function(CSSLoader,
             if (this._initialized) return;
             this._initialized = true;
 
+            this._scheduler2color = {
+                Snail:  '#007bff',
+                Slow:   '#17a2b8',
+                Med:    '#28a745',
+                Fast:   '#ffc107',
+                Group:  '#dc3545',
+                Other:  'default'
+            };
+
             let html = `
 <div class="row">
   <div class="col">
@@ -85,6 +94,7 @@ function(CSSLoader,
         <tr>
           <th>started</th>
           <th>progress</th>
+          <th>sched</th>
           <th style="text-align:right;">elapsed</th>
           <th style="text-align:right;">left (est.)</th>
           <th style="text-align:right;">ch[unks]</th>
@@ -181,6 +191,11 @@ function(CSSLoader,
             for (let i in data.queries) {
                 let query = data.queries[i];
                 let progress = Math.floor(100. * query.completedChunks  / query.totalChunks);
+                let scheduler = _.isUndefined(query.scheduler) ? 'Other' : query.scheduler.substring('Sched'.length);
+                let scheduler_color = _.has(this._scheduler2color, scheduler) ?
+                    this._scheduler2color[scheduler] :
+                    this._scheduler2color['Other'];
+
                 let elapsed = this._elapsed(query.samplingTime_sec - query.queryBegin_sec);
                 let leftSeconds = 8 * 3600;
                 if (query.completedChunks > 0 && query.samplingTime_sec - query.queryBegin_sec > 0) {
@@ -202,6 +217,7 @@ function(CSSLoader,
       </div>
     </div>
   </th>
+  <td style="background-color:${scheduler_color};">${scheduler}</td>
   <td style="text-align:right; padding-top:0;">${elapsed}</td>
   <td style="text-align:right; padding-top:0;">${left}${trend}</td>
   <th scope="row" style="text-align:right; "><pre>${query.completedChunks}/${query.totalChunks}</pre></th>

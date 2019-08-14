@@ -1,0 +1,16 @@
+table#fwk-ingest-transactions caption {
+    caption-side:   top;
+    text-align:     right;
+    padding-top:    0;
+}
+table#fwk-ingest-transactions tbody th,
+table#fwk-ingest-transactions tbody td {
+    vertical-align:middle;
+}
+table#fwk-ingest-transactions pre {
+    padding: 0;
+    margin: 0;
+}
+table#fwk-ingest-transactions caption.updating {
+    background-color: #ffeeba;
+}

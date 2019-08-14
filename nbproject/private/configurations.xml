@@ -65,6 +65,8 @@
     <itemPath>www/webfwk/css/FwkTestApp.css</itemPath>
     <itemPath>www/webfwk/js/FwkTestApp.js</itemPath>
     <itemPath>www/qserv/css/HeatMap.css</itemPath>
+    <itemPath>www/qserv/css/IngestTransactions.css</itemPath>
+    <itemPath>www/qserv/js/IngestTransactions.js</itemPath>
     <itemPath>www/qserv/css/QservPDAC.css</itemPath>
     <itemPath>www/qserv/css/QservWorkerResources.css</itemPath>
     <itemPath>www/qserv/js/QservWorkerResources.js</itemPath>

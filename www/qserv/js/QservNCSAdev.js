@@ -28,7 +28,7 @@ require([
     'webfwk/FwkTestApp',
     'webfwk/SimpleTableTestApp',
     'qserv/StatusCatalogs',
-    'qserv/StatusHeatMap',
+    'qserv/StatusActiveChunksMap',
     'qserv/StatusReplicationLevel',
     'qserv/StatusWorkers',
     'qserv/StatusUserQueries',
@@ -37,6 +37,7 @@ require([
     'qserv/ReplicationController',
     'qserv/ReplicationTools',
     'qserv/ReplicationConfig',
+    'qserv/IngestTransactions',
     'qserv/ToolsSql',
 
     // Make sure the core libraries are preloaded so that the applications
@@ -51,7 +52,7 @@ function(CSSLoader,
          FwkTestApp,
          SimpleTableTestApp,
          StatusCatalogs,
-         StatusHeatMap,
+         StatusActiveChunksMap,
          StatusReplicationLevel,
          StatusWorkers,
          StatusUserQueries,
@@ -60,6 +61,7 @@ function(CSSLoader,
          ReplicationController,
          ReplicationTools,
          ReplicationConfig,
+         IngestTransactions,
          ToolsSql) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
@@ -95,7 +97,7 @@ function(CSSLoader,
                     new StatusReplicationLevel('Replication Level'),
                     new StatusWorkers('Workers'),
                     new StatusUserQueries('User Queries Monitor'),
-                    new StatusHeatMap('Heat Map')
+                    new StatusActiveChunksMap('Active Chunks Map')
                 ]
             },
             {   name: 'Replication',
@@ -105,7 +107,11 @@ function(CSSLoader,
                     new ReplicationConfig('Configuration')
                 ]
             },
-            new FwkTestApp('Ingest'),
+            {   name: 'Ingest',
+                apps: [
+                    new IngestTransactions('Transactions')
+                ]
+            },
             {   name: 'Tools',
                 apps: [
                     new FwkTestApp('Query Qserv'),

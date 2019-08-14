@@ -261,6 +261,15 @@ function (CSSLoader,
             return gb < 0.1 ? '<0.1' : Number(gb).toFixed(1);
         }
 
+        /**
+         * @returns {String} the input number of bytes translated into TiB wied precision
+         */
+        static size2tb(bytes) {
+            if (bytes === 0) return '0.0';
+            let tb = bytes / 1e12;
+            return tb < 0.1 ? '<0.1' : Number(tb).toFixed(1);
+        }
+
         _display(databases) {
             let total_chunks_unique = 0;
             let total_chunks_with_replicas = 0;
@@ -387,36 +396,36 @@ function (CSSLoader,
                  total_data_with_replicas_in_overlaps_data  += data_with_replicas_in_overlaps_data;
                  total_data_with_replicas_in_overlaps_index += data_with_replicas_in_overlaps_index;
                  total_data_with_replicas_in_overlaps       += data_with_replicas_in_overlaps;
-                 total_data_with_replicas_in_regular_data   += total_data_with_replicas_in_regular_data;
-                 total_data_with_replicas_in_regular_index  += total_data_with_replicas_in_regular_index;
-                 total_data_with_replicas_in_regular        += total_data_with_replicas_in_regular;
-                 total_data_with_replicas                   += total_data_with_replicas;
+                 total_data_with_replicas_in_regular_data   += data_with_replicas_in_regular_data;
+                 total_data_with_replicas_in_regular_index  += data_with_replicas_in_regular_index;
+                 total_data_with_replicas_in_regular        += data_with_replicas_in_regular;
+                 total_data_with_replicas                   += data_with_replicas;
             }
             html += `
 <tr style="background-color:#eee;">
-  <th scope="row"><pre>Total</pre></th>
+  <th scope="row"><pre>Total [TB for data]</pre></th>
   <th scope="row" class="number"><pre>${total_chunks_unique}</pre></th>
   <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${total_chunks_with_replicas}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_chunks_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_chunks_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_unique_in_chunks)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_overlaps_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_overlaps_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_unique_in_overlaps)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_regular_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_unique_in_regular_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_unique_in_regular)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_unique)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_chunks_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_chunks_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_chunks)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_overlaps_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_overlaps_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_overlaps)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_regular_data)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_regular_index)}</pre></th>
-  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2gb(total_data_with_replicas_in_regular)}</pre></th>
-  <th scope="row" class="number"><pre>${StatusCatalogs.size2gb(total_data_with_replicas)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_chunks_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_chunks_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_unique_in_chunks)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_overlaps_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_overlaps_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_unique_in_overlaps)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_regular_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_unique_in_regular_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_unique_in_regular)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_unique)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_chunks_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_chunks_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_chunks)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_overlaps_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_overlaps_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_overlaps)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_regular_data)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_regular_index)}</pre></th>
+  <th scope="row" class="number" style="border-right:solid 1px #aaa"><pre>${StatusCatalogs.size2tb(total_data_with_replicas_in_regular)}</pre></th>
+  <th scope="row" class="number"><pre>${StatusCatalogs.size2tb(total_data_with_replicas)}</pre></th>
 </tr>`;
             this._databases().children('tbody').html(html);
 
