@@ -18,7 +18,7 @@ function(Class,
      *
      * @returns {String}
      */
-    Date.prototype.toLocalTimeString = function() {
+    Date.prototype.toLocalTimeString = function(format) {
         if (this.pad == undefined) {
             this.pad = function(v)  {
                 return v < 10 ? '0' + v : '' + v;
@@ -30,8 +30,15 @@ function(Class,
         if (this.week2str == undefined) {
             this.week2str = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         }
-        return this.week2str[this.getDay()]+' '+this.month2str[this.getMonth()]+' '+this.pad(this.getDate())+' '+this.getFullYear()+
-               ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
+        switch (_.isUndefined(format) ? 'verbose' : format) {
+            case 'verbose':
+                return this.week2str[this.getDay()]+' '+this.month2str[this.getMonth()]+' '+this.pad(this.getDate())+' '+this.getFullYear()+
+                       ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
+            case 'short':
+            default:
+                return this.getFullYear()+'-'+this.pad(this.getMonth())+'-'+this.pad(this.getDate())+
+                       ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
+        }
     };
 
     

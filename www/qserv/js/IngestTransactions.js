@@ -121,8 +121,7 @@ function(CSSLoader,
             let html = '';
             for (let database in databases) {
                 let databaseInfo = databases[database];
-
-                let html=`
+                html += `
 <tr>
   <th rowspan="${databaseInfo.transactions.length+1}"><pre>${database}</pre></th>
   <td rowspan="${databaseInfo.transactions.length+1}"><pre>${databaseInfo.num_chunks}</pre></td>
@@ -135,12 +134,14 @@ function(CSSLoader,
                         case 'FINISHED': transactionCssClass = 'bg-success'; break;
                         case 'ABORTED':  transactionCssClass = 'bg-danger';  break;
                     }
+                    let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
+                    let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
                     html += `
 <tr class="${transactionCssClass}">
-  <th><pre>${databaseInfo.id}</pre></th>
-  <td><pre>${databaseInfo.state}</pre></th>
-  <td><pre>${databaseInfo.begin_time}</pre></th>
-  <td><pre>${databaseInfo.end_time}</pre></th>
+  <th><pre>${transactionInfo.id}</pre></th>
+  <td><pre>${transactionInfo.state}</pre></th>
+  <td><pre>${beginTimeStr}</pre></th>
+  <td><pre>${endTimeStr}</pre></th>
 </tr>`;
                 }
             }
