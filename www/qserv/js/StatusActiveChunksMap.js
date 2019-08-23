@@ -70,7 +70,7 @@ function(CSSLoader,
             this._initialized = true;
 
             this._WIDTH    = 1024;              /* window.innerWidth  -  60 */
-            this._HEIGHT   =  680;              /* window.innerHeight - 140 */
+            this._HEIGHT   =  660;              /* window.innerHeight - 140 */
             this._CENTER_X = this._WIDTH  / 2;
             this._CENTER_Y = this._HEIGHT / 2;
             this._SCALE_X  = this._WIDTH  / 4;
@@ -96,31 +96,48 @@ function(CSSLoader,
       <tbody>
         <tr>
           <th>Projection:</th>
-          <td>Hammer-Aitoff</td>
+          <td colspan="3">
+            <select id="projection">
+              <option value="Hammer-Aitoff" selected>Hammer-Aitoff</option>
+              <option value="Mollweide"     disabled>Mollweide</option>
+            </select>
+          </td>
         </tr>
         <tr>
           <th>Schedulers</th>
-          <th>#chunks</th>
+          <th class="right-aligned">#chunks</th>
+          <th class="right-aligned">#tasks</th>
+          <th class="right-aligned">#queued</th>
         </tr>
         <tr>
           <td class="bg-primary">Snail</td>
-          <td><pre class="chunks" id="Snail"></pre></td>
+          <td><pre class="right-aligned chunks"          id="Snail"></pre></td>
+          <td><pre class="right-aligned in-flight-tasks" id="Snail"></pre></td>
+          <td><pre class="right-aligned queued-tasks"    id="Snail"></pre></td>
         </tr>
         <tr>
           <td class="bg-info">Slow</td>
-          <td><pre class="chunks" id="Slow"></pre></td>
+          <td><pre class="right-aligned chunks"          id="Slow"></pre></td>
+          <td><pre class="right-aligned in-flight-tasks" id="Slow"></pre></td>
+          <td><pre class="right-aligned queued-tasks"    id="Slow"></pre></td>
         </tr>
         <tr>
           <td class="bg-success">Med</td>
-          <td><pre class="chunks" id="Med"></pre></td>
+          <td><pre class="right-aligned chunks"          id="Med"></pre></td>
+          <td><pre class="right-aligned in-flight-tasks" id="Med"></pre></td>
+          <td><pre class="right-aligned queued-tasks"    id="Med"></pre></td>
         </tr>
         <tr>
           <td class="bg-warning">Fast</td>
-          <td><pre class="chunks" id="Fast"></pre></td>
+          <td><pre class="right-aligned chunks"          id="Fast"></pre></td>
+          <td><pre class="right-aligned in-flight-tasks" id="Fast"></pre></td>
+          <td><pre class="right-aligned queued-tasks"    id="Fast"></pre></td>
         </tr>
         <tr>
           <td class="bg-danger">Group</td>
-          <td><pre class="chunks" id="Group"></pre></td>
+          <td><pre class="right-aligned chunks"          id="Group"></pre></td>
+          <td><pre class="right-aligned in-flight-tasks" id="Group"></pre></td>
+          <td><pre class="right-aligned queued-tasks"    id="Group"></pre></td>
         </tr>
       </tbody>
     </table>
@@ -167,7 +184,7 @@ function(CSSLoader,
                 "/replication/v1/qserv/worker/status",
                 {'timeout_sec': 2},
                 (data) => {
-                    this._display(data.chunks, data.schedulers_to_chunks);
+                    this._display(data.chunks, data.schedulers_to_chunks, data.status);
                     Fwk.setLastUpdate(this._table().children('caption'));
                     this._table().children('caption').removeClass('updating');
                     this._loading = false;
@@ -181,7 +198,7 @@ function(CSSLoader,
             );
         }
 
-        _display(chunks, schedulers_to_chunks) {
+        _display(chunks, schedulers_to_chunks, status) {
 
             let c = this._context();
 
@@ -190,15 +207,18 @@ function(CSSLoader,
              */
 
             c.clearRect(0, 0, this._WIDTH, this._HEIGHT);
-            c.strokeStyle = 'grey';
-            c.lineWidth = 1;
+            c.lineWidth = 0.75;
 
+            c.strokeStyle = 'grey';
             c.beginPath();
             c.moveTo(0,           this._CENTER_Y);
             c.lineTo(this._WIDTH, this._CENTER_Y);
+            /*
             c.moveTo(this._CENTER_X, 0);
             c.lineTo(this._CENTER_X, this._HEIGHT);
+            */
             c.stroke();
+            c.strokeStyle = 'lightgrey';
 
             let lon_min = -180.,
                 lon_max =  180.,
@@ -228,7 +248,7 @@ function(CSSLoader,
                 prev_coord = undefined;
             }
             for (let lon = lon_min; lon <= lon_max; lon += 10.) {
-                for (let lat = lat_min; lat <= lat_max; lat += 5.) {
+                for (let lat = lat_min + 5.; lat < lat_max; lat += 5.) {
 
                     let coord = this._xy(lon, lat);
 
@@ -251,7 +271,9 @@ function(CSSLoader,
             /*
              * Active chunks
              */
-            this._table().find('.chunks').html('');
+            this._table().find('.chunks').html('0');
+            this._table().find('.in-flight-tasks').html('0');
+            this._table().find('.queued-tasks').html('0');
 
             for (let scheduler in schedulers_to_chunks) {
 
@@ -264,7 +286,10 @@ function(CSSLoader,
 
                 for (let i in schedulers_to_chunks[scheduler]) {
                     let chunkId = schedulers_to_chunks[scheduler][i];
-                    if (chunkId === 1234567890) continue;
+                    if (!_.has(chunks, chunkId)) {
+                        console.log("StatusActiveChunksMap._display()  no info for chunkId=" + chunkId);
+                        continue;
+                    }
                     let chunk = chunks[chunkId].production;
                     let coord = this._xy((chunk.lon_min + chunk.lon_max) / 2, (chunk.lat_min + chunk.lat_max) / 2);
                     c.beginPath();
@@ -272,6 +297,27 @@ function(CSSLoader,
                     c.fill();
                 }
                 this._table().find(`.chunks#${name}`).html(schedulers_to_chunks[scheduler].length);
+
+                /*
+                 * Count and display the total numbers of the active and queued tasks across
+                 * all workers
+                 */
+                let inFlightTasks = 0;
+                let queuedTasks = 0;
+                for (let worker in status) {
+                    // Consider contributions from the responded workers only
+                    if (!status[worker].success) continue;
+                    for (let i in status[worker].info.processor.queries.blend_scheduler.schedulers) {
+                        let schedulerInfo = status[worker].info.processor.queries.blend_scheduler.schedulers[i];
+                        if (schedulerInfo.name == scheduler) {
+                            inFlightTasks += schedulerInfo.num_tasks_in_flight;
+                            queuedTasks += schedulerInfo.num_tasks_in_queue;
+                            break;
+                        }
+                    }
+                }
+                this._table().find(`.in-flight-tasks#${name}`).html(inFlightTasks);
+                this._table().find(`.queued-tasks#${name}`).html(queuedTasks);
             }
         }
         

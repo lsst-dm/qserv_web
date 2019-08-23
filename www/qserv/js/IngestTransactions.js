@@ -14,7 +14,7 @@ function(CSSLoader,
 
 
         /// @returns the default update interval for the page
-        static update_ival_sec() { return 2; }
+        static update_ival_sec() { return 10; }
 
         constructor(name) {
             super(name);
@@ -62,9 +62,10 @@ function(CSSLoader,
       <thead class="thead-light">
         <tr>
           <th>database</th>
-          <th>#chunks</th>
-          <th>id</th>
-          <th>state</th>
+          <th class="right-aligned">published</th>
+          <th class="right-aligned">#chunks</th>
+          <th class="right-aligned">id</th>
+          <th class="center-aligned">state</th>
           <th>begin time</th>
           <th>commit/abort time</th>
         </tr>
@@ -97,7 +98,7 @@ function(CSSLoader,
 
             Fwk.web_service_GET(
                 "/ingest/v1/trans",
-                {},
+                {family: '', all_databases: 1},
                 (data) => {
                     this._display(data.databases);
                     Fwk.setLastUpdate(this._table().children('caption'));
@@ -118,31 +119,72 @@ function(CSSLoader,
          * @param {Object} databases  transactions and other relevant info for unpublished databases
          */
         _display(databases) {
+
+            /* Translate a dictionary of database descriptors into a reverse sorted
+             * array of the descriptors. The elements of the resulting array will be stored
+             * by the maximum value of the transaction identifiers in the descending order.
+             * The idea here is to show newer databases on the top of the table.
+             */
+            let listOfDatabases = _.sortBy(
+                /* The mapping function will return an array of descriptors */
+                _.map(
+                    databases,
+                    function(databaseInfo) { return databaseInfo; }
+                ),
+                function(databaseInfo) {
+                    /* The reduction function will return the maximum transaction identifier,
+                     * or 0 of no transactions were recorded. */
+                    return _.reduce(
+                        databaseInfo.transactions,
+                        function(maxTransactionId, transaction) { return Math.max(maxTransactionId, transaction.id); },
+                        0
+                    );
+                }
+            ).reverse();
+
             let html = '';
-            for (let database in databases) {
-                let databaseInfo = databases[database];
-                html += `
-<tr>
-  <th rowspan="${databaseInfo.transactions.length+1}"><pre>${database}</pre></th>
-  <td rowspan="${databaseInfo.transactions.length+1}"><pre>${databaseInfo.num_chunks}</pre></td>
-</tr>`;
-                for (let i in databaseInfo.transactions) {
-                    let transactionInfo = databaseInfo.transactions[i];
-                    let transactionCssClass = 'bg-white';
-                    switch (transactionInfo.state) {
-                        case 'STARTED':  transactionCssClass = 'bg-light';   break;
-                        case 'FINISHED': transactionCssClass = 'bg-success'; break;
-                        case 'ABORTED':  transactionCssClass = 'bg-danger';  break;
-                    }
-                    let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
-                    let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
+            for (let databaseIdx in listOfDatabases) {
+                let databaseInfo = listOfDatabases[databaseIdx];
+                let database = databaseInfo.info.name;
+                let rowCssStyle = databaseInfo.info.is_published ? ' style="background-color: #f8f8f8;" ' : '';
+                if (databaseInfo.transactions.length === 0) {
                     html += `
-<tr class="${transactionCssClass}">
-  <th><pre>${transactionInfo.id}</pre></th>
-  <td><pre>${transactionInfo.state}</pre></th>
+<tr ${rowCssStyle}>
+  <th rowspan="2"><pre>${database}</pre></th>
+  <td rowspan="2" class="right-aligned"><pre>${databaseInfo.info.is_published ? 'yes': 'no'}</pre></td>
+  <td rowspan="2" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
+</tr>
+<tr ${rowCssStyle}>
+  <th>&nbsp;</th>
+  <td>&nbsp;</th>
+  <td>&nbsp;</th>
+  <td>&nbsp;</th>
+</tr>`;
+                } else {
+                    html += `
+<tr ${rowCssStyle}>
+  <th rowspan="${databaseInfo.transactions.length+1}"><pre>${database}</pre></th>
+  <td rowspan="${databaseInfo.transactions.length+1}" class="right-aligned"><pre>${databaseInfo.info.is_published ? 'yes': 'no'}</pre></td>
+  <td rowspan="${databaseInfo.transactions.length+1}" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
+</tr>`;
+                    for (let i in databaseInfo.transactions) {
+                        let transactionInfo = databaseInfo.transactions[i];
+                        let transactionCssClass = 'bg-white';
+                        switch (transactionInfo.state) {
+                            case 'STARTED':  transactionCssClass = 'bg-transparent'; break;
+                            case 'FINISHED': transactionCssClass = 'alert alert-success'; break;
+                            case 'ABORTED':  transactionCssClass = 'alert alert-danger'; break;
+                        }
+                        let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
+                        let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
+                        html += `
+<tr ${rowCssStyle}>
+  <th class="right-aligned"><pre>${transactionInfo.id}</pre></th>
+  <td class=" center-aligned ${transactionCssClass}"><pre>${transactionInfo.state}</pre></th>
   <td><pre>${beginTimeStr}</pre></th>
   <td><pre>${endTimeStr}</pre></th>
 </tr>`;
+                    }
                 }
             }
             this._table().children('tbody').html(html);

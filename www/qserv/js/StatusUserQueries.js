@@ -75,12 +75,12 @@ function(CSSLoader,
             this._initialized = true;
 
             this._scheduler2color = {
-                Snail:  '#007bff',
-                Slow:   '#17a2b8',
-                Med:    '#28a745',
-                Fast:   '#ffc107',
-                Group:  '#dc3545',
-                Other:  'default'
+                'Snail':   '#007bff',
+                'Slow':    '#17a2b8',
+                'Med':     '#28a745',
+                'Fast':    '#ffc107',
+                'Group':   '#dc3545',
+                'Loading': 'default'
             };
 
             let html = `
@@ -166,7 +166,7 @@ function(CSSLoader,
             this._tableQueries().children('caption').addClass('updating');
             Fwk.web_service_GET(
                 "/replication/v1/qserv/master/query",
-                {"limit4past": StatusUserQueries.limit4past()},
+                {limit4past: StatusUserQueries.limit4past(),timeout_sec: 2},
                 (data) => {
                     this._display(data);
                     Fwk.setLastUpdate(this._tableQueries().children('caption'));
@@ -191,10 +191,10 @@ function(CSSLoader,
             for (let i in data.queries) {
                 let query = data.queries[i];
                 let progress = Math.floor(100. * query.completedChunks  / query.totalChunks);
-                let scheduler = _.isUndefined(query.scheduler) ? 'Other' : query.scheduler.substring('Sched'.length);
+                let scheduler = _.isUndefined(query.scheduler) ? 'Loading...' : query.scheduler.substring('Sched'.length);
                 let scheduler_color = _.has(this._scheduler2color, scheduler) ?
                     this._scheduler2color[scheduler] :
-                    this._scheduler2color['Other'];
+                    this._scheduler2color['Loading'];
 
                 let elapsed = this._elapsed(query.samplingTime_sec - query.queryBegin_sec);
                 let leftSeconds = 8 * 3600;
@@ -218,9 +218,9 @@ function(CSSLoader,
     </div>
   </th>
   <td style="background-color:${scheduler_color};">${scheduler}</td>
-  <td style="text-align:right; padding-top:0;">${elapsed}</td>
-  <td style="text-align:right; padding-top:0;">${left}${trend}</td>
-  <th scope="row" style="text-align:right; "><pre>${query.completedChunks}/${query.totalChunks}</pre></th>
+  <th style="text-align:right; padding-top:0; padding-left:10px;">${elapsed}</th>
+  <td style="text-align:right; padding-top:0; padding-left:10px;">${left}${trend}</td>
+  <th scope="row" style="text-align:right;  padding-left:10px;"><pre>${query.completedChunks}/${query.totalChunks}</pre></th>
   <td style="text-align:right;" ><pre>${performance}</pre></td>
   <th scope="row" style="text-align:right;"><pre>${query.queryId}</pre></th>
   <td><pre class="wrapped" style="color:#aaa">` + query.query + `</pre></td>
@@ -237,7 +237,7 @@ function(CSSLoader,
 <tr ${failedQueryCss}>
   <td style="padding-right:10px;"><pre>` + query.submitted + `</pre></td>
   <td style="padding-right:10px;"><pre>${query.status}</pre></td>
-  <td style="text-align:right; padding-top:0;">${elapsed}</td>
+  <th style="text-align:right; padding-top:0;">${elapsed}</th>
   <td><pre>` + query.qType + `</pre></td>
   <th scope="row" style="text-align:right;"><pre>${query.queryId}</pre></th>
   <td><pre class="wrapped" style="color:#aaa">` + query.query + `</pre></td>
@@ -254,12 +254,14 @@ function(CSSLoader,
             let hours   = Math.floor(totalSeconds / 3600);
             let minutes = Math.floor((totalSeconds - 3600 * hours) / 60);
             let seconds = (totalSeconds - 3600 * hours - 60 * minutes) % 60;
-            let hoursCssClass   = hours === 0 ?                 '' : 'class="significant"';
-            let minutesCssClass = hours === 0 && minutes == 0 ? '' : 'class="significant"';
-            let secondCssClass  =                                    'class="significant"';
-            return `<span ${hoursCssClass}  >` + (hours   < 10 ? '0' : '') + hours   + 'h&nbsp;</span>' +
-                   `<span ${minutesCssClass}>` + (minutes < 10 ? '0' : '') + minutes + 'm&nbsp;</span>' +
-                   `<span ${secondCssClass} >` + (seconds < 10 ? '0' : '') + seconds + 's</span>';
+            let displayHours   = hours !== 0;
+            let displayMinutes = displayHours || minutes !== 0;
+            let displaySeconds = true;
+            return '<span>' +
+                   (displayHours   ? (hours   < 10 ? '0' : '') + hours   + 'h' : '') + ' ' +
+                   (displayMinutes ? (minutes < 10 ? '0' : '') + minutes + 'm' : '') + ' ' +
+                   (displaySeconds ? (seconds < 10 ? '0' : '') + seconds + 's' : '') +
+                   '</span>';
         }
         
         /**
@@ -277,11 +279,11 @@ function(CSSLoader,
             let prevTotalSeconds = _.has(this._prevTotalSeconds, qid) ? this._prevTotalSeconds[qid] : nextTotalSeconds;
             this._prevTotalSeconds[qid] = nextTotalSeconds;
             if (prevTotalSeconds < nextTotalSeconds) {
-                return '<span class="trend_up">&uarr;</span>';
+                return '<span class="trend_up">&nbsp;&uarr;</span>';
             } else if (prevTotalSeconds > nextTotalSeconds) {
-                return '<span class="trend_down">&darr;</span>';
+                return '<span class="trend_down">&nbsp;&darr;</span>';
             }
-            return '&nbsp;';
+            return '&nbsp;&uarr;';
         }
 
         /**

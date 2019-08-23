@@ -5,7 +5,8 @@ canvas#fwk-status-activechunksmap {
 table#fwk-status-activechunksmap-table caption {
     caption-side:   top;
     text-align:     right;
-    padding-top:    0;
+    padding:        5px;
+    margin-bottom:  30px;
 }
 table#fwk-status-activechunksmap-table caption.updating {
     background-color: #ffeeba;
@@ -13,6 +14,12 @@ table#fwk-status-activechunksmap-table caption.updating {
 table#fwk-status-activechunksmap-table th,
 table#fwk-status-activechunksmap-table td {
     vertical-align: middle;
+}
+table#fwk-status-activechunksmap-table th.right-aligned,
+table#fwk-status-activechunksmap-table th pre.right-aligned,
+table#fwk-status-activechunksmap-table td.right-aligned,
+table#fwk-status-activechunksmap-table td pre.right-aligned {
+    text-align: right;
 }
 
 table#fwk-status-activechunksmap-table th pre,
