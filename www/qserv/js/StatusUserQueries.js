@@ -197,7 +197,7 @@ function(CSSLoader,
                     this._scheduler2color['Loading'];
 
                 let elapsed = this._elapsed(query.samplingTime_sec - query.queryBegin_sec);
-                let leftSeconds = 8 * 3600;
+                let leftSeconds;
                 if (query.completedChunks > 0 && query.samplingTime_sec - query.queryBegin_sec > 0) {
                     leftSeconds = Math.floor(
                             (query.totalChunks - query.completedChunks) /
@@ -251,6 +251,7 @@ function(CSSLoader,
          * @returns {String} the amount of time elapsed by a query, formatted as: 'hh:mm:ss'
          */
         _elapsed(totalSeconds) {
+            if (_.isUndefined(totalSeconds)) return '<span>&nbsp;</span>';
             let hours   = Math.floor(totalSeconds / 3600);
             let minutes = Math.floor((totalSeconds - 3600 * hours) / 60);
             let seconds = (totalSeconds - 3600 * hours - 60 * minutes) % 60;
@@ -273,17 +274,19 @@ function(CSSLoader,
          * @returns {String} an arrow indicating the trend to slow down or accelerate
          */
         _trend(qid, nextTotalSeconds) {
-            if (this._prevTotalSeconds === undefined) {
-                this._prevTotalSeconds = {};
+            if (!_.isUndefined(nextTotalSeconds)) {
+                if (this._prevTotalSeconds === undefined) {
+                    this._prevTotalSeconds = {};
+                }
+                let prevTotalSeconds = _.has(this._prevTotalSeconds, qid) ? this._prevTotalSeconds[qid] : nextTotalSeconds;
+                this._prevTotalSeconds[qid] = nextTotalSeconds;
+                if (prevTotalSeconds < nextTotalSeconds) {
+                    return '<span class="trend_up">&nbsp;&uarr;</span>';
+                } else if (prevTotalSeconds > nextTotalSeconds) {
+                    return '<span class="trend_down">&nbsp;&darr;</span>';
+                }
             }
-            let prevTotalSeconds = _.has(this._prevTotalSeconds, qid) ? this._prevTotalSeconds[qid] : nextTotalSeconds;
-            this._prevTotalSeconds[qid] = nextTotalSeconds;
-            if (prevTotalSeconds < nextTotalSeconds) {
-                return '<span class="trend_up">&nbsp;&uarr;</span>';
-            } else if (prevTotalSeconds > nextTotalSeconds) {
-                return '<span class="trend_down">&nbsp;&darr;</span>';
-            }
-            return '&nbsp;&uarr;';
+            return '<span>&nbsp;&nbsp;</span>';
         }
 
         /**

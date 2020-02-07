@@ -91,7 +91,9 @@
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
+    <itemPath>www/info.html</itemPath>
     <itemPath>www/main.js</itemPath>
+    <itemPath>www/webfwk/t.html</itemPath>
     <itemPath>www/webfwk/ws/table_data.json</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>

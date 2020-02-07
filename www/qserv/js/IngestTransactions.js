@@ -98,7 +98,7 @@ function(CSSLoader,
 
             Fwk.web_service_GET(
                 "/ingest/v1/trans",
-                {family: '', all_databases: 1},
+                {family: '', all_databases: 0, is_published: 0},
                 (data) => {
                     this._display(data.databases);
                     Fwk.setLastUpdate(this._table().children('caption'));

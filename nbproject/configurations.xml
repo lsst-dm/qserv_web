@@ -45,7 +45,9 @@
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
+    <itemPath>www/info.html</itemPath>
     <itemPath>www/main.js</itemPath>
+    <itemPath>www/webfwk/t.html</itemPath>
     <itemPath>www/webfwk/ws/table_data.json</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
@@ -95,6 +97,8 @@
       <item path="www/fwk.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/index1.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/info.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/js/fwk_main.js" ex="false" tool="3" flavor2="0">
       </item>
@@ -209,6 +213,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="www/webfwk/t.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/ws/table_data.json" ex="false" tool="3" flavor2="0">
       </item>
