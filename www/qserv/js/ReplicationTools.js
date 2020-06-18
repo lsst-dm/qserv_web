@@ -6,7 +6,8 @@ define([
 
 function(CSSLoader,
          Fwk,
-         FwkApplication) {
+         FwkApplication,
+         _) {
 
     CSSLoader.load('qserv/css/ReplicationTools.css');
 

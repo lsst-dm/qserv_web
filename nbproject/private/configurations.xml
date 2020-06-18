@@ -2,42 +2,6 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name="html">
-        <df name="css">
-        </df>
-        <df name="img">
-        </df>
-        <df name="js">
-        </df>
-        <df name="ws">
-        </df>
-      </df>
-      <df name="webfwk_old">
-        <df name="html">
-          <df name="css">
-            <df name="jquery-ui-1.10.3">
-              <df name="images">
-              </df>
-            </df>
-          </df>
-          <df name="img">
-          </df>
-          <df name="js">
-            <df name="libs">
-              <df name="jquery-1.9.0">
-              </df>
-              <df name="jquery-ui-1.10.3">
-              </df>
-            </df>
-          </df>
-          <df name="lib">
-            <df name="webfwk">
-            </df>
-          </df>
-          <df name="ws">
-          </df>
-        </df>
-      </df>
       <df name="www">
         <df name="qserv">
           <df name="css">
@@ -88,13 +52,28 @@
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/qserv/css/ToolsSql.css</itemPath>
     <itemPath>www/qserv/js/ToolsSql.js</itemPath>
+    <itemPath>www/census-2020.css</itemPath>
+    <itemPath>www/census-2020.html</itemPath>
+    <itemPath>www/census-2020.js</itemPath>
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
     <itemPath>www/info.html</itemPath>
     <itemPath>www/main.js</itemPath>
+    <itemPath>www/newcss.css</itemPath>
+    <itemPath>www/newcss1.css</itemPath>
+    <itemPath>www/newjavascript.js</itemPath>
+    <itemPath>newjavascript.js</itemPath>
+    <itemPath>www/newjavascript1.js</itemPath>
+    <itemPath>www/newjavascript2.js</itemPath>
+    <itemPath>www/newjavascript3.js</itemPath>
+    <itemPath>www/newjavascript4.js</itemPath>
+    <itemPath>www/pt.html</itemPath>
+    <itemPath>www/pt1.html</itemPath>
+    <itemPath>www/pt2.html</itemPath>
     <itemPath>www/webfwk/t.html</itemPath>
     <itemPath>www/webfwk/ws/table_data.json</itemPath>
+    <itemPath>www/test_bootstrap.html</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
   </logicalFolder>

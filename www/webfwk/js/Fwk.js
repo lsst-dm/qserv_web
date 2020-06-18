@@ -6,7 +6,8 @@ define([
 
 function(Class,
          CSSLoader,
-         FwkApplication) {
+         FwkApplication,
+         _) {
 
     CSSLoader.load('webfwk/css/Fwk.css');
 

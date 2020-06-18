@@ -42,13 +42,28 @@
     <itemPath>www/qserv/js/StatusWorkers.js</itemPath>
     <itemPath>www/qserv/css/ToolsSql.css</itemPath>
     <itemPath>www/qserv/js/ToolsSql.js</itemPath>
+    <itemPath>www/census-2020.css</itemPath>
+    <itemPath>www/census-2020.html</itemPath>
+    <itemPath>www/census-2020.js</itemPath>
     <itemPath>www/fwk.html</itemPath>
     <itemPath>www/js/fwk_main.js</itemPath>
     <itemPath>www/index1.html</itemPath>
     <itemPath>www/info.html</itemPath>
     <itemPath>www/main.js</itemPath>
+    <itemPath>www/newcss.css</itemPath>
+    <itemPath>www/newcss1.css</itemPath>
+    <itemPath>www/newjavascript.js</itemPath>
+    <itemPath>newjavascript.js</itemPath>
+    <itemPath>www/newjavascript1.js</itemPath>
+    <itemPath>www/newjavascript2.js</itemPath>
+    <itemPath>www/newjavascript3.js</itemPath>
+    <itemPath>www/newjavascript4.js</itemPath>
+    <itemPath>www/pt.html</itemPath>
+    <itemPath>www/pt1.html</itemPath>
+    <itemPath>www/pt2.html</itemPath>
     <itemPath>www/webfwk/t.html</itemPath>
     <itemPath>www/webfwk/ws/table_data.json</itemPath>
+    <itemPath>www/test_bootstrap.html</itemPath>
     <itemPath>www/webfwk/html/test_simpletable.html</itemPath>
     <itemPath>html/webfwk/js/test_simpletable_main.js</itemPath>
   </logicalFolder>
@@ -94,6 +109,14 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="newjavascript.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/census-2020.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/census-2020.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/census-2020.js" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="www/fwk.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/index1.html" ex="false" tool="3" flavor2="0">
@@ -103,6 +126,26 @@
       <item path="www/js/fwk_main.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/main.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newcss.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newcss1.css" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newjavascript.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newjavascript1.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newjavascript2.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newjavascript3.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/newjavascript4.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/pt.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/pt1.html" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/pt2.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/css/ControllerOperations.css"
             ex="false"
@@ -185,6 +228,8 @@
       <item path="www/qserv/js/StatusWorkers.js" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/qserv/js/ToolsSql.js" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="www/test_bootstrap.html" ex="false" tool="3" flavor2="0">
       </item>
       <item path="www/webfwk/css/Fwk.css" ex="false" tool="3" flavor2="0">
       </item>

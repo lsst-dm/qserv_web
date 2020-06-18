@@ -5,7 +5,8 @@ define([
     'underscore'],
 function (CSSLoader,
         Fwk,
-        FwkApplication) {
+        FwkApplication,
+        _) {
 
     CSSLoader.load('qserv/css/StatusCatalogs.css');
 

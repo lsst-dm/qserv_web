@@ -13,11 +13,20 @@ require.config({
         'qserv':      'qserv/js'
     },
     shim: {
-        'bootstrap':  {
-            deps: ['jquery']
+        'jquery':  {
+            'deps': ['underscore']
         },
+        'bootstrap':  {
+            'deps': ['jquery','underscore']
+        },/*
+        'webfwk/*': {
+            'deps': ['underscore']
+        },
+        'qserv/*': {
+            'deps': ['underscore']
+        },*/
         'underscore': {
-            exports: '_'
+            'exports': '_'
         }
     }
 });
