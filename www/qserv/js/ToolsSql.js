@@ -148,7 +148,7 @@ function(CSSLoader,
             if (this._table().children('caption').html() === '') this._table().children('caption').html('updating...');
             this._table().children('caption').removeClass('error').addClass('updating');
             Fwk.web_service_POST(
-                "/replication/v1/sql/query",
+                "/replication/sql/query",
                 {   'worker':   this._worker().val(),
                     'user':     this._user().val(),
                     'password': this._password().val(),

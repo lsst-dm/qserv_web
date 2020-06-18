@@ -166,7 +166,7 @@ function(CSSLoader,
 
             this._tableQueries().children('caption').addClass('updating');
             Fwk.web_service_GET(
-                "/replication/v1/qserv/master/query",
+                "/replication/qserv/master/query",
                 {limit4past: StatusUserQueries.limit4past(),timeout_sec: 2},
                 (data) => {
                     this._display(data);

@@ -236,7 +236,7 @@ function (CSSLoader,
             this._databases().children('caption').addClass('updating');
 
             Fwk.web_service_GET(
-                "/replication/v1/catalogs",
+                "/replication/catalogs",
                 {},
                 (data) => {
                     this._display(data.databases);

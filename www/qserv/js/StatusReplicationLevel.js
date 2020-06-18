@@ -171,7 +171,7 @@ function(CSSLoader,
             this._table().children('caption').addClass('updating');
 
             Fwk.web_service_GET(
-                "/replication/v1/level",
+                "/replication/level",
                 {},
                 (data) => {
                     let html = "";

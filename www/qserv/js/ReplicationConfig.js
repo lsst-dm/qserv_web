@@ -185,7 +185,7 @@ function(CSSLoader,
 
             this._tableGeneral().children('caption').addClass('updating');
             Fwk.web_service_GET(
-                "/replication/v1/config",
+                "/replication/config",
                 {},
                 (data) => {
                     this._display(data.config);

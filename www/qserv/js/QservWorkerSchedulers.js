@@ -98,7 +98,7 @@ function(CSSLoader,
             this._table().children('caption').addClass('updating');
 
             Fwk.web_service_GET(
-                "/replication/v1/qserv/worker/status",
+                "/replication/qserv/worker/status",
                 {'timeout_sec': 2},
                 (data) => {
                     this._display(data.status);

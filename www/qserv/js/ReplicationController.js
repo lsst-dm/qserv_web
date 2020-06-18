@@ -199,7 +199,7 @@ function(CSSLoader,
 
             // Get info on the Master Repliction Controller
             Fwk.web_service_GET(
-                "/replication/v1/controller",
+                "/replication/controller",
                 {},
                 (data) => {
                     for (let i in data.controllers) {
@@ -211,7 +211,7 @@ function(CSSLoader,
 
                             // Laad the Controler's log as well
                             Fwk.web_service_GET(
-                                "/replication/v1/controller/" + info.id,
+                                "/replication/controller/" + info.id,
                                 {   "log": 1,
                                     "log_from": this._prevTimestamp + 1     // 1ms later
                                 },
