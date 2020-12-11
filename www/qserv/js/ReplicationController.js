@@ -18,6 +18,12 @@ function(CSSLoader,
          */ 
         static update_ival_sec() { return 10; }
 
+        /**
+         * @return the maximum number of events to be returned from the Controller's
+         *   log in each request.
+         */
+        static max_log_events() { return 1000; }
+
         constructor(name) {
             super(name);
         }
@@ -213,7 +219,8 @@ function(CSSLoader,
                             Fwk.web_service_GET(
                                 "/replication/controller/" + info.id,
                                 {   "log": 1,
-                                    "log_from": this._prevTimestamp + 1     // 1ms later
+                                    "log_from": this._prevTimestamp + 1,     // 1ms later
+                                    "log_max_events": ReplicationController.max_log_events()
                                 },
                                 (data) => {
                                     if (data.log.length > 0) {
