@@ -56,18 +56,30 @@ function(CSSLoader,
             this._initialized = true;
             this._prevTimestamp = 0;
 
+            /* <span style="color:maroon">&sum;</span>&nbsp; */
+
             let html = `
 <div class="row">
   <div class="col">
     <table class="table table-sm table-hover table-bordered" id="fwk-ingest-transactions">
       <thead class="thead-light">
         <tr>
-          <th>database</th>
-          <th class="right-aligned">#chunks</th>
-          <th class="right-aligned">id</th>
-          <th class="center-aligned">state</th>
-          <th>begin time</th>
-          <th>commit/abort time</th>
+          <th rowspan="2">database</th>
+          <th rowspan="2" class="right-aligned">allocated chunks</th>
+          <th rowspan="2" class="right-aligned">id</th>
+          <th rowspan="2" class="center-aligned">state</th>
+          <th rowspan="2">begin time</th>
+          <th rowspan="2">commit/abort time</th>
+          <th colspan="7" class="center-aligned">transaction contributions</th>
+        </tr>
+        <tr>
+          <th class="right-aligned">workers</th>
+          <th class="right-aligned">reg.</th>
+          <th class="right-aligned">chunks</th>
+          <th class="right-aligned">overlaps</th>
+          <th class="right-aligned">files</th>
+          <th class="right-aligned">rows</th>
+          <th class="right-aligned">data [GB]</th>
         </tr>
       </thead>
       <caption class="updating">Loading...</caption>
@@ -98,7 +110,7 @@ function(CSSLoader,
 
             Fwk.web_service_GET(
                 "/ingest/trans",
-                {family: '', all_databases: 0, is_published: 0},
+                {family: '', all_databases: 0, is_published: 0, contrib: 1, contrib_long: 0},
                 (data) => {
                     this._display(data.databases);
                     Fwk.setLastUpdate(this._table().children('caption'));
@@ -180,12 +192,26 @@ function(CSSLoader,
                         }
                         let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
                         let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
+                        let numWorkers = transactionInfo.contrib.summary.num_workers;
+                        let numRegular = transactionInfo.contrib.summary.num_regular_files;
+                        let numChunks = transactionInfo.contrib.summary.num_chunk_files;
+                        let numChunkOverlaps = transactionInfo.contrib.summary.num_chunk_overlap_files;
+                        let numFiles = numRegular + numChunks + numChunkOverlaps;
+                        let numRows = transactionInfo.contrib.summary.num_rows;
+                        let dataSize = transactionInfo.contrib.summary.data_size_gb.toFixed(2);
                         html += `
 <tr>
   <th class="right-aligned"><pre>${transactionInfo.id}</pre></th>
-  <td class=" center-aligned ${transactionCssClass}"><pre>${transactionInfo.state}</pre></th>
-  <td><pre>${beginTimeStr}</pre></th>
-  <td><pre>${endTimeStr}</pre></th>
+  <td class="center-aligned ${transactionCssClass}"><pre>${transactionInfo.state}</pre></th>
+  <td class="right-aligned"><pre>${beginTimeStr}</pre></th>
+  <td class="right-aligned"><pre>${endTimeStr}</pre></th>
+  <td class="right-aligned"><pre>${numWorkers}</pre></th>
+  <td class="right-aligned"><pre>${numRegular}</pre></th>
+  <td class="right-aligned"><pre>${numChunks}</pre></th>
+  <td class="right-aligned"><pre>${numChunkOverlaps}</pre></th>
+  <td class="right-aligned"><pre>${numFiles}</pre></th>
+  <td class="right-aligned"><pre>${numRows}</pre></th>
+  <td class="right-aligned"><pre>${dataSize}</pre></th>
 </tr>`;
                     }
                 }
