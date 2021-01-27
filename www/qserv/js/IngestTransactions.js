@@ -63,7 +63,6 @@ function(CSSLoader,
       <thead class="thead-light">
         <tr>
           <th>database</th>
-          <th class="right-aligned">published</th>
           <th class="right-aligned">#chunks</th>
           <th class="right-aligned">id</th>
           <th class="center-aligned">state</th>
@@ -130,7 +129,13 @@ function(CSSLoader,
                 /* The mapping function will return an array of descriptors */
                 _.map(
                     databases,
-                    function(databaseInfo) { return databaseInfo; }
+                    function(databaseInfo, database) {
+                        // Inject database name into the object since it will be lost
+                        // after translating the dictonary into a list. Note that database
+                        // names serve as keys in the dictionary.
+                        databaseInfo.name = database;
+                        return databaseInfo;
+                    }
                 ),
                 function(databaseInfo) {
                     /* The reduction function will return the maximum transaction identifier,
@@ -142,20 +147,18 @@ function(CSSLoader,
                     );
                 }
             ).reverse();
-
+            console.log(listOfDatabases);
             let html = '';
             for (let databaseIdx in listOfDatabases) {
                 let databaseInfo = listOfDatabases[databaseIdx];
-                let database = databaseInfo.info.name;
-                let rowCssStyle = databaseInfo.info.is_published ? ' style="background-color: #f8f8f8;" ' : '';
+                let database = databaseInfo.name;
                 if (databaseInfo.transactions.length === 0) {
                     html += `
-<tr ${rowCssStyle}>
+<tr>
   <th rowspan="2"><pre>${database}</pre></th>
-  <td rowspan="2" class="right-aligned"><pre>${databaseInfo.info.is_published ? 'yes': 'no'}</pre></td>
   <td rowspan="2" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
 </tr>
-<tr ${rowCssStyle}>
+<tr>
   <th>&nbsp;</th>
   <td>&nbsp;</th>
   <td>&nbsp;</th>
@@ -163,13 +166,12 @@ function(CSSLoader,
 </tr>`;
                 } else {
                     html += `
-<tr ${rowCssStyle}>
+<tr>
   <th rowspan="${databaseInfo.transactions.length+1}"><pre>${database}</pre></th>
-  <td rowspan="${databaseInfo.transactions.length+1}" class="right-aligned"><pre>${databaseInfo.info.is_published ? 'yes': 'no'}</pre></td>
   <td rowspan="${databaseInfo.transactions.length+1}" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
 </tr>`;
-                    for (let i in databaseInfo.transactions) {
-                        let transactionInfo = databaseInfo.transactions[i];
+                    for (let transactionIdx in databaseInfo.transactions) {
+                        let transactionInfo = databaseInfo.transactions[transactionIdx];
                         let transactionCssClass = 'bg-white';
                         switch (transactionInfo.state) {
                             case 'STARTED':  transactionCssClass = 'bg-transparent'; break;
@@ -179,7 +181,7 @@ function(CSSLoader,
                         let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
                         let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
                         html += `
-<tr ${rowCssStyle}>
+<tr>
   <th class="right-aligned"><pre>${transactionInfo.id}</pre></th>
   <td class=" center-aligned ${transactionCssClass}"><pre>${transactionInfo.state}</pre></th>
   <td><pre>${beginTimeStr}</pre></th>
