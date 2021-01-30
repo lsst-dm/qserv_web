@@ -1,0 +1,24 @@
+table#fwk-ingest-contributions caption {
+    caption-side:   top;
+    text-align:     right;
+    padding-top:    0;
+}
+table#fwk-ingest-contributions th.right-aligned,
+table#fwk-ingest-contributions td.right-aligned {
+    text-align:     right;
+}
+table#fwk-ingest-contributions th.center-aligned,
+table#fwk-ingest-contributions td.center-aligned {
+    text-align: center;
+}
+table#fwk-ingest-contributions tbody th,
+table#fwk-ingest-contributions tbody td {
+    vertical-align:middle;
+}
+table#fwk-ingest-contributions pre {
+    padding: 0;
+    margin: 0;
+}
+table#fwk-ingest-contributions caption.updating {
+    background-color: #ffeeba;
+}

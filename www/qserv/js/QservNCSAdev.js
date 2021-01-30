@@ -46,7 +46,9 @@ require([
     'qserv/ReplicationController',
     'qserv/ReplicationTools',
     'qserv/ReplicationConfig',
+    'qserv/IngestStatus',
     'qserv/IngestTransactions',
+    'qserv/IngestContributions',
     'qserv/ToolsSql',
 
     // Make sure the core libraries are preloaded so that the applications
@@ -70,7 +72,9 @@ function(CSSLoader,
          ReplicationController,
          ReplicationTools,
          ReplicationConfig,
+         IngestStatus,
          IngestTransactions,
+         IngestContributions,
          ToolsSql) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
@@ -118,7 +122,9 @@ function(CSSLoader,
             },
             {   name: 'Ingest',
                 apps: [
-                    new IngestTransactions('Transactions')
+                    new IngestStatus('Status'),
+                    new IngestTransactions('Transactions'),
+                    new IngestContributions('Contributions')
                 ]
             },
             {   name: 'Tools',

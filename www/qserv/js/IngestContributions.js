@@ -9,9 +9,9 @@ function(CSSLoader,
          FwkApplication,
          _) {
 
-    CSSLoader.load('qserv/css/IngestTransactions.css');
+    CSSLoader.load('qserv/css/IngestContributions.css');
 
-    class IngestTransactions extends FwkApplication {
+    class IngestContributions extends FwkApplication {
 
 
         /// @returns the default update interval for the page
@@ -39,7 +39,7 @@ function(CSSLoader,
                     this._prev_update_sec = 0;
                 }
                 let now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > IngestTransactions.update_ival_sec()) {
+                if (now_sec - this._prev_update_sec > IngestContributions.update_ival_sec()) {
                     this._prev_update_sec = now_sec;
                     this._init();
                     this._load();
@@ -61,10 +61,11 @@ function(CSSLoader,
             let html = `
 <div class="row">
   <div class="col">
-    <table class="table table-sm table-hover table-bordered" id="fwk-ingest-transactions">
+    <table class="table table-sm table-hover table-bordered" id="fwk-ingest-contributions">
       <thead class="thead-light">
         <tr>
           <th rowspan="2">database</th>
+          <th rowspan="2" class="right-aligned">allocated chunks</th>
           <th rowspan="2" class="right-aligned">id</th>
           <th rowspan="2" class="center-aligned">state</th>
           <th rowspan="2">begin time</th>
@@ -92,7 +93,7 @@ function(CSSLoader,
         /// @returns JQuery table object displaying the transactions
         _table() {
             if (this._table_obj === undefined) {
-                this._table_obj = this.fwk_app_container.find('table#fwk-ingest-transactions');
+                this._table_obj = this.fwk_app_container.find('table#fwk-ingest-contributions');
             }
             return this._table_obj;
         }
@@ -167,6 +168,7 @@ function(CSSLoader,
                     html += `
 <tr>
   <th rowspan="2"><pre>${database}</pre></th>
+  <td rowspan="2" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
 </tr>
 <tr>
   <th>&nbsp;</th>
@@ -178,6 +180,7 @@ function(CSSLoader,
                     html += `
 <tr>
   <th rowspan="${databaseInfo.transactions.length+1}"><pre>${database}</pre></th>
+  <td rowspan="${databaseInfo.transactions.length+1}" class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td>
 </tr>`;
                     for (let transactionIdx in databaseInfo.transactions) {
                         let transactionInfo = databaseInfo.transactions[transactionIdx];
@@ -216,5 +219,5 @@ function(CSSLoader,
             this._table().children('tbody').html(html);
         }
     }
-    return IngestTransactions;
+    return IngestContributions;
 });
