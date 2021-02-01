@@ -37,7 +37,7 @@ function(Class,
                        ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
             case 'short':
             default:
-                return this.getFullYear()+'-'+this.pad(this.getMonth())+'-'+this.pad(this.getDate())+
+                return this.getFullYear()+'-'+this.pad(1 + this.getMonth())+'-'+this.pad(this.getDate())+
                        ' ' +this.pad(this.getHours())+':'+this.pad(this.getMinutes())+':'+this.pad(this.getSeconds());
         }
     };
