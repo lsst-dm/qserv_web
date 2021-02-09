@@ -148,7 +148,7 @@ function(CSSLoader,
             }
         ];
         Fwk.build(
-            'Qserv [NCSA dev]',
+            'Qserv',
             apps,
             function() {
                 let menus = parseURLParameters();
