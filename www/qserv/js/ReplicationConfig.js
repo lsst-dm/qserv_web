@@ -242,14 +242,24 @@ function(CSSLoader,
             }
             this._tableWorkers().children('tbody').html(html);
 
+            // Inject database entries into the corresponding families
+            for (let i in config.database_families) {
+                let family = config.database_families[i];
+                config.database_families[family.name]['databases'] = {};
+            }
+            for (let i in config.databases) {
+                let database = config.databases[i];
+                config.database_families[database.family_name]['databases'][database.database] = database;
+            }
+
             html = '';
-            for (let i in config.families) {
-                let family = config.families[i];
+            for (let i in config.database_families) {
+                let family = config.database_families[i];
                 let familyRowSpan = 1;
 
                 let familyHtml = '';
-                for (let j in family.databases) {
-                    let database = family.databases[j];
+                for (let j in family['databases']) {
+                    let database = family['databases'][j];
                     let databaseRowSpan = 1;
                     familyRowSpan += databaseRowSpan;
 
@@ -266,7 +276,7 @@ function(CSSLoader,
                     }
                     familyHtml += `
 <tr style="border-bottom: solid 1px #dee2e6">
-  <td rowspan="${databaseRowSpan}" style="vertical-align:middle;">${database.name}</td>
+  <td rowspan="${databaseRowSpan}" style="vertical-align:middle;">${database.database}</td>
   <td rowspan="${databaseRowSpan}" style="vertical-align:middle; border-right: solid 1px #dee2e6">${database.is_published ? 'yes' : 'no'}</td>
 </tr>` + databaseHtml;
                 }
