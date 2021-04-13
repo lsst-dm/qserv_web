@@ -191,7 +191,7 @@ function(CSSLoader,
                 "/replication/config",
                 {},
                 (data) => {
-                    this._display(data.config);
+                    this._display(data);
                     Fwk.setLastUpdate(this._tableGeneral().children('caption'));
                     this._tableGeneral().children('caption').removeClass('updating');
                     this._loading = false;
@@ -208,17 +208,19 @@ function(CSSLoader,
         /**
          * Display the configuration
          */
-        _display(config) {
-
+        _display(data) {
+            const config = data.config;
             let html = '';
-            for (let i in config.general) {
-                let param = config.general[i];
-                html += `
+            for (const category in config.general) {
+                for (const param in config.general[category]) {
+                    const value = config.general[category][param];
+                    html += `
 <tr>
-  <th style="text-align:left" scope="row"><pre>` + param.parameter + `</pre></th>
-  <td><pre>` + param.value + `</pre></td>
-  <td>` + param.description + `</td>
+  <th style="text-align:left" scope="row"><pre>` + category + '.' + param + `</pre></th>
+  <td><pre>` + value + `</pre></td>
+  <td>` + config.meta[category][param].description + `</td>
 </tr>`;
+                }
             }
             this._tableGeneral().children('tbody').html(html);
 
@@ -249,24 +251,30 @@ function(CSSLoader,
             }
             this._tableWorkers().children('tbody').html(html);
 
-            // Inject database entries into the corresponding families
+            // Organize family descriptors as a dictionary where the key would be
+            // the name of a family. Extend each family descriptor with an array
+            // storying the dependent database descriptors.
+            // will get stored
+            let families = {};
             for (let i in config.database_families) {
-                let family = config.database_families[i];
-                config.database_families[family.name]['databases'] = {};
+                let familyInfo = config.database_families[i];
+                familyInfo['databases'] = [];
+                families[familyInfo.name] = familyInfo;
             }
             for (let i in config.databases) {
-                let database = config.databases[i];
-                config.database_families[database.family_name]['databases'][database.database] = database;
+                let databaseInfo = config.databases[i];
+                families[databaseInfo.family_name]['databases'].push(databaseInfo);
             }
 
             html = '';
-            for (let i in config.database_families) {
-                let family = config.database_families[i];
+            for (let i in families) {
+                let family = families[i];
                 let familyRowSpan = 1;
 
                 let familyHtml = '';
                 for (let j in family['databases']) {
                     let database = family['databases'][j];
+console.log(database);
                     let databaseRowSpan = 1;
                     familyRowSpan += databaseRowSpan;
 
