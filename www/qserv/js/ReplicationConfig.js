@@ -98,15 +98,18 @@ function(CSSLoader,
           <th>name</th>
           <th>enabled</th>
           <th>read-only</th>
-          <th>Data directory</th>
-          <th>Replication server</th>
-          <th>port</th>
-          <th>File server</th>
-          <th>port</th>
-          <th>Database server</th>
-          <th>port</th>
-          <th>Ingest server</th>
-          <th>port</th>
+          <th>Repl svc</th>
+          <th>:port</th>
+          <th>File svc</th>
+          <th>:port</th>
+          <th>Qserv Db svc</th>
+          <th>:port</th>
+          <th>Ingest svc</th>
+          <th>:port</th>
+          <th>Exporter svc</th>
+          <th>:port</th>
+          <th>HTTP Ingest svc</th>
+          <th>:port</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -188,7 +191,7 @@ function(CSSLoader,
                 "/replication/config",
                 {},
                 (data) => {
-                    this._display(data.config);
+                    this._display(data);
                     Fwk.setLastUpdate(this._tableGeneral().children('caption'));
                     this._tableGeneral().children('caption').removeClass('updating');
                     this._loading = false;
@@ -205,17 +208,19 @@ function(CSSLoader,
         /**
          * Display the configuration
          */
-        _display(config) {
-
+        _display(data) {
+            const config = data.config;
             let html = '';
-            for (let i in config.general) {
-                let param = config.general[i];
-                html += `
+            for (const category in config.general) {
+                for (const param in config.general[category]) {
+                    const value = config.general[category][param];
+                    html += `
 <tr>
-  <th style="text-align:left" scope="row"><pre>` + param.parameter + `</pre></th>
-  <td><pre>` + param.value + `</pre></td>
-  <td>` + param.description + `</td>
+  <th style="text-align:left" scope="row"><pre>` + category + '.' + param + `</pre></th>
+  <td><pre>` + value + `</pre></td>
+  <td>` + config.meta[category][param].description + `</td>
 </tr>`;
+                }
             }
             this._tableGeneral().children('tbody').html(html);
 
@@ -229,7 +234,6 @@ function(CSSLoader,
   <th style="text-align:left" scope="row"><pre>` + worker.name + `</pre></th>
   <td ` + workerEnabledCssClass  + `><pre>` + (worker.is_enabled ? 'yes' : 'no') + `</pre></td>
   <td ` + workerReadOnlyCssClass + `><pre>` + (worker.is_read_only ? 'yes' : 'no') + `</pre></td>
-  <td><pre>` + worker.data_dir + `</pre></td>
   <td><pre>` + worker.svc_host + `</pre></td>
   <td><pre>` + worker.svc_port + `</pre></td>
   <td><pre>` + worker.fs_host + `</pre></td>
@@ -238,18 +242,39 @@ function(CSSLoader,
   <td><pre>` + worker.db_port + `</pre></td>
   <td><pre>` + worker.loader_host + `</pre></td>
   <td><pre>` + worker.loader_port + `</pre></td>
+  <td><pre>` + worker.exporter_host + `</pre></td>
+  <td><pre>` + worker.exporter_port + `</pre></td>
+  <td><pre>` + worker.http_loader_host + `</pre></td>
+  <td><pre>` + worker.http_loader_port + `</pre></td>
+
 </tr>`;
             }
             this._tableWorkers().children('tbody').html(html);
 
+            // Organize family descriptors as a dictionary where the key would be
+            // the name of a family. Extend each family descriptor with an array
+            // storying the dependent database descriptors.
+            // will get stored
+            let families = {};
+            for (let i in config.database_families) {
+                let familyInfo = config.database_families[i];
+                familyInfo['databases'] = [];
+                families[familyInfo.name] = familyInfo;
+            }
+            for (let i in config.databases) {
+                let databaseInfo = config.databases[i];
+                families[databaseInfo.family_name]['databases'].push(databaseInfo);
+            }
+
             html = '';
-            for (let i in config.families) {
-                let family = config.families[i];
+            for (let i in families) {
+                let family = families[i];
                 let familyRowSpan = 1;
 
                 let familyHtml = '';
-                for (let j in family.databases) {
-                    let database = family.databases[j];
+                for (let j in family['databases']) {
+                    let database = family['databases'][j];
+console.log(database);
                     let databaseRowSpan = 1;
                     familyRowSpan += databaseRowSpan;
 
@@ -266,7 +291,7 @@ function(CSSLoader,
                     }
                     familyHtml += `
 <tr style="border-bottom: solid 1px #dee2e6">
-  <td rowspan="${databaseRowSpan}" style="vertical-align:middle;">${database.name}</td>
+  <td rowspan="${databaseRowSpan}" style="vertical-align:middle;">${database.database}</td>
   <td rowspan="${databaseRowSpan}" style="vertical-align:middle; border-right: solid 1px #dee2e6">${database.is_published ? 'yes' : 'no'}</td>
 </tr>` + databaseHtml;
                 }
