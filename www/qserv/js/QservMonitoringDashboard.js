@@ -8,7 +8,7 @@ require.config({
     paths: {
         'jquery':     'https://code.jquery.com/jquery-3.3.1',
         'bootstrap':  'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle',
-        'underscore': 'https://underscorejs.org/underscore-min',
+        'underscore': 'https://underscorejs.org/underscore-umd-min',
         'webfwk':     'webfwk/js',
         'qserv':      'qserv/js'
     },
