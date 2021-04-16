@@ -99,17 +99,10 @@ function(CSSLoader,
           <th>enabled</th>
           <th>read-only</th>
           <th>Repl svc</th>
-          <th>:port</th>
           <th>File svc</th>
-          <th>:port</th>
-          <th>Qserv Db svc</th>
-          <th>:port</th>
           <th>Ingest svc</th>
-          <th>:port</th>
           <th>Exporter svc</th>
-          <th>:port</th>
           <th>HTTP Ingest svc</th>
-          <th>:port</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -234,19 +227,11 @@ function(CSSLoader,
   <th style="text-align:left" scope="row"><pre>` + worker.name + `</pre></th>
   <td ` + workerEnabledCssClass  + `><pre>` + (worker.is_enabled ? 'yes' : 'no') + `</pre></td>
   <td ` + workerReadOnlyCssClass + `><pre>` + (worker.is_read_only ? 'yes' : 'no') + `</pre></td>
-  <td><pre>` + worker.svc_host + `</pre></td>
-  <td><pre>` + worker.svc_port + `</pre></td>
-  <td><pre>` + worker.fs_host + `</pre></td>
-  <td><pre>` + worker.fs_port + `</pre></td>
-  <td><pre>` + worker.db_host + `</pre></td>
-  <td><pre>` + worker.db_port + `</pre></td>
-  <td><pre>` + worker.loader_host + `</pre></td>
-  <td><pre>` + worker.loader_port + `</pre></td>
-  <td><pre>` + worker.exporter_host + `</pre></td>
-  <td><pre>` + worker.exporter_port + `</pre></td>
-  <td><pre>` + worker.http_loader_host + `</pre></td>
-  <td><pre>` + worker.http_loader_port + `</pre></td>
-
+  <td><pre>` + worker.svc_host + `:` + worker.svc_port + `</pre></td>
+  <td><pre>` + worker.fs_host + `:` + worker.fs_port + `</pre></td>
+  <td><pre>` + worker.loader_host + `:` + worker.loader_port + `</pre></td>
+  <td><pre>` + worker.exporter_host + `:` + worker.exporter_port + `</pre></td>
+  <td><pre>` + worker.http_loader_host + `:` + worker.http_loader_port + `</pre></td>
 </tr>`;
             }
             this._tableWorkers().children('tbody').html(html);
