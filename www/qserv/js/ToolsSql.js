@@ -71,16 +71,19 @@ function(CSSLoader,
     </div>
   </div>
   <div class="row">
-    <div class="col-3">
+    <div class="col-2">
       <input type="text" class="form-control" placeholder="Worker" id="worker">
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <input type="text" class="form-control" placeholder="User" id="user">
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <input type="password" class="form-control" placeholder="Password" id="password">
     </div>
-    <div class="col-3">
+    <div class="col-2">
+      <input type="password" class="form-control" placeholder="auth_key" id="auth_key">
+    </div>
+    <div class="col-4">
       <button class="btn btn-primary   btn-sm" id="execute">Execute</button>
       <button class="btn btn-secondary btn-sm" id="reset"  >Reset form</button>
     </div>
@@ -109,6 +112,7 @@ function(CSSLoader,
                 this._worker().val('');
                 this._user().val('');
                 this._password().val('');
+                this._auth_key().val('');
                 this._query().val('');
             });
         }
@@ -132,6 +136,7 @@ function(CSSLoader,
         _worker()   { return this._findObject('input#worker', 'worker'); }
         _user()     { return this._findObject('input#user', 'user'); }
         _password() { return this._findObject('input#password', 'password'); }
+        _auth_key() { return this._findObject('input#auth_key', 'auth_key'); }
         _query()    { return this._findObject('textarea#query', 'query'); }
         _table()    { return this._findObject('table#fwk-tools-sql-resultset', 'resultset'); }
 
@@ -152,6 +157,7 @@ function(CSSLoader,
                 {   'worker':   this._worker().val(),
                     'user':     this._user().val(),
                     'password': this._password().val(),
+                    'auth_key': this._auth_key().val(),
                     'query':    this._query().val()
                 },
                 (data) => {
@@ -176,20 +182,22 @@ function(CSSLoader,
             if (!data.success) {
                 this._table().children('thead').html('');
                 this._table().children('tbody').html('');
-                this._table().children('caption').addClass('error').text(data.result_set.error);
+                this._table().children('caption').addClass('error').text(data.error);
                 return;
             }
-
+            const result_set = data.result_set[0].result_set;
             let html = `<tr>`;
-            for (let columnIdx in data.result_set.fields) {
-                html += `<th>${data.result_set.fields[columnIdx].name.value}</th>`;
+            for (let columnIdx in result_set.fields) {
+console.log(columnIdx, result_set.fields[columnIdx]);
+                html += `<th>${result_set.fields[columnIdx].name.value}</th>`;
             }
             html += `</tr>`;
+console.log(html);
             this._table().children('thead').html(html);
 
             html = ``;
-            for (let rowIdx in data.result_set.rows) {
-                let row = data.result_set.rows[rowIdx];
+            for (let rowIdx in result_set.rows) {
+                let row = result_set.rows[rowIdx];
                 html += `<tr>`;
                 for (let columnIdx in row.cells) {
                     let value = row.nulls[columnIdx] ? 'NULL' : row.cells[columnIdx];
