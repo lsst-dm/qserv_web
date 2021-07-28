@@ -18,14 +18,17 @@ table#fwk-status-queries caption.updating {
     background-color: #ffeeba;
 }
 
-table#fwk-status-queries      pre.wrapped,
-table#fwk-status-queries-past pre.wrapped {
-    overflow-x:  auto;
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap:   break-word;
+table#fwk-status-queries      tbody > tr:hover,
+table#fwk-status-queries-past tbody > tr:hover {
+    cursor:pointer;
+}
+table#fwk-status-queries      tbody pre.query.hidden,
+table#fwk-status-queries-past tbody pre.query.hidden {
+    display:none;
+}
+table#fwk-status-queries      tbody pre.query.visible,
+table#fwk-status-queries-past tbody pre.query.visible {
+    display:block;
 }
 table#fwk-status-queries      span,
 table#fwk-status-queries-past span {
