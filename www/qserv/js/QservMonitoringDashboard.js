@@ -10,7 +10,8 @@ require.config({
         'bootstrap':  'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle',
         'underscore': 'https://underscorejs.org/underscore-umd-min',
         'webfwk':     'webfwk/js',
-        'qserv':      'qserv/js'
+        'qserv':      'qserv/js',
+        'modules':    'modules/js'
     },
     shim: {
         'jquery':  {
