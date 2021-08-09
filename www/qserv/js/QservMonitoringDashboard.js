@@ -156,7 +156,7 @@ function(CSSLoader,
                 if (typeof menus !== 'undefined') {
                     Fwk.show(menus[0], menus[1]);
                 } else {
-                    Fwk.show('Replication', 'Controller');
+                    Fwk.show('Status', 'User Queries Monitor');
                 }
             }
         );
