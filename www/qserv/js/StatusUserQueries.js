@@ -262,13 +262,13 @@ function(CSSLoader,
             for (let i in data.queries_past) {
                 let query = data.queries_past[i];
                 let elapsed = this._elapsed(query.completed_sec - query.submitted_sec);
-                let failedQueryCss = query.status !== "COMPLETED" ? 'class="table-danger"' : "";
+                let failed_query_class = query.status !== "COMPLETED" ? "table-danger" : "";
                 let expanded = (query.queryId in this._queryId2Expanded) && this._queryId2Expanded[query.queryId];
                 let row_class = expanded ? "row_expanded" : "row_compact";
                 let query_compact_class  = expanded ? "hidden"  : "visible";
                 let query_expanded_class = expanded ? "visible" : "hidden";
                 html += `
-<tr class="${row_class}" id="${query.queryId}" ${failedQueryCss} title="${queryTitle}">
+<tr class="${failed_query_class} ${row_class}" id="${query.queryId}" title="${queryTitle}">
   <td style="padding-right:10px;"><pre>` + query.submitted + `</pre></td>
   <td style="padding-right:10px;"><pre>${query.status}</pre></td>
   <th style="text-align:right; padding-top:0;">${elapsed}</th>
