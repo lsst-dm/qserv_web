@@ -79,6 +79,7 @@ function(CSSLoader,
          ToolsSql) {
 
     CSSLoader.load('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css');
+    CSSLoader.load('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css');
     CSSLoader.load('qserv/css/QservPDAC.css');
 
     $(function() {

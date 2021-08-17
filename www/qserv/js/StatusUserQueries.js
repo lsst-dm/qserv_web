@@ -168,6 +168,7 @@ function(CSSLoader,
     <table class="table table-sm table-hover" id="fwk-status-queries-past">
       <thead class="thead-light">
         <tr>
+          <th>&nbsp;</th>
           <th>submitted</th>
           <th>status</th>
           <th style="text-align:right;">elapsed</th>
@@ -348,14 +349,20 @@ function(CSSLoader,
             html = '';
             for (let i in data.queries_past) {
                 let query = data.queries_past[i];
+console.log(query);
                 let elapsed = this._elapsed(query.completed_sec - query.submitted_sec);
                 let failed_query_class = query.status !== "COMPLETED" ? "table-danger" : "";
+                let attention = query.qType == 'ASYNC' ? `
+<svg class="bi" width="24" height="24" fill="currentColor">
+  <use xlink:href="assets/bootstrap-icons-1.5.0/bootstrap-icons.svg#exclamation-triangle-fill"/>
+</svg>` : '&nbsp';
                 let expanded = (query.queryId in this._queryId2Expanded) && this._queryId2Expanded[query.queryId];
                 let row_class = expanded ? "row_expanded" : "row_compact";
                 let query_compact_class  = expanded ? "hidden"  : "visible";
                 let query_expanded_class = expanded ? "visible" : "hidden";
                 html += `
 <tr class="${failed_query_class} ${row_class}" id="${query.queryId}" title="${queryTitle}">
+  <td class="text-success">${attention}</td>
   <td style="padding-right:10px;"><pre>` + query.submitted + `</pre></td>
   <td style="padding-right:10px;"><pre>${query.status}</pre></td>
   <th style="text-align:right; padding-top:0;">${elapsed}</th>
