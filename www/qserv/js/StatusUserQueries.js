@@ -15,15 +15,11 @@ function(CSSLoader,
 
     class StatusUserQueries extends FwkApplication {
 
-        /**
-         * @returns the default update interval for the page
-         */ 
+        /// @returns the default update interval for the page
         static update_ival_sec() { return 5; }
 
-        /**
-         * @returns the maximum number of past queries to be returned
-         */ 
-        static limit4past() { return 200; }
+        /// @returns the suggested server-side timeout for retreiving results 
+        static server_proc_timeout_sec() { return 2; }
 
         constructor(name) {
             super(name);
@@ -33,7 +29,6 @@ function(CSSLoader,
 
         /**
          * Override event handler defined in the base class
-         *
          * @see FwkApplication.fwk_app_on_show
          */
         fwk_app_on_show() {
@@ -43,7 +38,6 @@ function(CSSLoader,
 
         /**
          * Override event handler defined in the base class
-         *
          * @see FwkApplication.fwk_app_on_hide
          */
         fwk_app_on_hide() {
@@ -52,7 +46,6 @@ function(CSSLoader,
 
         /**
          * Override event handler defined in the base class
-         *
          * @see FwkApplication.fwk_app_on_update
          */
         fwk_app_on_update() {
@@ -114,10 +107,68 @@ function(CSSLoader,
 </div>
 <div class="row">
   <div class="col">
-    <h3>Past queries (last ${StatusUserQueries.limit4past()} entries)</h3>
+    <h3>Search past queries <button id="reset-queries-form" class="btn btn-primary">Reset</button></h3>
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="query-age">Submitted:</label>
+        <select id="query-age" class="form-control">
+          <option selected value="0">MOST RECENTLY</option>
+          <option value="300">5 MINUTES AGO</option>
+          <option value="900">15 MINUTES AGO</option>
+          <option value="1800">30 MINUTES AGO</option>
+          <option value="3600">1 HOUR AGO</option>
+          <option value="7200">2 HOURS AGO</option>
+          <option value="14400">4 HOURS AGO</option>
+          <option value="28800">8 HOURS AGO</option>
+          <option value="43200">12 HOURS AGO</option>
+          <option value="86400">1 DAY AGO</option>
+          <option value="172800">2 DAYS AGO</option>
+          <option value="604800">1 WEEK AGO</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="query-status">Status:</label>
+        <select id="query-status" class="form-control">
+          <option value="" selected></option>
+          <option value="COMPLETED">COMPLETED</option>
+          <option value="FAILED">FAILED</option>
+          <option value="ABORTED">ABORTED</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="min-elapsed">Min.elapsed [sec]:</label>
+        <input type="number" id="min-elapsed" class="form-control" value="0">
+      </div>
+      <div class="form-group col-md-1">
+        <label for="query-type">Type:</label>
+        <select id="query-type" class="form-control">
+          <option value="" selected></option>
+          <option value="SYNC">SYNC</option>
+          <option value="ASYNC">ASYNC</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="max-queries">Max.queries:</label>
+        <select id="max-queries" class="form-control">
+          <option value="10">10</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="200" selected>200</option>
+          <option value="300">300</option>
+          <option value="400">400</option>
+          <option value="500">500</option>
+          <option value="600">600</option>
+          <option value="700">700</option>
+          <option value="800">800</option>
+          <option value="900">900</option>
+          <option value="1000">1,000</option>
+        </select>
+      </div>
+    </div>
     <table class="table table-sm table-hover" id="fwk-status-queries-past">
       <thead class="thead-light">
         <tr>
+          <th>&nbsp;</th>
           <th>submitted</th>
           <th>status</th>
           <th style="text-align:right;">elapsed</th>
@@ -130,12 +181,22 @@ function(CSSLoader,
     </table>
   </div>
 </div>`;
-            this.fwk_app_container.html(html);
+            let cont = this.fwk_app_container.html(html);
+            cont.find(".form-control").change(() => {
+                this._load();
+            });
+            cont.find("button#reset-queries-form").click(() => {
+                this._set_query_age("0");
+                this._set_query_status("");
+                this._set_min_elapsed("0");
+                this._set_query_type("");
+                this._set_max_queries("200");
+                this._load();
+            });
         }
 
         /**
          * Table for displaying the progress of the on-going user queries
-         * 
          * @returns JQuery table object
          */
         _tableQueries() {
@@ -147,7 +208,6 @@ function(CSSLoader,
 
         /**
          * Table for displaying the completed, failed, etc. user queries
-         * 
          * @returns JQuery table object
          */
         _tablePastQueries() {
@@ -156,6 +216,28 @@ function(CSSLoader,
             }
             return this._tablePastQueries_obj;
         }
+
+        _form_control(elem_type, id) {
+            if (this._form_control_obj === undefined) this._form_control_obj = {};
+            if (!_.has(this._form_control_obj, id)) {
+                this._form_control_obj[id] = this.fwk_app_container.find(elem_type + '#' + id);
+            }
+            return this._form_control_obj[id];
+        }
+        _get_query_age()       { return this._form_control('select', 'query-age').val(); }
+        _set_query_age(val)    { this._form_control('select', 'query-age').val(val); }
+
+        _get_query_status()    { return this._form_control('select', 'query-status').val(); }
+        _set_query_status(val) { this._form_control('select', 'query-status').val(val); }
+
+        _get_min_elapsed()     { return this._form_control('input', 'min-elapsed').val(); }
+        _set_min_elapsed(val)  { this._form_control('input', 'min-elapsed').val(val); }
+
+        _get_query_type()      { return this._form_control('select', 'query-type').val(); }
+        _set_query_type(val)   { this._form_control('select', 'query-type').val(val); }
+
+        _get_max_queries()     { return this._form_control('select', 'max-queries').val(); }
+        _set_max_queries(val)  { this._form_control('select', 'max-queries').val(val); }
 
         /**
          * Load data from a web servie then render it to the application's
@@ -171,7 +253,13 @@ function(CSSLoader,
             this._tableQueries().children('caption').addClass('updating');
             Fwk.web_service_GET(
                 "/replication/qserv/master/query",
-                {limit4past: StatusUserQueries.limit4past(),timeout_sec: 2},
+                {   query_age: this._get_query_age(),
+                    query_status: this._get_query_status(),
+                    min_elapsed_sec: this._get_min_elapsed(),
+                    query_type: this._get_query_type(),
+                    limit4past: this._get_max_queries(),
+                    timeout_sec: StatusUserQueries.server_proc_timeout_sec()
+                },
                 (data) => {
                     this._display(data);
                     Fwk.setLastUpdate(this._tableQueries().children('caption'));
@@ -261,14 +349,20 @@ function(CSSLoader,
             html = '';
             for (let i in data.queries_past) {
                 let query = data.queries_past[i];
+console.log(query);
                 let elapsed = this._elapsed(query.completed_sec - query.submitted_sec);
-                let failedQueryCss = query.status !== "COMPLETED" ? 'class="table-danger"' : "";
+                let failed_query_class = query.status !== "COMPLETED" ? "table-danger" : "";
+                let attention = query.qType == 'ASYNC' ? `
+<svg class="bi" width="24" height="24" fill="currentColor">
+  <use xlink:href="assets/bootstrap-icons-1.5.0/bootstrap-icons.svg#exclamation-triangle-fill"/>
+</svg>` : '&nbsp';
                 let expanded = (query.queryId in this._queryId2Expanded) && this._queryId2Expanded[query.queryId];
                 let row_class = expanded ? "row_expanded" : "row_compact";
                 let query_compact_class  = expanded ? "hidden"  : "visible";
                 let query_expanded_class = expanded ? "visible" : "hidden";
                 html += `
-<tr class="${row_class}" id="${query.queryId}" ${failedQueryCss} title="${queryTitle}">
+<tr class="${failed_query_class} ${row_class}" id="${query.queryId}" title="${queryTitle}">
+  <td class="text-success">${attention}</td>
   <td style="padding-right:10px;"><pre>` + query.submitted + `</pre></td>
   <td style="padding-right:10px;"><pre>${query.status}</pre></td>
   <th style="text-align:right; padding-top:0;">${elapsed}</th>
