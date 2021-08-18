@@ -183,8 +183,8 @@ function(CSSLoader,
         _get_operation() { return this._form_control('select', 'operation').val(); }
         _set_operation(val) { this._form_control('select', 'operation').val(val); }
 
-        _get_operation_status() { return this._form_control('select', 'operation-status').val(); }
-        _set_operation_status(val) { this._form_control('select', 'operation-status').val(val); }
+        _get_operation_status() { return this._form_control('select', 'status').val(); }
+        _set_operation_status(val) { this._form_control('select', 'status').val(val); }
 
         _get_max_events() { return this._form_control('select', 'max-events').val(); }
         _set_max_events(val) { this._form_control('select', 'max-events').val(val); }
