@@ -45,5 +45,5 @@ releasetag=$1
 git add . 
 git commit -m "Publish new release $releasetag"
 git tag -a "$releasetag" -m "Version $releasetag"
-git push --tag
+git push --follow-tags
 $DIR/build-image.sh
