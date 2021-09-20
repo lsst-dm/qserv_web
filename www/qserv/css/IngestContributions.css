@@ -13,7 +13,7 @@ table#fwk-ingest-contributions td.center-aligned {
 }
 table#fwk-ingest-contributions tbody th,
 table#fwk-ingest-contributions tbody td {
-    vertical-align:middle;
+    vertical-align:top;
 }
 table#fwk-ingest-contributions pre {
     padding: 0;
