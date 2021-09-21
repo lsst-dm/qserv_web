@@ -136,31 +136,48 @@ function(CSSLoader,
     <table class="table table-sm table-hover table-bordered" id="fwk-ingest-contributions">
       <thead class="thead-light">
         <tr>
-          <th rowspan="2">Worker</th>
-          <th rowspan="2">Table</th>
-          <th rowspan="2" class="right-aligned">Chunk</th>
-          <th rowspan="2" class="right-aligned">Overlap</th>
-          <th rowspan="2" class="right-aligned">Type</th>
-          <th rowspan="2">Status</th>
-          <th colspan="8" class="center-aligned">Timing</th>
-          <th colspan="2" class="center-aligned">Size</th>
-          <th colspan="2" class="center-aligned">I/O&nbsp;[MiB/s]</th>
-          <th rowspan="2">Error</th>
-          <th rowspan="2">Url</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>Timing</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th class="right-aligned">Size</th>
+          <th></th>
+          <th class="right-aligned">I/O</th>
+          <th>MB/s</th>
+          <th></th>
+          <th></th>
         </tr>
         <tr>
-          <th><elem style="color:red;">&darr;</elem></th>
-          <th class="right-aligned">Created</elem></th>
-          <th class="right-aligned"><elem style="color:red;">&rarr;</elem></th>
-          <th class="right-aligned">Started</th>
-          <th class="right-aligned"><elem style="color:red;">&rarr;</elem></th>
-          <th class="right-aligned">Read</th>
-          <th class="right-aligned"><elem style="color:red;">&rarr;</elem></th>
-          <th class="right-aligned">Loaded</th>
-          <th class="right-aligned">Bytes</th>
-          <th class="right-aligned">Rows</th>
-          <th class="right-aligned">Read</th>
-          <th class="right-aligned">Load</th>
+          <th class="sticky">Worker</th>
+          <th class="sticky">Table</th>
+          <th class="sticky right-aligned">Chunk</th>
+          <th class="sticky right-aligned">Overlap</th>
+          <th class="sticky right-aligned">Type</th>
+          <th class="sticky">Status</th>
+          <th class="sticky"><elem style="color:red;">&darr;</elem></th>
+          <th class="sticky right-aligned">Created</elem></th>
+          <th class="sticky right-aligned"><elem style="color:red;">&rarr;</elem></th>
+          <th class="sticky right-aligned">Started</th>
+          <th class="sticky right-aligned"><elem style="color:red;">&rarr;</elem></th>
+          <th class="sticky right-aligned">Read</th>
+          <th class="sticky right-aligned"><elem style="color:red;">&rarr;</elem></th>
+          <th class="sticky right-aligned">Loaded</th>
+          <th class="sticky right-aligned">Bytes</th>
+          <th class="sticky right-aligned">Rows</th>
+          <th class="sticky right-aligned">Read</th>
+          <th class="sticky right-aligned">Load</th>
+          <th class="sticky">Error</th>
+          <th class="sticky">Url</th>
         </tr>
       </thead>
       <caption>No transaction</caption>
