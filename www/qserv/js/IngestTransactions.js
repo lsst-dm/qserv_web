@@ -187,7 +187,7 @@ function(CSSLoader,
                             case 'FINISHED': transactionCssClass = 'alert alert-success'; break;
                             case 'ABORTED':  transactionCssClass = 'alert alert-danger'; break;
                         }
-                        let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('is');
+                        let beginTimeStr = (new Date(transactionInfo.begin_time)).toLocalTimeString('iso');
                         let endTimeStr = transactionInfo.end_time === 0 ? '' : (new Date(transactionInfo.end_time)).toLocalTimeString('iso');
                         let numWorkers = transactionInfo.contrib.summary.num_workers;
                         let numRegular = transactionInfo.contrib.summary.num_regular_files;
@@ -197,7 +197,7 @@ function(CSSLoader,
                         let numRows = transactionInfo.contrib.summary.num_rows;
                         let dataSize = transactionInfo.contrib.summary.data_size_gb.toFixed(2);
                         html += `
-<tr>
+<tr class="transaction" id="${transactionInfo.id}">
   <th class="right-aligned"><pre>${transactionInfo.id}</pre></th>
   <td class="center-aligned ${transactionCssClass}"><pre>${transactionInfo.state}</pre></th>
   <td class="right-aligned"><pre>${beginTimeStr}</pre></th>
@@ -213,7 +213,14 @@ function(CSSLoader,
                     }
                 }
             }
-            this._table().children('tbody').html(html);
+            let displayContributions = function(e) {
+                let tr = $(e.currentTarget);
+                let transactionId = tr.attr("id");
+                Fwk.show("Ingest", "Contributions");
+                Fwk.current().loadTransaction(transactionId);
+            };
+            this._table().children('tbody').html(html).children("tr.transaction").click(displayContributions);
+
         }
     }
     return IngestTransactions;

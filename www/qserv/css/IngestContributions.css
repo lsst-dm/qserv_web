@@ -3,6 +3,15 @@ table#fwk-ingest-contributions caption {
     text-align:     right;
     padding-top:    0;
 }
+table#fwk-ingest-contributions {
+    position: relative;
+}
+table#fwk-ingest-contributions > thead > tr > th.sticky {
+    position:sticky;
+    top:80px;
+    z-index:2;
+}
+
 table#fwk-ingest-contributions th.right-aligned,
 table#fwk-ingest-contributions td.right-aligned {
     text-align:     right;
@@ -13,7 +22,7 @@ table#fwk-ingest-contributions td.center-aligned {
 }
 table#fwk-ingest-contributions tbody th,
 table#fwk-ingest-contributions tbody td {
-    vertical-align:middle;
+    vertical-align:top;
 }
 table#fwk-ingest-contributions pre {
     padding: 0;

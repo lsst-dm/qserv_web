@@ -170,7 +170,16 @@ function(CSSLoader,
                 let databaseDataSize = 0;
                 let databaseNumRows = 0;
                 let databaseNumFiles = 0;
-                let databaseNumFailedFiles = 0;
+                let databaseNumFilesByStatus = {
+                    'IN_PROGRESS': 0,
+                    'CREATE_FAILED': 0,
+                    'START_FAILED': 0,
+                    'READ_FAILED': 0,
+                    'LOAD_FAILED': 0,
+                    'CANCELLED': 0,
+                    'EXPIRED': 0,
+                    'FINISHED': 0
+                };
                 let databaseNumTransStarted = 0;
                 let databaseNumTransFinished = 0;
                 let databaseNumTransAborted = 0;
@@ -198,7 +207,9 @@ function(CSSLoader,
                     databaseNumFiles += summary.num_regular_files +
                                         summary.num_chunk_files +
                                         summary.num_chunk_overlap_files;
-                    databaseNumFailedFiles += summary.num_failed_files;
+                    for (let status in summary.num_files_by_status) {
+                        databaseNumFilesByStatus[status] += summary.num_files_by_status[status];
+                    }
                     let thisFirstContribTime = summary.first_contrib_begin;
                     if (thisFirstContribTime > 0) {
                         firstIngestTime = firstIngestTime === 0 ?
@@ -283,18 +294,22 @@ function(CSSLoader,
             <tbody>
               <tr><th>Data [GB]</th><td class="right-aligned"><pre>${databaseDataSize.toFixed(2)}</pre></td><td>&nbsp;</td></tr>
               <tr><th>Rows</th><td class="right-aligned"><pre>${databaseNumRows}</pre></td><td>&nbsp;</td></tr>
-              <tr><th>Contributions</th><td class="right-aligned"><pre>${databaseNumFiles}</pre></td><td><pre class="files-ingested">INGESTED</pre></td></tr>
-              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFailedFiles}</pre></td><td><pre class="files-failed">FAILED</pre></td></tr>
+              <tr><th>Alloc.chunks</th><td class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td><td>&nbsp;</td></tr>
+              <tr><th>Transactions</th><td class="right-aligned"><pre>${databaseNumTransStarted}</pre></td><td><pre class="trans-started">STARTED</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumTransAborted}</pre></td><td><pre class="trans-aborted">ABORTED</pre></td</tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumTransFinished}</pre></td><td><pre class="trans-finished">FINISHED</pre></td></tr>
             </tbody>
           </table>
         </div>
         <div class="col-md-auto">
           <table class="table table-sm table-hover">
             <tbody>
-              <tr><th>Alloc.chunks</th><td class="right-aligned"><pre>${databaseInfo.num_chunks}</pre></td><td>&nbsp;</td></tr>
-              <tr><th>Transactions</th><td class="right-aligned"><pre>${databaseNumTransFinished}</pre></td><td><pre class="trans-finished">FINISHED</pre></td></tr>
-              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumTransAborted}</pre></td><td><pre class="trans-aborted">ABORTED</pre></td</tr>
-              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumTransStarted}</pre></td><td><pre class="trans-started">STARTED</pre></td></tr>
+              <tr><th>Contributions</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['IN_PROGRESS']}</pre></td><td><pre class="files-in-progress">IN_PROGRESS</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['CREATE_FAILED']}</pre></td><td><pre class="files-failed">CREATE_FAILED</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['START_FAILED']}</pre></td><td><pre class="files-failed">START_FAILED</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['READ_FAILED']}</pre></td><td><pre class="files-failed">READ_FAILED</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['LOAD_FAILED']}</pre></td><td><pre class="files-failed">LOAD_FAILED</pre></td></tr>
+              <tr><th>&nbsp;</th><td class="right-aligned"><pre>${databaseNumFilesByStatus['FINISHED']}</pre></td><td><pre class="files-finished">FINISHED</pre></td></tr>
             </tbody>
           </table>
         </div>

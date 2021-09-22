@@ -46,15 +46,19 @@ div#fwk-ingest-status table pre.trans-finished {
 div#fwk-ingest-status table pre.trans-aborted {
     color: red;
 }
-div#fwk-ingest-status table pre.cmment {
+div#fwk-ingest-status table pre.comment {
     color: grey;
 }
-div#fwk-ingest-status table pre.files-failed {
-    color: default;
+div#fwk-ingest-status table pre.files-in-progress {
+    color: green;
 }
 div#fwk-ingest-status table pre.files-failed {
     color: red;
 }
+div#fwk-ingest-status table pre.files-finished {
+    color: default;
+}
+
 div#fwk-ingest-status div.perf {
     padding-top: 2.5em;
 }
