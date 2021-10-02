@@ -13,10 +13,6 @@ function(CSSLoader,
 
     class IngestContributions extends FwkApplication {
 
-
-        /// @returns the default update interval for the page
-        static update_ival_sec() { return 60; }
-
         constructor(name) {
             super(name);
             this._data = undefined;
@@ -36,20 +32,24 @@ function(CSSLoader,
         /// @see FwkApplication.fwk_app_on_update
         fwk_app_on_update() {
             if (this.fwk_app_visible) {
-                if (this._prev_update_sec === undefined) {
+              this._init();
+              if (this._prev_update_sec === undefined) {
                     this._prev_update_sec = 0;
                 }
                 let now_sec = Fwk.now().sec;
-                if (now_sec - this._prev_update_sec > IngestContributions.update_ival_sec()) {
+                if (now_sec - this._prev_update_sec > this._update_interval_sec()) {
                     this._prev_update_sec = now_sec;
-                    this._init();
                     this._load();
                 }
             }
         }
 
-        loadTransaction(id) {
+        loadTransaction(database, transactions, id) {
+            console.log(database, transactions, id);
+            transactions.sort();
             this._init();
+            this._set_database(database);
+            this._set_transactions(transactions);
             this._set_trans_id(id);
             this._load();
         }
@@ -75,7 +75,7 @@ function(CSSLoader,
       </div>
       <div class="form-group col-md-1">
         <label for="trans-id">Transaction Id:</label>
-        <input type="number" id="trans-id"  class="form-control" value="0" disabled>
+        <select id="trans-id" class="form-control"></select>
       </div>
       <div class="form-group col-md-1">
         <label for="contrib-num-select"># Contrib:</label>
@@ -113,7 +113,7 @@ function(CSSLoader,
           <option value="1">ASYNC</option>
         </select>
       </div>
-      <div class="form-group col-md-2">
+      <div class="form-group col-md-1">
         <label for="contrib-status">Status:</label>
         <select id="contrib-status" class="form-control form-control-view">
           <option value="" selected></option>
@@ -126,6 +126,17 @@ function(CSSLoader,
           <option value="EXPIRED">EXPIRED</option>
           <option value="FINISHED">FINISHED</option>
           <option value="!FINISHED">! FINISHED</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="contrib-update-interval"><i class="bi bi-arrow-repeat"></i> interval:</label>
+        <select id="contrib-update-interval" class="form-control">
+          <option value="10">10 sec</option>
+          <option value="20">20 sec</option>
+          <option value="30" selected>30 sec</option>
+          <option value="60">1 min</option>
+          <option value="120">2 min</option>
+          <option value="300">5 min</option>
         </select>
       </div>
     </div>
@@ -185,20 +196,29 @@ function(CSSLoader,
     </table>
   </div>
 </div>`;
-        let cont = this.fwk_app_container.html(html);
+            let cont = this.fwk_app_container.html(html);
+            cont.find(".form-control#trans-id").change(() => {
+                this._load();
+            });
             cont.find(".form-control-view").change(() => {
                 if (!_.isUndefined(this._data)) this._display(this._data);
             });
-        }
-        
-        /// @returns JQuery table object displaying the transactions
+            cont.find(".form-control#contrib-update-interval").change(() => {
+                this._load();
+          });
+      }
         _table() {
             if (this._table_obj === undefined) {
                 this._table_obj = this.fwk_app_container.find('table#fwk-ingest-contributions');
             }
             return this._table_obj;
         }
-
+        _status() {
+            if (this._status_obj === undefined) {
+                this._status_obj = this._table().children('caption');
+            }
+            return this._status_obj;
+        }
         _form_control(elem_type, id) {
             if (this._form_control_obj === undefined) this._form_control_obj = {};
             if (!_.has(this._form_control_obj, id)) {
@@ -206,12 +226,22 @@ function(CSSLoader,
             }
             return this._form_control_obj[id];
         }
-        _get_trans_id()    { return this._form_control('input', 'trans-id').val(); }
-        _set_trans_id(val) { this._form_control('input', 'trans-id').val(val); }
-
+        _get_trans_id() { return this._form_control('select', 'trans-id').val(); }
+        _set_trans_id(val) { this._form_control('select', 'trans-id').val(val); }
+        _set_transactions(transactions) {
+            let html = '';
+            for (let i in transactions) {
+                const id = transactions[i];
+                const selected = i ? '' : 'selected'; 
+                html += `<option value="${id}" ${selected}>${id}</option>`;
+            }
+            this._form_control('select', 'trans-id').html(html);
+        }
+        _disable_transactions(disable) {
+            this._form_control('select', 'trans-id').prop('disabled', disable);
+        }
         _set_num_select(val, total) { this._form_control('input', 'contrib-num-select').val(val + ' / ' + total); }
-        _set_database(val)          { this._form_control('input', 'contrib-database').val(val); }
-
+        _set_database(val) { this._form_control('input', 'contrib-database').val(val); }
         _get_worker() { return this._form_control('select', 'contrib-worker').val(); }
         _set_workers(workers, val) {
             console.log('workers', workers);
@@ -222,7 +252,6 @@ function(CSSLoader,
             }
             this._form_control('select', 'contrib-worker').html(html).val(val);
         }
-
         _get_table() { return this._form_control('select', 'contrib-table').val(); }
         _set_tables(tables, val) {
             console.log('tables', tables);
@@ -233,18 +262,18 @@ function(CSSLoader,
             }
             this._form_control('select', 'contrib-table').html(html).val(val);
         }
-
-        _get_chunk()   { return this._form_control('input', 'contrib-chunk').val(); }
+        _get_chunk() { return this._form_control('input', 'contrib-chunk').val(); }
         _get_overlap() { return this._form_control('select', 'contrib-overlap').val(); }
-        _get_async()   { return this._form_control('select', 'contrib-async').val(); }
-        _get_status()  { return this._form_control('select', 'contrib-status').val(); }
+        _get_async() { return this._form_control('select', 'contrib-async').val(); }
+        _get_status() { return this._form_control('select', 'contrib-status').val(); }
+        _update_interval_sec() { return this._form_control('select', 'contrib-update-interval').val(); }
 
         /**
          * Load data from a web servie then render it to the application's page.
          */
         _load() {
             // Updates make no sense if no transaction identifier provided
-            if (this._get_trans_id() === '0') {
+            if (!this._get_trans_id()) {
                 this._table().children('tbody').html('');
                 return;
             }
@@ -253,20 +282,20 @@ function(CSSLoader,
             if (this._loading) return;
             this._loading = true;
 
-            this._table().children('caption').html('<span style="color:maroon">Loading...</span>');
-            this._table().children('caption').addClass('updating');
+            this._status().html('<span style="color:maroon">Loading...</span>');
+            this._status().addClass('updating');
+            this._disable_transactions(true);
 
             Fwk.web_service_GET(
                 "/ingest/trans/" + this._get_trans_id(),
                 {contrib: 1, contrib_long: 1},
                 (data) => {
                     if (!data.success) {
-                        this._table().children('caption').html('<span style="color:maroon">No such transaction</span>');
+                        this._status().html('<span style="color:maroon">No such transaction</span>');
                         this._table().children('tbody').html('');
                     } else {
                         // There should be just one database in the collection.
                         for (let database in data.databases) {
-                            this._set_database(database);
                             this._data = data.databases[database].transactions[0]
                             this._display(this._data);
                             const workers = {};
@@ -280,15 +309,17 @@ function(CSSLoader,
                             this._set_tables(tables, this._get_table());
                             break;
                         }
-                        Fwk.setLastUpdate(this._table().children('caption'));
+                        Fwk.setLastUpdate(this._status());
                     }
-                    this._table().children('caption').removeClass('updating');
+                    this._status().removeClass('updating');
+                    this._disable_transactions(false);
                     this._loading = false;
                 },
                 (msg) => {
                     console.log('request failed', this.fwk_app_name, msg);
-                    this._table().children('caption').html('<span style="color:maroon">No Response</span>');
-                    this._table().children('caption').removeClass('updating');
+                    this._status().html('<span style="color:maroon">No Response</span>');
+                    this._status().removeClass('updating');
+                    this._disable_transactions(false);
                     this._loading = false;
                 }
             );
@@ -325,7 +356,6 @@ function(CSSLoader,
             let html = '';
             for (let idx in info.contrib.files) {
                 let file = info.contrib.files[idx];
-
                 // Apply optional content filters
                 if (workerIsSet && file.worker !== worker) continue;
                 if (tableIsSet && file.table !== table) continue;
@@ -340,7 +370,6 @@ function(CSSLoader,
                     }
                 }
                 numSelect++;
-
                 let overlapStr = file.overlap ? 1 : 0;
                 let asyncStr = file.async ? 'ASYNC' : 'SYNC';
                 let statusCssClass = '';
