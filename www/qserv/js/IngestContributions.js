@@ -251,15 +251,7 @@ function(CSSLoader,
                 this._load();
             });
             cont.find("button#contrib-reset").click(() => {
-                this._form_control('select', 'contrib-worker').val('');
-                this._form_control('select', 'contrib-table').val('');
-                this._form_control('input',  'contrib-chunk').val('');
-                this._form_control('select', 'contrib-overlap').val('');
-                this._form_control('select', 'contrib-status').val('');
-                this._form_control('select', 'contrib-stage').val('');
-                this._form_control('select', 'contrib-sort-column').val('id');
-                this._form_control('select', 'contrib-sort-order').val('ASC');
-                this._form_control('select', 'contrib-update-interval').val('60');
+                this._reset_controls();
                 if (!_.isUndefined(this._data)) this._display(this._data);
             });
       }
@@ -293,8 +285,31 @@ function(CSSLoader,
             }
             this._form_control('select', 'trans-id').html(html);
         }
-        _disable_transactions(disable) {
+        _reset_controls() {
+            this._form_control('select', 'contrib-worker').val('');
+            this._form_control('select', 'contrib-table').val('');
+            this._form_control('input',  'contrib-chunk').val('');
+            this._form_control('select', 'contrib-overlap').val('');
+            this._form_control('select', 'contrib-async').val('');
+            this._form_control('select', 'contrib-status').val('');
+            this._form_control('select', 'contrib-stage').val('');
+            this._form_control('select', 'contrib-sort-column').val('id');
+            this._form_control('select', 'contrib-sort-order').val('ASC');
+            this._form_control('select', 'contrib-update-interval').val('60');
+        }
+        _disable_controls(disable) {
             this._form_control('select', 'trans-id').prop('disabled', disable);
+            this._form_control('select', 'contrib-worker').prop('disabled', disable);
+            this._form_control('select', 'contrib-table').prop('disabled', disable);
+            this._form_control('input',  'contrib-chunk').prop('disabled', disable);
+            this._form_control('select', 'contrib-overlap').prop('disabled', disable);
+            this._form_control('select', 'contrib-async').prop('disabled', disable);
+            this._form_control('select', 'contrib-status').prop('disabled', disable);
+            this._form_control('select', 'contrib-stage').prop('disabled', disable);
+            this._form_control('select', 'contrib-sort-column').prop('disabled', disable);
+            this._form_control('select', 'contrib-sort-order').prop('disabled', disable);
+            this._form_control('select', 'contrib-update-interval').prop('disabled', disable);
+            this._form_control('button', 'contrib-reset').prop('disabled', disable);
         }
         _set_num_select(val, total) { this._form_control('input', 'contrib-num-select').val(val + ' / ' + total); }
         _set_database(val) { this._form_control('input', 'contrib-database').val(val); }
@@ -339,7 +354,7 @@ function(CSSLoader,
 
             this._status().html('<span style="color:maroon">Loading...</span>');
             this._status().addClass('updating');
-            this._disable_transactions(true);
+            this._disable_controls(true);
 
             Fwk.web_service_GET(
                 "/ingest/trans/" + this._get_trans_id(),
@@ -398,14 +413,14 @@ function(CSSLoader,
                         Fwk.setLastUpdate(this._status());
                     }
                     this._status().removeClass('updating');
-                    this._disable_transactions(false);
+                    this._disable_controls(false);
                     this._loading = false;
                 },
                 (msg) => {
                     console.log('request failed', this.fwk_app_name, msg);
                     this._status().html('<span style="color:maroon">No Response</span>');
                     this._status().removeClass('updating');
-                    this._disable_transactions(false);
+                    this._disable_controls(false);
                     this._loading = false;
                 }
             );
