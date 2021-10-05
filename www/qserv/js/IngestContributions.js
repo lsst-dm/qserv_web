@@ -20,14 +20,11 @@ function(CSSLoader,
 
         /// @see FwkApplication.fwk_app_on_show
         fwk_app_on_show() {
-            console.log('show: ' + this.fwk_app_name);
             this.fwk_app_on_update();
         }
 
         /// @see FwkApplication.fwk_app_on_hide
-        fwk_app_on_hide() {
-            console.log('hide: ' + this.fwk_app_name);
-        }
+        fwk_app_on_hide() {}
 
         /// @see FwkApplication.fwk_app_on_update
         fwk_app_on_update() {
@@ -45,7 +42,6 @@ function(CSSLoader,
         }
 
         loadTransaction(database, transactions, id) {
-            console.log(database, transactions, id);
             transactions.sort();
             this._init();
             this._set_database(database);
@@ -131,12 +127,42 @@ function(CSSLoader,
         </select>
       </div>
       <div class="form-group col-md-2">
-        <label for="contrib-stage">Stage [if IN_PROGRESS]:</label>
+        <label for="contrib-stage">Stage (IN_PROGRESS):</label>
         <select id="contrib-stage" class="form-control form-control-view">
           <option value="" selected></option>
-          <option value="QUEUED">QUEUED</option>
-          <option value="READING_DATA">READING_DATA</option>
-          <option value="LOADING_MYSQL">LOADING_MYSQL</option>
+          <option value="1:QUEUED">1:QUEUED</option>
+          <option value="2:READING_DATA">2:READING_DATA</option>
+          <option value="3:LOADING_MYSQL">3:LOADING_MYSQL</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="contrib-sort-column">Sort by:</label>
+        <select id="contrib-sort-column" class="form-control form-control-view">
+          <option value="id" selected>Id</option>
+          <option value="worker">Worker</option>
+          <option value="table">Table</option>
+          <option value="chunk">Chunk</option>
+          <option value="status">Status</option>
+          <option value="stage">Stage</option>
+          <option value="create_time">Created</option>
+          <option value="create2start">Created &rarr; Started</option>
+          <option value="start_time">Started</option>
+          <option value="start2read">Started &rarr; Read</option>
+          <option value="read_time">Read</option>
+          <option value="read2load">Read &rarr; Loaded</option>
+          <option value="load_time">Loaded</option>
+          <option value="num_bytes">Bytes</option>
+          <option value="num_rows">Rows</option>
+          <option value="io_read">Read I/O</option>
+          <option value="io_load">Load I/O</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="contrib-sort-order">Sort order:</label>
+        <select id="contrib-sort-order" class="form-control form-control-view">
+          <option value="ASC" selected>ASC</option>
+          <option value="DESC">DESC</option>
         </select>
       </div>
       <div class="form-group col-md-1">
@@ -144,11 +170,15 @@ function(CSSLoader,
         <select id="contrib-update-interval" class="form-control">
           <option value="10">10 sec</option>
           <option value="20">20 sec</option>
-          <option value="30" selected>30 sec</option>
-          <option value="60">1 min</option>
+          <option value="30">30 sec</option>
+          <option value="60" selected>1 min</option>
           <option value="120">2 min</option>
           <option value="300">5 min</option>
         </select>
+      </div>
+      <div class="form-group col-md-1">
+        <label for="contrib-reset">&nbsp;</label>
+        <button id="contrib-reset" type="button" class="btn btn-primary form-control">Reset Form</button>
       </div>
     </div>
   </div>
@@ -158,6 +188,7 @@ function(CSSLoader,
     <table class="table table-sm table-hover table-bordered" id="fwk-ingest-contributions">
       <thead class="thead-light">
         <tr>
+          <th></th>
           <th></th>
           <th></th>
           <th></th>
@@ -181,8 +212,9 @@ function(CSSLoader,
           <th></th>
         </tr>
         <tr>
-          <th class="sticky">Worker</th>
-          <th class="sticky">Table</th>
+          <th class="sticky right-aligned">Id</th>
+          <th class="sticky right-aligned">Worker</th>
+          <th class="sticky right-aligned">Table</th>
           <th class="sticky right-aligned">Chunk</th>
           <th class="sticky right-aligned">Overlap</th>
           <th class="sticky right-aligned">Type</th>
@@ -218,7 +250,19 @@ function(CSSLoader,
             });
             cont.find(".form-control#contrib-update-interval").change(() => {
                 this._load();
-          });
+            });
+            cont.find("button#contrib-reset").click(() => {
+                this._form_control('select', 'contrib-worker').val('');
+                this._form_control('select', 'contrib-table').val('');
+                this._form_control('input',  'contrib-chunk').val('');
+                this._form_control('select', 'contrib-overlap').val('');
+                this._form_control('select', 'contrib-status').val('');
+                this._form_control('select', 'contrib-stage').val('');
+                this._form_control('select', 'contrib-sort-column').val('id');
+                this._form_control('select', 'contrib-sort-order').val('ASC');
+                this._form_control('select', 'contrib-update-interval').val('60');
+                if (!_.isUndefined(this._data)) this._display(this._data);
+            });
       }
         _table() {
             if (this._table_obj === undefined) {
@@ -257,20 +301,16 @@ function(CSSLoader,
         _set_database(val) { this._form_control('input', 'contrib-database').val(val); }
         _get_worker() { return this._form_control('select', 'contrib-worker').val(); }
         _set_workers(workers, val) {
-            console.log('workers', workers);
             let html = `<option value=""></option>`;
             for (let worker in workers) {
-                console.log('worker', worker);
                 html += `<option value="${worker}">${worker}</option>`;
             }
             this._form_control('select', 'contrib-worker').html(html).val(val);
         }
         _get_table() { return this._form_control('select', 'contrib-table').val(); }
         _set_tables(tables, val) {
-            console.log('tables', tables);
             let html = `<option value=""></option>`;
             for (let table in tables) {
-                console.log('table', table);
                 html += `<option value="${table}">${table}</option>`;
             }
             this._form_control('select', 'contrib-table').html(html).val(val);
@@ -280,6 +320,8 @@ function(CSSLoader,
         _get_async() { return this._form_control('select', 'contrib-async').val(); }
         _get_status() { return this._form_control('select', 'contrib-status').val(); }
         _get_stage() { return this._form_control('select', 'contrib-stage').val(); }
+        _get_sort_by_column() { return this._form_control('select', 'contrib-sort-column').val(); }
+        _get_sort_order() { return this._form_control('select', 'contrib-sort-order').val(); }
         _update_interval_sec() { return this._form_control('select', 'contrib-update-interval').val(); }
 
         /**
@@ -308,9 +350,14 @@ function(CSSLoader,
                         this._status().html('<span style="color:maroon">No such transaction</span>');
                         this._table().children('tbody').html('');
                     } else {
+                        const MiB = 1024 * 1024;
                         // There should be just one database in the collection.
                         for (let database in data.databases) {
-                            this._data = data.databases[database].transactions[0]
+                            this._data = data.databases[database].transactions[0];
+                            // The sort order needs to be reset to allow pre-sorting the new data the first
+                            // time it will get displayed.
+                            this._prev_sort_by_column = undefined;
+                            this._prev_sort_order     = undefined;
                             const workers = {};
                             const tables = {};
                             for (let i in this._data.contrib.files) {
@@ -322,11 +369,24 @@ function(CSSLoader,
                                 // Compute the 'stage' attribute of the IN_PROGRESS contribution requests
                                 // based on the timestamps.
                                 if (file.status === 'IN_PROGRESS') {
-                                    if      (!file.start_time) file.stage = 'QUEUED';
-                                    else if (!file.read_time)  file.stage = 'READING_DATA';
-                                    else if (!file.load_time)  file.stage = 'LOADING_MYSQL';
+                                    if      (!file.start_time) file.stage = '1:QUEUED';
+                                    else if (!file.read_time)  file.stage = '2:READING_DATA';
+                                    else if (!file.load_time)  file.stage = '3:LOADING_MYSQL';
                                 } else {
                                     file.stage = '';
+                                }
+                                // Compute intervals (put the large numbers for the missing timestamps)
+                                file.create2start = file.create_time && file.start_time ? file.start_time - file.create_time : file.create_time;
+                                file.start2read   = file.start_time  && file.read_time  ? file.read_time  - file.start_time  : file.create_time;
+                                file.read2load    = file.read_time   && file.load_time  ? file.load_time  - file.read_time   : file.create_time;
+                                // Compute the I/O performance counters
+                                file.io_read = 0;
+                                file.io_load = 0;
+                                if (file.status === 'FINISHED') {
+                                    let readSec = (file.read_time - file.start_time) / 1000.;
+                                    let loadSec = (file.load_time - file.read_time)  / 1000.;
+                                    file.io_read = readSec > 0 ? (file.num_bytes / MiB) / readSec : 0;
+                                    file.io_load = loadSec > 0 ? (file.num_bytes / MiB) / loadSec : 0;
                                 }
                                 workers[file.worker] = 1;
                                 tables[file.table] = 1;
@@ -357,8 +417,17 @@ function(CSSLoader,
          * @param {Object} info transaction descriptor
          */
         _display(info) {
-            console.log(info);
-            const MiB = 1024 * 1024;
+            // Sort if the first time displaying the data, or if the sort order has changed
+            // since the previous run of the display.
+            const sort_by_column = this._get_sort_by_column();
+            const sort_order     = this._get_sort_order();
+            if (_.isUndefined(this._prev_sort_by_column) || (this._prev_sort_by_column !== sort_by_column) ||
+                _.isUndefined(this._prev_sort_order)     || (this._prev_sort_order     !== sort_order)) {
+                info.contrib.files = _.sortBy(info.contrib.files, sort_by_column);
+                if (sort_order === 'DESC') info.contrib.files.reverse();
+                this._prev_sort_by_column = sort_by_column;
+                this._prev_sort_order     = sort_order;
+            }
 
             const worker = this._get_worker();
             const workerIsSet = worker !== '';
@@ -415,18 +484,13 @@ function(CSSLoader,
                 const startDeltaStr = file.start_time && file.create_time ? ((file.start_time - file.create_time) / 1000).toFixed(1) : '';
                 const readDeltaStr  = file.read_time  && file.start_time  ? ((file.read_time  - file.start_time)  / 1000).toFixed(1) : '';
                 const loadDeltaStr  = file.load_time  && file.read_time   ? ((file.load_time  - file.read_time)   / 1000).toFixed(1) : '';
-                let readPerfStr = '';
-                let loadPerfStr = '';
-                if (file.status === 'FINISHED') {
-                    let readSec = (file.read_time - file.start_time) / 1000.;
-                    let loadSec = (file.load_time - file.read_time)  / 1000.;
-                    readPerfStr = (readSec > 0 ? (file.num_bytes / MiB) / readSec : 0).toFixed(1);
-                    loadPerfStr = (loadSec > 0 ? (file.num_bytes / MiB) / loadSec : 0).toFixed(1);
-                }
+                let readPerfStr = file.io_read ? file.io_read.toFixed(1) : '';
+                let loadPerfStr = file.io_load ? file.io_load.toFixed(1) : '';
         html += `
 <tr class="${statusCssClass}">
-  <td><pre>${file.worker}</pre></td>
-  <td><pre>${file.table}</pre></td>
+  <th class="right-aligned"><pre>${file.id}</pre></th>
+  <td class="right-aligned"><pre>${file.worker}</pre></td>
+  <td class="right-aligned"><pre>${file.table}</pre></td>
   <td class="right-aligned"><pre>${file.chunk}</pre></td>
   <td class="right-aligned"><pre>${overlapStr}</pre></td>
   <td class="right-aligned"><pre>${asyncStr}</pre></th>
