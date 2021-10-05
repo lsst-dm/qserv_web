@@ -113,7 +113,9 @@ function(CSSLoader,
           <option value="1">ASYNC</option>
         </select>
       </div>
-      <div class="form-group col-md-1">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-2">
         <label for="contrib-status">Status:</label>
         <select id="contrib-status" class="form-control form-control-view">
           <option value="" selected></option>
@@ -126,6 +128,15 @@ function(CSSLoader,
           <option value="EXPIRED">EXPIRED</option>
           <option value="FINISHED">FINISHED</option>
           <option value="!FINISHED">! FINISHED</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="contrib-stage">Stage [if IN_PROGRESS]:</label>
+        <select id="contrib-stage" class="form-control form-control-view">
+          <option value="" selected></option>
+          <option value="QUEUED">QUEUED</option>
+          <option value="READING_DATA">READING_DATA</option>
+          <option value="LOADING_MYSQL">LOADING_MYSQL</option>
         </select>
       </div>
       <div class="form-group col-md-1">
@@ -153,6 +164,7 @@ function(CSSLoader,
           <th></th>
           <th></th>
           <th></th>
+          <th></th>
           <th>Timing</th>
           <th></th>
           <th></th>
@@ -174,7 +186,8 @@ function(CSSLoader,
           <th class="sticky right-aligned">Chunk</th>
           <th class="sticky right-aligned">Overlap</th>
           <th class="sticky right-aligned">Type</th>
-          <th class="sticky">Status</th>
+          <th class="sticky right-aligned">Status</th>
+          <th class="sticky">Stage</th>
           <th class="sticky"><elem style="color:red;">&darr;</elem></th>
           <th class="sticky right-aligned">Created</elem></th>
           <th class="sticky right-aligned"><elem style="color:red;">&rarr;</elem></th>
@@ -266,6 +279,7 @@ function(CSSLoader,
         _get_overlap() { return this._form_control('select', 'contrib-overlap').val(); }
         _get_async() { return this._form_control('select', 'contrib-async').val(); }
         _get_status() { return this._form_control('select', 'contrib-status').val(); }
+        _get_stage() { return this._form_control('select', 'contrib-stage').val(); }
         _update_interval_sec() { return this._form_control('select', 'contrib-update-interval').val(); }
 
         /**
@@ -297,16 +311,29 @@ function(CSSLoader,
                         // There should be just one database in the collection.
                         for (let database in data.databases) {
                             this._data = data.databases[database].transactions[0]
-                            this._display(this._data);
                             const workers = {};
                             const tables = {};
                             for (let i in this._data.contrib.files) {
-                                let file = this._data.contrib.files[i];
+                                // INMPORTANT: using 'var' instead of 'let' to allow modifying the content
+                                // of the contributions in the original collection. Otherwise mods would
+                                // ba made to a local copy of the contribution descriptor which has the life
+                                // expectancy not exceeding the body the body of the loop.
+                                var file = this._data.contrib.files[i];
+                                // Compute the 'stage' attribute of the IN_PROGRESS contribution requests
+                                // based on the timestamps.
+                                if (file.status === 'IN_PROGRESS') {
+                                    if      (!file.start_time) file.stage = 'QUEUED';
+                                    else if (!file.read_time)  file.stage = 'READING_DATA';
+                                    else if (!file.load_time)  file.stage = 'LOADING_MYSQL';
+                                } else {
+                                    file.stage = '';
+                                }
                                 workers[file.worker] = 1;
                                 tables[file.table] = 1;
                             }
                             this._set_workers(workers, this._get_worker());
                             this._set_tables(tables, this._get_table());
+                            this._display(this._data);
                             break;
                         }
                         Fwk.setLastUpdate(this._status());
@@ -352,10 +379,13 @@ function(CSSLoader,
             const statusNotFinishedIsSet = status == '!FINISHED';
             const statusIsSet = status !== '';
 
+            const stage = this._get_stage();
+            const stageIsSet = stage !== '';
+
             let numSelect = 0;
             let html = '';
             for (let idx in info.contrib.files) {
-                let file = info.contrib.files[idx];
+                var file = info.contrib.files[idx];
                 // Apply optional content filters
                 if (workerIsSet && file.worker !== worker) continue;
                 if (tableIsSet && file.table !== table) continue;
@@ -363,19 +393,17 @@ function(CSSLoader,
                 if (overlapIsSet && file.overlap !== overlap) continue;
                 if (asyncIsSet && file.async !== async) continue;
                 if (statusIsSet) {
-                    if (statusNotFinishedIsSet) {
-                        if (file.status === 'FINISHED') continue;
-                    } else if(file.status != status) {
-                        continue;
-                    }
+                    if (statusNotFinishedIsSet && (file.status === 'FINISHED')) continue;
+                    if (file.status !== status) continue;
                 }
+                if (stageIsSet && (file.status === 'IN_PROGRESS') && (file.stage !== stage)) continue;
                 numSelect++;
-                let overlapStr = file.overlap ? 1 : 0;
-                let asyncStr = file.async ? 'ASYNC' : 'SYNC';
+                const overlapStr = file.overlap ? 1 : 0;
+                const asyncStr = file.async ? 'ASYNC' : 'SYNC';
                 let statusCssClass = '';
                 switch (file.status) {
                     case 'FINISHED':    statusCssClass = ''; break;
-                    case 'IN-PROGRESS': statusCssClass = 'alert alert-success'; break;
+                    case 'IN_PROGRESS': statusCssClass = 'alert alert-success'; break;
                     default:            statusCssClass = 'alert alert-danger';  break;
                 }
                 const createDateTimeStr = (new Date(file.create_time)).toLocalTimeString('iso').split(' ');
@@ -402,7 +430,8 @@ function(CSSLoader,
   <td class="right-aligned"><pre>${file.chunk}</pre></td>
   <td class="right-aligned"><pre>${overlapStr}</pre></td>
   <td class="right-aligned"><pre>${asyncStr}</pre></th>
-  <td><pre>${file.status}</pre></td>
+  <td class="right-aligned"><pre>${file.status}</pre></td>
+  <td><pre>${file.stage}</pre></td>
   <th><pre>${createDateStr}</pre></th>
   <td class="right-aligned"><pre>${createTimeStr}</pre></td>
   <th class="right-aligned"><pre>${startDeltaStr}</pre></th>
