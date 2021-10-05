@@ -121,7 +121,6 @@ function(CSSLoader,
           <option value="READ_FAILED">READ_FAILED</option>
           <option value="LOAD_FAILED">LOAD_FAILED</option>
           <option value="CANCELLED">CANCELLED</option>
-          <option value="EXPIRED">EXPIRED</option>
           <option value="FINISHED">FINISHED</option>
           <option value="!FINISHED">! FINISHED</option>
         </select>
@@ -462,8 +461,9 @@ function(CSSLoader,
                 if (overlapIsSet && file.overlap !== overlap) continue;
                 if (asyncIsSet && file.async !== async) continue;
                 if (statusIsSet) {
-                    if (statusNotFinishedIsSet && (file.status === 'FINISHED')) continue;
-                    if (file.status !== status) continue;
+                    if (statusNotFinishedIsSet) {
+                        if (file.status === 'FINISHED') continue;
+                    } else if (file.status !== status) continue;
                 }
                 if (stageIsSet && (file.status === 'IN_PROGRESS') && (file.stage !== stage)) continue;
                 numSelect++;
