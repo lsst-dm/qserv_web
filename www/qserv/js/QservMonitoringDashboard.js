@@ -34,9 +34,7 @@ require.config({
 require([
     'webfwk/CSSLoader',
     'webfwk/Fwk',
-    'webfwk/FwkApplicationControlApp',
     'webfwk/FwkTestApp',
-    'webfwk/SimpleTableTestApp',
     'qserv/StatusCatalogs',
     'qserv/StatusActiveChunksMap',
     'qserv/StatusReplicationLevel',
@@ -60,9 +58,7 @@ require([
 
 function(CSSLoader,
          Fwk,
-         FwkApplicationControlApp,
          FwkTestApp,
-         SimpleTableTestApp,
          StatusCatalogs,
          StatusActiveChunksMap,
          StatusReplicationLevel,
@@ -139,13 +135,6 @@ function(CSSLoader,
                 apps: [
                     new QservWorkerSchedulers('Schedulers'),
                     new QservWorkerQueries('Queries in Worker Queues')
-                ]
-            },
-            {   name: 'UI Tests',
-                apps: [
-                    new SimpleTableTestApp('SimpleTable'),
-                    new FwkTestApp('SmartTabble'),
-                    new FwkApplicationControlApp('Application Control')
                 ]
             }
         ];
