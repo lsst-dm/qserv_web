@@ -181,13 +181,13 @@ function(CSSLoader,
     <table class="table table-sm table-hover" id="fwk-status-queries-past">
       <thead class="thead-light">
         <tr>
-          <th>&nbsp;</th>
-          <th>submitted</th>
-          <th>status</th>
-          <th style="text-align:right;">elapsed</th>
-          <th>type</th>
-          <th style="text-align:right;">qid</th>
-          <th>query</th>
+          <th class="sticky">&nbsp;</th>
+          <th class="sticky">submitted</th>
+          <th class="sticky">status</th>
+          <th class="sticky" style="text-align:right;">elapsed</th>
+          <th class="sticky">type</th>
+          <th class="sticky" style="text-align:right;">qid</th>
+          <th class="sticky">query</th>
         </tr>
       </thead>
       <tbody></tbody>
