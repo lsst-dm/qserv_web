@@ -34,6 +34,12 @@ div#fwk-ingest-status table pre {
     padding-top: 0.1em;
     margin: 0;
 }
+div#fwk-ingest-status table pre.database_table:hover {
+    cursor:pointer;
+}
+div#fwk-ingest-status table pre.database_table {
+    color:#007bff;
+}
 div#fwk-ingest-status table pre.object {
     color: maroon;
 }

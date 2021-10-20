@@ -441,7 +441,7 @@ function (CSSLoader,
                     databaseRowSpan++;
                     databaseHtml = `
 <tr>
-  <td><pre>${table}</pre></td>
+  <td><pre class="database_table" database="${database}" table="${table}">${table}</pre></td>
   <td              class="number"><pre>${tInfo.rows.in_chunks}</pre></td>
   <td              class="number"><pre>${tInfo.rows.in_overlaps}</pre></td>
   <th scope="row"  class="number" style="border-right:solid 1px #aaa"><pre>${tInfo.rows.in_chunks + tInfo.rows.in_overlaps}</pre></th>
@@ -478,7 +478,13 @@ function (CSSLoader,
 </tr>` + databaseHtml;
                 }
             }
-            this._partitionedTables().children('tbody').html(html);
+            this._partitionedTables().children('tbody').html(html).find("pre.database_table").click((e) => {
+                const elem = $(e.currentTarget);
+                const database = elem.attr("database");
+                const table = elem.attr("table");
+                Fwk.show("Replication", "Schema");
+                Fwk.current().loadSchema(database, table);
+            });
 
             html = '';
             for (let database in databases) {
@@ -491,7 +497,7 @@ function (CSSLoader,
                     databaseRowSpan++;
                     databaseHtml = `
 <tr>
-  <td><pre>${table}</pre></td>
+  <td><pre class="database_table" database="${database}" table="${table}">${table}</pre></td>
   <th scope="row"  class="number" style="border-right:solid 1px #aaa"><pre>${tInfo.rows}</pre></th>
   <td              class="number"><pre>${StatusCatalogs.size2gb(tInfo.data.unique.data)}</pre></td>
   <td              class="number"><pre>${StatusCatalogs.size2gb(tInfo.data.unique.index)}</pre></td>
@@ -510,7 +516,13 @@ function (CSSLoader,
 </tr>` + databaseHtml;
                 }
             }
-            this._regularTables().children('tbody').html(html);
+            this._regularTables().children('tbody').html(html).find("pre.database_table").click((e) => {
+                const elem = $(e.currentTarget);
+                const database = elem.attr("database");
+                const table = elem.attr("table");
+                Fwk.show("Replication", "Schema");
+                Fwk.current().loadSchema(database, table);
+            });
         }
     }
     return StatusCatalogs;

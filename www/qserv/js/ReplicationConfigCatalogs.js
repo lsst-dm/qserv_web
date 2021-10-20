@@ -169,18 +169,21 @@ function(CSSLoader,
                         let table = database.tables[k];
                         databaseRowSpan++;
                         familyRowSpan++;
+                        const tableSchemaSupportCSS = `class="database_table" database="${database.database}" table="${table.name}"`;
                         const isPartitionedStr = table.is_partitioned ? '<b>yes</b>' : 'no';
                         const isDirectorStr = table.is_partitioned && (table.director === "") ? '<b>yes</b>' : 'no';
                         const directorTable = table.is_partitioned ? table.director : '&nbsp;';
+                        const directorTableSchemaSupportCSS = table.is_partitioned && (table.director === "") ? ""
+                                : `class="database_table" database="${database.database}" table="${table.director}"`;
                         const directorKey = table.is_partitioned ? table.director_key : '&nbsp;';
                         const latitudeKey = table.is_partitioned ? table.latitude_key : '&nbsp;';
                         const longitudeKey = table.is_partitioned ? table.longitude_key : '&nbsp;';
                         databaseHtml += `
 <tr ` + (k == database.tables.length - 1 ? ' style="border-bottom: solid 1px #dee2e6"' : '') + `>
-  <th scope="row"><pre>${table.name}</pre></th>
+  <td scope="row"><pre ${tableSchemaSupportCSS}>${table.name}</pre></td>
   <td><pre>${isPartitionedStr}</pre></td>
   <td><pre>${isDirectorStr}</pre></td>
-  <td><pre>${directorTable}</pre></td>
+  <td><pre ${directorTableSchemaSupportCSS}>${directorTable}</pre></td>
   <td><pre>${directorKey}</pre></td>
   <td><pre>${latitudeKey}</pre></td>
   <td><pre>${longitudeKey}</pre></td>
@@ -200,7 +203,13 @@ function(CSSLoader,
   <th rowspan="${familyRowSpan}" style="vertical-align:middle; border-right: solid 1px #dee2e6" scope="row"><pre>${family.min_replication_level}</pre></th>
 </tr>` + familyHtml;
             }
-            this._table().children('tbody').html(html);
+            this._table().children('tbody').html(html).find("pre.database_table").click((e) => {
+                const elem = $(e.currentTarget);
+                const database = elem.attr("database");
+                const table = elem.attr("table");
+                Fwk.show("Replication", "Schema");
+                Fwk.current().loadSchema(database, table);
+            });
         }
     }
     return ReplicationConfigCatalogs;

@@ -17,6 +17,14 @@ table#fwk-status-catalogs-partitioned td.number pre,
 table#fwk-status-catalogs-regular     td.number pre {
     color: maroon;
 }
+table#fwk-status-catalogs-partitioned pre.database_table:hover,
+table#fwk-status-catalogs-regular     pre.database_table:hover {
+        cursor:pointer;
+}
+table#fwk-status-catalogs-partitioned pre.database_table,
+table#fwk-status-catalogs-regular     pre.database_table {
+        color:#007bff;
+}
 table#fwk-status-catalogs-databases caption {
     caption-side:   top;
     text-align:     right;
