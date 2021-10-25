@@ -19,14 +19,11 @@ function(CSSLoader,
 
         /// @see FwkApplication.fwk_app_on_show
         fwk_app_on_show() {
-            console.log('show: ' + this.fwk_app_name);
             this.fwk_app_on_update();
         }
 
         /// @see FwkApplication.fwk_app_on_hide
-        fwk_app_on_hide() {
-            console.log('hide: ' + this.fwk_app_name);
-        }
+        fwk_app_on_hide() {}
 
         /// @see FwkApplication.fwk_app_on_update
         fwk_app_on_update() {
@@ -190,6 +187,11 @@ function(CSSLoader,
 
             let html = '';
 
+            const database = this._get_database();
+
+            // Translation map to allow back-referencing overlap tables to their base ones
+            let baseTableName = {};
+
             // Transaction timestamps are computed below based on the above made sorting
             // of transactions in the DESC order by the begin time.
             let firstTransBeginStr = 'n/d';
@@ -256,6 +258,7 @@ function(CSSLoader,
 
                 // Collect per-table-level stats
                 for (let table in summary.table) {
+                    baseTableName[table] = table;
                     // This object has data for both chunk and chunk overlaps. So we need
                     // to absorbe both.
                     let tableInfo = summary.table[table];
@@ -272,6 +275,7 @@ function(CSSLoader,
                     }
                     if (_.has(tableInfo, 'overlap')) {
                         let tableOverlaps = table + '&nbsp;(overlaps)';
+                        baseTableName[tableOverlaps] = table;
                         if (_.has(tableStats, tableOverlaps)) {
                             tableStats[tableOverlaps].data  += tableInfo.overlap.data_size_gb;
                             tableStats[tableOverlaps].rows  += tableInfo.overlap.num_rows;
@@ -391,7 +395,7 @@ function(CSSLoader,
                 for (let table in tableStats) {
                     html += `
                   <tr>
-                    <td class="level-2"><pre class="object">${table}</pre></td>
+                    <td class="level-2"><pre class="database_table" database="${database}" table="${baseTableName[table]}">${table}</pre></td>
                     <td class="right-aligned"><pre>${tableStats[table].data.toFixed(2)}</pre></td>
                     <td class="right-aligned"><pre>${tableStats[table].rows}</pre></td>
                     <td class="right-aligned"><pre>${tableStats[table].files}</pre></td>
@@ -408,7 +412,7 @@ function(CSSLoader,
                 for (let worker in workerStats) {
                     html += `
                   <tr>
-                    <td class="level-2"><pre class="object">${worker}</pre></td>
+                    <td class="level-2"><pre>${worker}</pre></td>
                     <td class="right-aligned"><pre>${workerStats[worker].data.toFixed(2)}</pre></td>
                     <td class="right-aligned"><pre>${workerStats[worker].rows}</pre></td>
                     <td class="right-aligned"><pre>${workerStats[worker].files}</pre></td>
@@ -421,7 +425,13 @@ function(CSSLoader,
         </div>
       </div>
     </div>`;
-            this._database().html(html);
+            this._database().html(html).find("pre.database_table").click((e) => {
+                const elem = $(e.currentTarget);
+                const database = elem.attr("database");
+                const table = elem.attr("table");
+                Fwk.show("Replication", "Schema");
+                Fwk.current().loadSchema(database, table);
+            });
         }
 
         static timeAgo(timestamp) {

@@ -268,7 +268,6 @@ function(CSSLoader,
                     Fwk.current().loadTransaction(this._get_database(), this._transactions, transactionId);
                 }
             );
-
         }
     }
     return IngestTransactions;

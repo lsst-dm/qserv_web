@@ -9,6 +9,14 @@ table#fwk-status-queries-past th,
 table#fwk-status-queries-past td {
     vertical-align: top;
 }
+table#fwk-status-queries-past {
+    position: relative;
+}
+table#fwk-status-queries-past > thead > tr > th.sticky {
+    position:sticky;
+    top:80px;
+    z-index:2;
+}
 table#fwk-status-queries caption {
     caption-side:   top;
     text-align:     right;

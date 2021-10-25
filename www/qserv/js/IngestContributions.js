@@ -254,7 +254,7 @@ function(CSSLoader,
                 this._reset_controls();
                 if (!_.isUndefined(this._data)) this._display(this._data);
             });
-      }
+        }
         _table() {
             if (this._table_obj === undefined) {
                 this._table_obj = this.fwk_app_container.find('table#fwk-ingest-contributions');
@@ -312,6 +312,7 @@ function(CSSLoader,
             this._form_control('button', 'contrib-reset').prop('disabled', disable);
         }
         _set_num_select(val, total) { this._form_control('input', 'contrib-num-select').val(val + ' / ' + total); }
+        _get_database() { return this._form_control('input', 'contrib-database').val(); }
         _set_database(val) { this._form_control('input', 'contrib-database').val(val); }
         _get_worker() { return this._form_control('select', 'contrib-worker').val(); }
         _set_workers(workers, val) {
@@ -442,7 +443,7 @@ function(CSSLoader,
                 this._prev_sort_by_column = sort_by_column;
                 this._prev_sort_order     = sort_order;
             }
-
+            const database = this._get_database();
             const worker = this._get_worker();
             const workerIsSet = worker !== '';
 
@@ -505,7 +506,7 @@ function(CSSLoader,
 <tr class="${statusCssClass}">
   <th class="right-aligned"><pre>${file.id}</pre></th>
   <td class="right-aligned"><pre>${file.worker}</pre></td>
-  <td class="right-aligned"><pre>${file.table}</pre></td>
+  <td class="right-aligned"><pre class="database_table" database="${database}" table="${file.table}">${file.table}</pre></td>
   <td class="right-aligned"><pre>${file.chunk}</pre></td>
   <td class="right-aligned"><pre>${overlapStr}</pre></td>
   <td class="right-aligned"><pre>${asyncStr}</pre></th>
@@ -527,7 +528,13 @@ function(CSSLoader,
   <td><pre>${file.url}</pre></td>
 </tr>`;
             }
-            this._table().children('tbody').html(html);
+            this._table().children('tbody').html(html).find("pre.database_table").click((e) => {
+                const elem = $(e.currentTarget);
+                const database = elem.attr("database");
+                const table = elem.attr("table");
+                Fwk.show("Replication", "Schema");
+                Fwk.current().loadSchema(database, table);
+            });
             this._set_num_select(numSelect, info.contrib.files.length);
         }
     }
